@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowLeft, ArrowUpRight, Check, Info, Minus, Plus, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, Info, Menu, Minus, Plus, RotateCcw, X } from 'lucide-react';
 import './quote-page.css';
 
 const LOGO='/brand/kandy-ads-logo.svg';
@@ -82,6 +82,7 @@ function QuotePage(){
   const [email,setEmail]=useState('');
   const [notes,setNotes]=useState('');
   const [sent,setSent]=useState(false);
+  const [menuOpen,setMenuOpen]=useState(false);
 
   const current=SERVICES[service];
   const options=OPTIONS[service];
@@ -114,12 +115,27 @@ function QuotePage(){
     setSent(true);
   };
 
+  const closeMenu=()=>setMenuOpen(false);
+
   return <div className="quote-page">
     <header className="quote-nav">
-      <a className="quote-brand" href="/" aria-label="Back to Kandy Ads home">
-        <img src={LOGO} alt="Kandy Ads"/><strong>KANDY<span>ADS</span></strong>
-      </a>
-      <a className="quote-back" href="/"> <ArrowLeft size={16}/> Back to website</a>
+      <div className="quote-nav-inner">
+        <a className="quote-brand" href="/" aria-label="Kandy Ads home" onClick={closeMenu}>
+          <img src={LOGO} alt="Kandy Ads"/><strong>KANDY<span>ADS</span></strong>
+        </a>
+        <nav className={menuOpen ? 'quote-main-nav open' : 'quote-main-nav'} aria-label="Primary navigation">
+          <a href="/about" onClick={closeMenu}>About</a>
+          <a href="/services" onClick={closeMenu}>Services</a>
+          <a href="/projects" onClick={closeMenu}>Projects</a>
+          <a href="/industries" onClick={closeMenu}>Industries</a>
+          <a href="/process" onClick={closeMenu}>Process</a>
+          <a href="/contact" onClick={closeMenu}>Contact</a>
+          <a href="/quote" className="quote-nav-cta" onClick={closeMenu}>Get a Quote <ArrowUpRight size={16}/></a>
+        </nav>
+        <button className="quote-menu" type="button" onClick={()=>setMenuOpen(v=>!v)} aria-label={menuOpen?'Close menu':'Open menu'} aria-expanded={menuOpen}>
+          {menuOpen ? <X/> : <Menu/>}
+        </button>
+      </div>
     </header>
 
     <main>
@@ -216,7 +232,18 @@ function QuotePage(){
       </section>
     </main>
 
-    <footer className="quote-footer"><div className="quote-container"><span>KANDY ADS</span><span>Advertising • Branding • Production • Installation</span></div></footer>
+    <footer className="quote-footer">
+      <div className="quote-footer-main quote-container">
+        <div className="quote-footer-brand">
+          <a className="quote-brand" href="/" aria-label="Kandy Ads home"><img src={LOGO} alt="Kandy Ads"/><strong>KANDY<span>ADS</span></strong></a>
+          <p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p>
+        </div>
+        <div className="quote-footer-col"><b>EXPLORE</b><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/industries">Industries</a><a href="/process">Process</a><a href="/contact">Contact</a></div>
+        <div className="quote-footer-col"><b>CAPABILITIES</b><a href="/services/signage">Signage & Signboards</a><a href="/services/vehicle-branding">Vehicle Branding</a><a href="/services/outdoor-advertising">Outdoor Advertising</a><a href="/services/printing">Digital Printing & Displays</a><a href="/services/retail-branding">Retail & Commercial Branding</a><a href="/services/events">Exhibitions & Promotional</a></div>
+        <div className="quote-footer-col"><b>START A PROJECT</b><span>Kandy, Sri Lanka</span><a href="tel:+94770000000">+94 77 000 0000</a><a href="mailto:hello@kandyads.lk">hello@kandyads.lk</a><a className="quote-footer-cta" href="/quote">Request a quote <ArrowUpRight size={14}/></a></div>
+      </div>
+      <div className="quote-footer-bottom quote-container"><span>© {new Date().getFullYear()} Kandy Ads. All rights reserved.</span><span>Advertising • Branding • Production • Installation</span></div>
+    </footer>
   </div>;
 }
 
