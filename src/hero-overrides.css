@@ -1,5 +1,5 @@
 /* Editorial split hero: headline left, supporting copy + actions right. */
-.hero{min-height:calc(100svh - 82px);padding:118px 0 30px;display:flex;flex-direction:column;justify-content:center;}
+.hero{min-height:calc(100svh - 82px);padding:82px 0 16px;display:flex;flex-direction:column;justify-content:center;}
 .hero-layout{grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr);gap:96px;align-items:center;width:min(1320px,calc(100% - 64px));}
 .hero-copy{padding-top:0;}
 .hero-copy .eyebrow{margin-bottom:22px;}
@@ -13,7 +13,7 @@
 .hero-side-meta>span{font-family:'Space Grotesk';color:var(--red);font-weight:700;}
 .hero-side-meta>div{max-width:420px;}
 .hero-side-meta i{display:inline-block;width:4px;height:4px;border-radius:50%;background:#bbb;margin:0 9px 2px;}
-.hero-bottom{margin-top:26px;}
+.hero-bottom{margin-top:0;}
 
 /* Simple footer layout: no dense contact strip, no overflowing columns. */
 footer{padding:72px 0 24px;}
@@ -30,23 +30,23 @@ footer{padding:72px 0 24px;}
   .footer-grid{grid-template-columns:1.5fr 1fr 1.1fr 1fr;gap:32px;}
 }
 @media (max-width:900px){
-  .hero{min-height:auto;padding:118px 0 36px;justify-content:flex-start;}
+  .hero{min-height:auto;padding:92px 0 24px;justify-content:flex-start;}
   .hero-layout{grid-template-columns:1fr;gap:34px;width:min(var(--max),calc(100% - 48px));}
   .hero-side{min-height:0;padding:0;}
   .hero-side-lead{max-width:760px;}
   .hero-side-meta{display:none;}
-  .hero-bottom{margin-top:30px;}
+  .hero-bottom{margin-top:0;}
   .footer-grid{grid-template-columns:1.4fr 1fr 1fr;gap:36px 26px;}
   .footer-grid>div:first-child{grid-column:1/-1;}
 }
 @media (max-width:600px){
-  .hero{padding:104px 0 30px;}
+  .hero{padding:86px 0 20px;}
   .hero-layout{width:calc(100% - 32px);gap:30px;}
   .hero h1{font-size:clamp(48px,13vw,68px);line-height:.92;}
   .hero-side-lead{font-size:17px;line-height:1.65;margin-bottom:24px;}
   .hero-side .hero-actions{margin:0;}
   .hero-side .hero-actions .btn{width:auto;}
-  .hero-bottom{margin-top:28px;}
+  .hero-bottom{margin-top:0;}
   footer{padding:58px 0 22px;}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px 22px;}
   .footer-grid>div:first-child{grid-column:1/-1;}
