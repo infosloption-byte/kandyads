@@ -18,6 +18,13 @@ function ScrollToTop(){
   return null;
 }
 
+function QuoteRedirect(){
+  React.useEffect(()=>{
+    window.location.replace('/quote');
+  },[]);
+  return <div aria-hidden="true" />;
+}
+
 function Router(){
   const location=useLocation();
   return <AnimatePresence mode="wait" initial={false}>
@@ -31,6 +38,9 @@ function Router(){
         <Route path="/industries" element={<IndustriesPage/>}/>
         <Route path="/process" element={<ProcessPage/>}/>
         <Route path="/contact" element={<ContactPage/>}/>
+        {/* /quote is a dedicated entry point; hard-redirect here so Link-based CTAs
+            cannot land on the main router with no matching route. */}
+        <Route path="/quote" element={<QuoteRedirect/>}/>
       </Routes>
     </motion.div>
   </AnimatePresence>;
