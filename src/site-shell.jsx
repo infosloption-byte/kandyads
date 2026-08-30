@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Menu, X, MessageCircle, Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowUpRight, Menu, X, MessageCircle } from 'lucide-react';
 import { LOGO, services, contactInfo } from './site-data';
 
 export function Reveal({children,className='',delay=0}){
@@ -31,12 +31,7 @@ export function PrimaryCTA({to='/quote',children='Request a quote'}){return <Lin
 
 export function Footer(){
   return <footer><div className="container footer-grid">
-    <div><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p><div className="footer-contact">
-      <a href={contactInfo.phoneHrefs[0]} className="footer-contact-item"><span className="footer-contact-label">WhatsApp Number</span><span className="footer-contact-value"><Phone size={14}/> {contactInfo.phones[0]}</span></a>
-      <a href={contactInfo.phoneHrefs[1]} className="footer-contact-item"><span className="footer-contact-label">Office Phone</span><span className="footer-contact-value"><Phone size={14}/> {contactInfo.phones[1]}</span></a>
-      <a href={`mailto:${contactInfo.emails[0]}`} className="footer-contact-item"><span className="footer-contact-label">Email Address</span><span className="footer-contact-value"><Mail size={14}/> {contactInfo.emails[0]}</span></a>
-      <span className="footer-contact-item"><span className="footer-contact-label">Location</span><span className="footer-contact-value"><MapPin size={14}/> {contactInfo.addresses[0]}</span></span>
-    </div></div>
+    <div className="footer-intro"><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p></div>
     <div><b>Explore</b><Link to="/about">About</Link><Link to="/services">Services</Link><Link to="/projects">Projects</Link><Link to="/industries">Industries</Link><Link to="/process">Process</Link><Link to="/contact">Contact</Link></div>
     <div><b>Capabilities</b>{services.map(s=><Link key={s.slug} to={'/services/'+s.slug}>{s.title}</Link>)}</div>
     <div><b>Start a project</b><p className="footer-note">Tell us what you need and we’ll shape the right production path.</p><Link to="/quote" className="footer-cta">Get a Quote <ArrowUpRight size={16}/></Link><a href={`https://wa.me/${contactInfo.whatsapp}`} className="footer-cta">WhatsApp <ArrowUpRight size={16}/></a></div>
