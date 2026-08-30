@@ -1,0 +1,7 @@
+/* Route-transition safety: React/Framer Motion must never leave the page shell hidden. */
+main[style*="opacity: 0"]{
+  opacity:1 !important;
+}
+main[style*="opacity:0"]{
+  opacity:1 !important;
+}
