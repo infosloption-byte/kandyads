@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Menu, X, MessageCircle, Phone, Mail, MapPin } from 'lucide-react';
-import { LOGO, services } from './site-data';
+import { LOGO, services, contactInfo } from './site-data';
 
 export function Reveal({children,className='',delay=0}){
   return <motion.div className={className} initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.12}} transition={{duration:.5,delay,ease:'easeOut'}}>{children}</motion.div>;
@@ -23,7 +23,7 @@ export function Navbar(){
   </div></header>;
 }
 
-export function FloatingActions(){return <div className="float-actions"><a href="https://wa.me/94770000000" aria-label="WhatsApp"><MessageCircle/></a><Link to="/quote" aria-label="Request a quote"><ArrowUpRight/></Link></div>}
+export function FloatingActions(){return <div className="float-actions"><a href={`https://wa.me/${contactInfo.whatsapp}`} aria-label="WhatsApp"><MessageCircle/></a><Link to="/quote" aria-label="Request a quote"><ArrowUpRight/></Link></div>}
 
 export function SectionHero({kicker,title,text,accent=false}){return <section className="section-hero container"><div className="section-tag">{kicker}</div><h1>{accent?<>{title}</>:title}</h1><p>{text}</p></section>}
 
@@ -31,10 +31,10 @@ export function PrimaryCTA({to='/quote',children='Request a quote'}){return <Lin
 
 export function Footer(){
   return <footer><div className="container footer-grid">
-    <div><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p><div className="footer-contact"><a href="tel:+94770000000"><Phone size={14}/> +94 77 000 0000</a><a href="mailto:info@kandyads.lk"><Mail size={14}/> info@kandyads.lk</a><span><MapPin size={14}/> Kandy, Sri Lanka</span></div></div>
+    <div><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p><div className="footer-contact"><a href={contactInfo.phoneHrefs[0]}><Phone size={14}/> {contactInfo.phones[0]}</a><a href={contactInfo.phoneHrefs[1]}><Phone size={14}/> {contactInfo.phones[1]}</a><a href={`mailto:${contactInfo.emails[0]}`}><Mail size={14}/> {contactInfo.emails[0]}</a><a href={`mailto:${contactInfo.emails[1]}`}><Mail size={14}/> {contactInfo.emails[1]}</a><span><MapPin size={14}/> {contactInfo.addresses[0]}</span><span><MapPin size={14}/> {contactInfo.addresses[1]}</span></div></div>
     <div><b>Explore</b><Link to="/about">About</Link><Link to="/services">Services</Link><Link to="/projects">Projects</Link><Link to="/industries">Industries</Link><Link to="/process">Process</Link><Link to="/contact">Contact</Link></div>
     <div><b>Capabilities</b>{services.map(s=><Link key={s.slug} to={'/services/'+s.slug}>{s.title}</Link>)}</div>
-    <div><b>Start a project</b><p className="footer-note">Tell us what you need and we’ll shape the right production path.</p><Link to="/quote" className="footer-cta">Get a Quote <ArrowUpRight size={16}/></Link><a href="https://wa.me/94770000000" className="footer-cta">WhatsApp <ArrowUpRight size={16}/></a></div>
+    <div><b>Start a project</b><p className="footer-note">Tell us what you need and we’ll shape the right production path.</p><Link to="/quote" className="footer-cta">Get a Quote <ArrowUpRight size={16}/></Link><a href={`https://wa.me/${contactInfo.whatsapp}`} className="footer-cta">WhatsApp <ArrowUpRight size={16}/></a></div>
   </div><div className="container foot-bottom"><span>© {new Date().getFullYear()} Kandy Ads. All rights reserved.</span><span>Advertising · Branding · Production · Installation</span></div></footer>;
 }
 
