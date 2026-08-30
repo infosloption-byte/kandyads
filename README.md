@@ -1,9 +1,6 @@
 # Kandy Ads — React Website Demo
 
-A multi-page React/Vite concept for Kandy Ads, designed around lead generation, premium visual presentation, service-page SEO, and real project proof.
-
-## Design direction
-**Redline Studio** — modern black/white base, Kandy Ads red accent, oversized typography, real portfolio photography, editorial project grids, and motion used to guide attention rather than decorate.
+A multi-page React/Vite website for Kandy Ads, designed around lead generation, premium visual presentation, service-page SEO, and real project proof.
 
 ## Pages
 - Home
@@ -13,7 +10,8 @@ A multi-page React/Vite concept for Kandy Ads, designed around lead generation, 
 - Projects / portfolio filters
 - Industries
 - Process
-- Contact / quote form
+- Contact
+- Quote / estimate
 
 ## Animation
 - Page transitions with Framer Motion
@@ -29,5 +27,31 @@ npm install
 npm run dev
 ```
 
-## Notes
-The demo uses the portfolio screenshots supplied in the conversation as temporary visual assets. Replace the placeholder WhatsApp number, email, and any unverified company claims before production.
+## Production build
+```bash
+npm run build
+npm run preview
+```
+
+The production output is generated in `dist/` by Vite.
+
+## Vercel deployment
+This repository is prepared for Vercel with `vercel.json` configured as a SPA fallback. This is important because the site uses client-side routing and direct visits/refreshes to routes such as `/about`, `/projects`, `/contact`, and `/quote` must resolve to the application entry point.
+
+### Vercel settings
+- Framework preset: **Vite** (or let Vercel detect it automatically)
+- Build command: `npm run build`
+- Output directory: `dist`
+- Install command: `npm install`
+
+No environment variables are required for the current static site.
+
+After deployment, verify these URLs directly and with a browser refresh:
+- `/`
+- `/about`
+- `/services`
+- `/projects`
+- `/industries`
+- `/process`
+- `/contact`
+- `/quote`
