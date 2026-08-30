@@ -32,12 +32,10 @@ export function PrimaryCTA({to='/quote',children='Request a quote'}){return <Lin
 export function Footer(){
   return <footer><div className="container footer-grid">
     <div><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p><div className="footer-contact">
-      <a href={contactInfo.phoneHrefs[0]}><Phone size={14}/> {contactInfo.phones[0]}</a>
-      <a href={contactInfo.phoneHrefs[1]}><Phone size={14}/> {contactInfo.phones[1]}</a>
-      <a href={`mailto:${contactInfo.emails[0]}`}><Mail size={14}/> {contactInfo.emails[0]}</a>
-      <a href={`mailto:${contactInfo.emails[1]}`}><Mail size={14}/> {contactInfo.emails[1]}</a>
-      <span><MapPin size={14}/> {contactInfo.addresses[0]}</span>
-      <span><MapPin size={14}/> {contactInfo.addresses[1]}</span>
+      <a href={contactInfo.phoneHrefs[0]} className="footer-contact-item"><span className="footer-contact-label">WhatsApp Number</span><span className="footer-contact-value"><Phone size={14}/> {contactInfo.phones[0]}</span></a>
+      <a href={contactInfo.phoneHrefs[1]} className="footer-contact-item"><span className="footer-contact-label">Office Phone</span><span className="footer-contact-value"><Phone size={14}/> {contactInfo.phones[1]}</span></a>
+      <a href={`mailto:${contactInfo.emails[0]}`} className="footer-contact-item"><span className="footer-contact-label">Email Address</span><span className="footer-contact-value"><Mail size={14}/> {contactInfo.emails[0]}</span></a>
+      <span className="footer-contact-item"><span className="footer-contact-label">Location</span><span className="footer-contact-value"><MapPin size={14}/> {contactInfo.addresses[0]}</span></span>
     </div></div>
     <div><b>Explore</b><Link to="/about">About</Link><Link to="/services">Services</Link><Link to="/projects">Projects</Link><Link to="/industries">Industries</Link><Link to="/process">Process</Link><Link to="/contact">Contact</Link></div>
     <div><b>Capabilities</b>{services.map(s=><Link key={s.slug} to={'/services/'+s.slug}>{s.title}</Link>)}</div>
