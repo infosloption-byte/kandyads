@@ -1,0 +1,46 @@
+/* Final hero + footer refinement */
+.hero{min-height:calc(100svh - 82px);padding:118px 0 28px;display:flex;align-items:center;}
+.hero-layout{grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr);gap:100px;align-items:center;width:min(1320px,calc(100% - 64px));}
+.hero-copy{padding-top:0;}
+.hero-copy .eyebrow{margin-bottom:22px;}
+.hero h1{font-size:clamp(58px,6.8vw,104px);max-width:760px;margin:0;}
+.hero-art{height:auto;min-height:0;display:flex;align-items:center;justify-content:flex-end;position:relative;}
+.hero-art-frame,.art-mark,.art-index{display:none!important;}
+.hero-art:before{content:'KANDY ADS';display:block;width:min(560px,100%);font-family:'Space Grotesk',sans-serif;font-size:clamp(68px,8vw,128px);font-weight:700;line-height:.82;letter-spacing:-.07em;color:transparent;-webkit-text-stroke:1px rgba(9,10,13,.12);background:linear-gradient(135deg,rgba(239,23,35,.07),rgba(255,255,255,0));padding:50px 0;}
+.hero-art:after{content:'ADVERTISING  •  BRANDING  •  PRODUCTION\A\A One accountable team from brief to installation.';white-space:pre-wrap;position:absolute;right:0;bottom:-4px;width:min(400px,100%);font-size:12px;line-height:1.7;letter-spacing:.09em;text-transform:uppercase;color:#73767e;text-align:right;}
+.hero-note{margin-top:0;}
+.hero-bottom{margin-top:28px;}
+
+/* Keep the footer understated and robust across widths. */
+footer{padding:72px 0 24px;}
+.footer-grid{grid-template-columns:2fr 1fr 1.2fr 1.1fr;gap:56px;}
+.footer-grid>div{min-width:0;}
+.footer-grid>div:not(:first-child){min-width:0;}
+.footer-grid a,.footer-grid span,.footer-grid p{overflow-wrap:anywhere;word-break:normal;}
+@media (max-width:900px){
+  .hero{min-height:auto;padding:118px 0 35px;}
+  .hero-layout{grid-template-columns:1fr;gap:46px;width:min(var(--max),calc(100% - 48px));}
+  .hero-art{justify-content:flex-start;padding-top:4px;}
+  .hero-art:before{font-size:clamp(58px,14vw,100px);padding:25px 0 35px;}
+  .hero-art:after{text-align:left;position:relative;right:auto;bottom:auto;margin-top:-12px;display:block;}
+  .footer-grid{grid-template-columns:1.4fr 1fr 1fr;gap:36px 26px;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+}
+@media (max-width:600px){
+  .hero{padding:104px 0 30px;}
+  .hero-layout{width:calc(100% - 32px);gap:34px;}
+  .hero h1{font-size:clamp(48px,13vw,68px);}
+  .lead{font-size:17px;line-height:1.65;}
+  .hero-actions{margin:26px 0 0;}
+  .hero-note{display:none;}
+  .hero-bottom{margin-top:28px;}
+  footer{padding:58px 0 22px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px 22px;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+  .footer-grid>div:nth-child(4){grid-column:1/-1;}
+  .foot-bottom{margin-top:48px;padding-top:18px;}
+}
+@media (max-width:380px){
+  .hero h1{font-size:44px;}
+  .hero-art:before{font-size:48px;}
+}
