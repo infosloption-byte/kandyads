@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { prisma } from '../lib/prisma.js';
+import type { FastifyInstance } from 'fastify';
+import { prisma } from '../db.js';
 
 const createClientSchema = z.object({
   code: z.string().min(2).max(50),
@@ -14,14 +15,15 @@ const createClientSchema = z.object({
   notes: z.string().max(2000).optional(),
 });
 
-export async function registerClientRoutes(app: any) {
-  app.get('/api/v1/clients', async (request: any) => {
-    const query = z.object({
-      search: z.string().optional(),
-      page: z.coerce.number().int().positive().default(1),
-      pageSize: z.coerce.number().int().min(1).max(100).default(20),
-    }).parse(request.query);
+const listClientQuerySchema = z.object({
+  search: z.string().optional(),
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
 
+export async function registerClientRoutes(app: FastifyInstance) {
+  app.get('/api/v1/clients', async (request) => {
+    const query = listClientQuerySchema.parse(request.query);
     const where = query.search
       ? { OR: [
           { companyName: { contains: query.search } },
@@ -43,7 +45,7 @@ export async function registerClientRoutes(app: any) {
     return { data: items, meta: { page: query.page, pageSize: query.pageSize, total } };
   });
 
-  app.post('/api/v1/clients', async (request: any, reply: any) => {
+  app.post('/api/v1/clients', async (request, reply) => {
     const input = createClientSchema.parse(request.body);
     const existing = await prisma.client.findUnique({ where: { code: input.code } });
     if (existing) return reply.conflict('Client code already exists');
