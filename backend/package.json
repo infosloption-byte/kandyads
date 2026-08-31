@@ -4,6 +4,6 @@
   "version":"0.1.0",
   "type":"module",
   "scripts":{"dev":"tsx watch src/server.ts","build":"tsc -p tsconfig.json","start":"node dist/server.js","prisma:generate":"prisma generate","prisma:migrate":"prisma migrate dev","prisma:seed":"tsx prisma/seed.ts"},
-  "dependencies":{"@fastify/cors":"latest","@fastify/jwt":"latest","@fastify/sensible":"latest","fastify":"latest","prisma":"latest","@prisma/client":"latest","zod":"latest"},
+  "dependencies":{"@fastify/cors":"latest","@fastify/jwt":"latest","@fastify/sensible":"latest","@prisma/client":"latest","dotenv":"latest","fastify":"latest","prisma":"latest","zod":"latest"},
   "devDependencies":{"tsx":"latest","typescript":"latest","@types/node":"latest"}
 }
