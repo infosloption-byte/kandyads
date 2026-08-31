@@ -4,19 +4,20 @@ This is the single project task file for the repository. The public website live
 
 ## 0. Workspace
 - [x] Repository separated into `frontend/`, `admin/`, `backend/`.
-- [x] Move master task document to repository root.
+- [x] Master task document is at repository root.
 - [ ] Add shared development conventions and environment documentation.
 - [ ] Add CI checks and production deployment documentation.
 
 ## 1. Platform Foundation
-- [ ] Backend Node.js + TypeScript + Fastify foundation.
-- [ ] MySQL + Prisma schema/migrations.
-- [ ] Environment configuration for development/staging/production.
+- [x] Backend Node.js + TypeScript + Fastify foundation.
+- [x] MySQL + Prisma schema foundation.
+- [x] Environment validation foundation.
+- [ ] Prisma migrations and production database setup.
 - [ ] Authentication, password hashing, sessions/JWT and logout.
 - [ ] Roles and permissions.
-- [ ] API validation, error format, logging and request IDs.
+- [x] API validation, base error format and request logging foundation.
 - [ ] Audit logging for sensitive changes.
-- [ ] Admin protected application shell, navigation, profile/session handling.
+- [x] Admin protected-structure/app shell foundation, navigation and responsive layout.
 
 ## 2. Master Data / Settings
 - [ ] Company profile and settings.
@@ -39,7 +40,9 @@ This is the single project task file for the repository. The public website live
 - [ ] Convert lead to client/enquiry.
 
 ### Clients
-- [ ] Company/client master.
+- [x] Initial API-backed client list/search screen.
+- [x] Client list/search API foundation.
+- [ ] Company/client master CRUD.
 - [ ] Contacts, phone, WhatsApp, email and address.
 - [ ] Industry, payment terms, credit limit and status.
 - [ ] Client notes and documents.
@@ -213,11 +216,13 @@ This is the single project task file for the repository. The public website live
 - [ ] Secure upload/access rules.
 
 ## 13. Dashboard / Reports
-- [ ] Active projects and jobs in production.
+- [x] Initial admin dashboard shell and operational cards.
+- [x] Initial dashboard summary API endpoint.
+- [ ] Active projects and jobs in production from live data.
 - [ ] Jobs due/overdue.
 - [ ] Pending quotes and conversion rate.
 - [ ] Revenue, expenses, profit and receivables.
-- [ ] Low stock and pending purchase alerts.
+- [ ] Low stock and pending purchase alerts from live inventory.
 - [ ] Outsourced jobs.
 - [ ] Employee workload.
 - [ ] Upcoming installations.
@@ -252,30 +257,29 @@ This is the single project task file for the repository. The public website live
 - [ ] Client upload support.
 
 ## 17. Admin UX / Quality
-- [ ] Responsive desktop/tablet layout.
-- [ ] Mobile-friendly critical workflows.
-- [ ] Data tables with search/filter/sort/pagination.
-- [ ] Form validation and useful errors.
+- [x] Responsive admin shell foundation.
+- [x] Tables with search/filter foundation.
+- [ ] Full CRUD form validation and useful errors.
 - [ ] Confirmation before destructive actions.
-- [ ] Loading/empty/error states.
+- [ ] Loading/empty/error states across every module.
 - [ ] Toast feedback.
 - [ ] Keyboard/accessibility support.
 
 ## 18. Backend API
-- [ ] REST conventions.
-- [ ] DTO/schema validation.
-- [ ] Pagination/filtering/sorting.
-- [ ] Consistent error responses.
+- [x] REST API foundation.
+- [x] Request schema validation foundation.
+- [x] Basic pagination/filtering on clients.
+- [x] Consistent base error response.
 - [ ] Authentication/authorization middleware.
 - [ ] Database transactions for financial and stock operations.
-- [ ] Logging/monitoring.
+- [ ] Logging/monitoring hardening.
 - [ ] API documentation.
 
 ## 19. Database Integrity
-- [ ] Normalized relational schema.
-- [ ] Foreign keys and unique constraints.
-- [ ] Decimal-safe money fields.
-- [ ] Time/date conventions.
+- [x] Normalized relational schema foundation.
+- [x] Foreign keys and unique constraints in Prisma schema.
+- [x] Decimal-safe money fields in schema.
+- [ ] Time/date conventions review.
 - [ ] Archive/soft-delete strategy where appropriate.
 - [ ] Transaction-safe stock/invoice/payment updates.
 - [ ] Migrations and seed data.
