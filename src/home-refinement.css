@@ -45,8 +45,10 @@
 .partners-note{margin-top:22px;font-size:11px;line-height:1.6;color:#8a8c92;max-width:700px}
 .industry-band{padding:140px 0;background:var(--red);color:#fff}
 .industry-band h2{font-size:clamp(55px,6vw,88px);line-height:.92}
-.industry-band h2 strong{color:#fff;font-weight:inherit}
+.industry-band h2 strong{color:var(--ink);font-weight:inherit}
 .industry-band p{font-size:18px;line-height:1.75}
+.light-btn{background:#fff;color:var(--ink);border-color:#fff;margin-top:18px}
+.industry-list{border-left:1px solid rgba(255,255,255,.35)}
 .industry-list a{padding:21px 18px;font-size:20px}
 .process-preview{padding:135px 0;background:var(--ink)}
 .process-preview h2{font-size:clamp(54px,5.8vw,82px);line-height:.95;max-width:850px}
