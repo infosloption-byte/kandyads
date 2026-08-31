@@ -1,0 +1,28 @@
+import React from 'react';
+import { Plus, Save, Trash2 } from 'lucide-react';
+import { api } from '../../../api';
+
+const blank={description:'',quantity:'1',unit:'job',rate:'0',discount:'0',tax:'0',serviceId:''};
+const initial={number:'',clientId:'',enquiryId:'',validUntil:'',expectedMaterial:'0',expectedLabour:'0',expectedOutsource:'0',expectedExpense:'0'};
+
+export default function QuoteForm({onSubmit,onCancel,submitting=false}){
+ const [form,setForm]=React.useState(initial),[items,setItems]=React.useState([{...blank}]),[clients,setClients]=React.useState([]),[enquiries,setEnquiries]=React.useState([]),[services,setServices]=React.useState([]),[error,setError]=React.useState(''),[loading,setLoading]=React.useState(true);
+ React.useEffect(()=>{Promise.all([api.listClients({pageSize:100}),api.listEnquiries({pageSize:100}),api.listServices({pageSize:100})]).then(([c,e,s])=>{setClients(c.data||[]);setEnquiries(e.data||[]);setServices(s.data||[])}).catch(err=>setError(err.message||'Unable to load quote options')).finally(()=>setLoading(false));},[]);
+ const set=(k)=>(e)=>setForm(v=>({...v,[k]:e.target.value}));
+ const setItem=(i,k)=>(e)=>setItems(rows=>rows.map((r,idx)=>idx===i?{...r,[k]:e.target.value}:r));
+ const add=()=>setItems(rows=>[...rows,{...blank}]); const remove=(i)=>setItems(rows=>rows.length===1?rows:rows.filter((_,idx)=>idx!==i));
+ const total=items.reduce((sum,i)=>sum+(Number(i.quantity)||0)*(Number(i.rate)||0)-(Number(i.discount)||0)+(Number(i.tax)||0),0);
+ async function submit(e){e.preventDefault();setError('');if(!form.number.trim()||!form.clientId){setError('Quote number and client are required.');return;}if(items.some(i=>!i.description.trim()||Number(i.quantity)<=0)){setError('Every quote line needs a description and valid quantity.');return;}try{await onSubmit({...form,clientId:Number(form.clientId),enquiryId:form.enquiryId?Number(form.enquiryId):undefined,validUntil:form.validUntil||undefined,expectedMaterial:Number(form.expectedMaterial)||0,expectedLabour:Number(form.expectedLabour)||0,expectedOutsource:Number(form.expectedOutsource)||0,expectedExpense:Number(form.expectedExpense)||0,items:items.map(i=>({...i,serviceId:i.serviceId?Number(i.serviceId):undefined,quantity:Number(i.quantity),rate:Number(i.rate)||0,discount:Number(i.discount)||0,tax:Number(i.tax)||0}))});}catch(err){setError(err.message||'Unable to save quote.');}}
+ return <form className="entity-form" onSubmit={submit}><div className="form-grid two">
+  <label>Quote number<input value={form.number} onChange={set('number')} placeholder="QT-0001" required/></label>
+  <label>Client<select value={form.clientId} onChange={set('clientId')} disabled={loading} required><option value="">Select client</option>{clients.map(c=><option key={c.id} value={c.id}>{c.companyName} ({c.code})</option>)}</select></label>
+  <label>Enquiry<select value={form.enquiryId} onChange={set('enquiryId')} disabled={loading}><option value="">Optional</option>{enquiries.map(q=><option key={q.id} value={q.id}>{q.number} — {q.requirement.slice(0,55)}</option>)}</select></label>
+  <label>Valid until<input type="date" value={form.validUntil} onChange={set('validUntil')}/></label>
+  <label>Expected material cost (LKR)<input type="number" min="0" step="0.01" value={form.expectedMaterial} onChange={set('expectedMaterial')}/></label>
+  <label>Expected labour cost (LKR)<input type="number" min="0" step="0.01" value={form.expectedLabour} onChange={set('expectedLabour')}/></label>
+  <label>Expected outsourcing cost (LKR)<input type="number" min="0" step="0.01" value={form.expectedOutsource} onChange={set('expectedOutsource')}/></label>
+  <label>Expected direct expense (LKR)<input type="number" min="0" step="0.01" value={form.expectedExpense} onChange={set('expectedExpense')}/></label>
+  <div className="full"><div className="panel-head" style={{marginBottom:10}}><div><span>QUOTE LINES</span><h2 style={{fontSize:20}}>Services & pricing</h2></div><button type="button" className="secondary mini-add" onClick={add}><Plus size={15}/> Add line</button></div><div className="item-list"><div className="item-head"><span>Description</span><span>Qty / Unit</span><span>Rate / LKR</span><span></span></div>{items.map((item,i)=><div className="item-row" key={i}><div><input value={item.description} onChange={setItem(i,'description')} placeholder="Service / deliverable"/><select value={item.serviceId} onChange={setItem(i,'serviceId')} disabled={loading}><option value="">Service type</option>{services.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></div><div><input type="number" min="0.001" step="0.001" value={item.quantity} onChange={setItem(i,'quantity')}/><input value={item.unit} onChange={setItem(i,'unit')} placeholder="unit"/></div><div><input type="number" min="0" step="0.01" value={item.rate} onChange={setItem(i,'rate')}/><input type="number" min="0" step="0.01" value={item.discount} onChange={setItem(i,'discount')} placeholder="Discount"/><input type="number" min="0" step="0.01" value={item.tax} onChange={setItem(i,'tax')} placeholder="Tax"/></div><button type="button" className="item-remove" onClick={()=>remove(i)} disabled={items.length===1} aria-label="Remove line"><Trash2 size={16}/></button></div>)}</div></div>
+  <div className="full quote-total"><strong>Estimated quote total</strong><strong>LKR {total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></div>
+ </div>{error&&<div className="form-error">{error}</div>}<div className="form-actions"><button type="button" className="secondary" onClick={onCancel}>Cancel</button><button className="primary" disabled={submitting||loading}>{submitting?'Saving…':<><Save size={16}/> Save Quote</>}</button></div></form>;
+}
