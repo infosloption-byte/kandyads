@@ -17,6 +17,14 @@ async function request(path, options = {}) {
   return payload;
 }
 
+const list = (resource, params = {}) => {
+  const clean = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== ''));
+  const query = new URLSearchParams(clean).toString();
+  return request(`/${resource}${query ? `?${query}` : ''}`);
+};
+
+const create = (resource, input) => request(`/${resource}`, { method: 'POST', body: JSON.stringify(input) });
+
 export const api = {
   login: async (input) => {
     const result = await request('/auth/login', { method: 'POST', body: JSON.stringify(input) });
@@ -27,9 +35,12 @@ export const api = {
   me: () => request('/auth/me'),
   logout: () => clearToken(),
   getDashboardSummary: () => request('/dashboard/summary'),
-  listClients: (params = {}) => {
-    const query = new URLSearchParams(params).toString();
-    return request(`/clients${query ? `?${query}` : ''}`);
-  },
-  createClient: (input) => request('/clients', { method: 'POST', body: JSON.stringify(input) }),
+  listClients: (params = {}) => list('clients', params),
+  createClient: (input) => create('clients', input),
+  listEnquiries: (params = {}) => list('enquiries', params),
+  createEnquiry: (input) => create('enquiries', input),
+  listQuotes: (params = {}) => list('quotes', params),
+  createQuote: (input) => create('quotes', input),
+  listProjects: (params = {}) => list('projects', params),
+  createProject: (input) => create('projects', input),
 };
