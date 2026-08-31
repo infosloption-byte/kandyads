@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import sensible from '@fastify/sensible';
 import { env } from './config/env.js';
+import { dashboardRoutes } from './routes/dashboard.js';
 
 export function buildApp(){
   const app = Fastify({ logger: true });
@@ -12,6 +13,7 @@ export function buildApp(){
 
   app.get('/health', async()=>({ status:'ok', service:'kandy-ads-backend', environment:env.NODE_ENV, timestamp:new Date().toISOString() }));
   app.get('/api/v1', async()=>({ name:'Kandy Ads Operations API', version:'v1' }));
+  app.register(dashboardRoutes);
 
   app.setErrorHandler((error,request,reply)=>{
     request.log.error(error);
