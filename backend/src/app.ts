@@ -10,6 +10,7 @@ import { clientsRoutes } from './modules/clients/clients.routes.js';
 import { enquiriesRoutes } from './modules/enquiries/enquiries.routes.js';
 import { quotesRoutes } from './modules/quotes/quotes.routes.js';
 import { projectsRoutes } from './modules/projects/projects.routes.js';
+import { servicesRoutes } from './modules/services/services.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -24,6 +25,7 @@ export function buildApp(){
   app.register(enquiriesRoutes);
   app.register(quotesRoutes);
   app.register(projectsRoutes);
+  app.register(servicesRoutes);
   app.setErrorHandler((error,request,reply)=>{request.log.error(error);const status=error.statusCode&&error.statusCode>=400?error.statusCode:500;return reply.status(status).send({error:{code:error.code??'INTERNAL_ERROR',message:error.message??'Unexpected server error',requestId:request.id}})});
   return app;
 }
