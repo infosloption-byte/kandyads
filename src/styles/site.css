@@ -4,6 +4,7 @@
 @import '../hero-overrides.css';
 @import '../navigation-fix.css';
 @import '../pages.css';
+@import '../hero-mobile-fix.css';
 
 /* Footer — visual treatment matching the supplied desktop/mobile references. */
 .footer-intro{min-width:0}
