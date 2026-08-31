@@ -82,30 +82,33 @@ This is the single project task file for the repository. The public website live
 - [ ] Project activity history.
 
 ### Jobs — Core Production Model
-- [ ] Job CRUD and detail workflow.
-- [ ] Job/project/service linkage.
-- [ ] Internal / outsourced / mixed assignment.
-- [ ] Revenue allocation.
-- [ ] Estimated/actual material, labour, outsourcing and direct costs.
-- [ ] Gross profit/margin.
+- [x] Job list/search API and admin screen foundation.
+- [x] Job detail API foundation.
+- [ ] Job CRUD/create modal and detail workflow.
+- [x] Job/project/service linkage in API.
+- [x] Internal / outsourced / mixed assignment field.
+- [x] Revenue and estimated material/labour/outsourcing/expense cost fields.
+- [ ] Actual cost calculation from production transactions.
+- [ ] Gross profit/margin dashboard.
 - [ ] Attachments, activity and completion approval.
 
 ### Tasks / Work Breakdown
-- [ ] Tasks inside jobs.
-- [ ] Employee assignment.
-- [ ] Priority and dates.
-- [ ] Estimated vs actual hours.
-- [ ] Dependencies, checklists and status.
+- [x] Task list/search API and admin screen foundation.
+- [ ] Tasks create/edit/detail workflow.
+- [x] Job linkage and employee assignment fields in API.
+- [x] Priority, dates, planned hours and status fields.
+- [ ] Dependencies, checklists and subtasks.
 - [ ] Notes, attachments and completion timestamp.
 - [ ] Employee workload view.
 
 ## 5. Team / Labour
-- [ ] Employee master.
-- [ ] Roles, departments and employment types.
-- [ ] Skills and internal costing rates.
+- [x] Employee list/search API and admin screen foundation.
+- [ ] Employee master CRUD.
+- [x] Department, employment type and internal hourly/daily costing fields.
+- [ ] Skills and role management.
 - [ ] Employee job assignments.
-- [ ] Time entries against employee/project/job/task.
-- [ ] Approve/edit/reject time entries.
+- [x] Time entry list/API foundation.
+- [ ] Time entry create/edit/approval workflow.
 - [ ] Automatic labour cost calculation.
 - [ ] Planned vs actual hours.
 
