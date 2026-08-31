@@ -7,6 +7,9 @@ import { env } from './config/env.js';
 import { authRoutes } from './routes/auth.js';
 import { dashboardRoutes } from './routes/dashboard.js';
 import { registerClientRoutes } from './routes/clients.js';
+import { registerEnquiryRoutes } from './routes/enquiries.js';
+import { registerQuoteRoutes } from './routes/quotes.js';
+import { registerProjectRoutes } from './routes/projects.js';
 
 export function buildApp(){
   const app = Fastify({ logger: true, requestIdHeader: 'x-request-id', genReqId: () => randomUUID() });
@@ -20,6 +23,9 @@ export function buildApp(){
   app.register(authRoutes);
   app.register(dashboardRoutes);
   app.register(registerClientRoutes);
+  app.register(registerEnquiryRoutes);
+  app.register(registerQuoteRoutes);
+  app.register(registerProjectRoutes);
 
   app.setErrorHandler((error,request,reply)=>{
     request.log.error(error);
