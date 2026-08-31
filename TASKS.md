@@ -26,7 +26,7 @@ This is the single project task file for the repository. The public website live
 - [ ] Number sequences.
 - [ ] Tax configuration and payment methods.
 - [ ] Units of measure.
-- [ ] Service catalogue.
+- [x] Service catalogue API foundation.
 - [ ] Material categories.
 - [ ] Expense categories.
 - [ ] Status/workflow configuration.
@@ -53,29 +53,31 @@ This is the single project task file for the repository. The public website live
 
 ### Enquiries
 - [x] Enquiry list/search API and admin screen foundation.
-- [ ] Enquiry create/edit/detail workflow.
-- [ ] Source, requirements, services, site/location and target date.
-- [ ] Priority, owner and status.
+- [x] Enquiry create modal + client selection + validation + API create.
+- [x] Source, requirement, site/location, target date and priority fields.
+- [ ] Enquiry edit/detail workflow.
 - [ ] Attachments.
 - [ ] Convert enquiry to quotation.
 
 ### Quotations / Estimates
 - [x] Quote list/search API and admin screen foundation.
 - [x] Quote cost/margin calculation API foundation.
-- [ ] Quote create/edit/detail workflow.
-- [ ] Line items, discounts, tax and totals.
-- [ ] Expected material/labour/outsourcing/direct costs.
+- [x] Quote create modal with client/enquiry selection and dynamic line items.
+- [x] Service catalogue selector for quote lines.
+- [ ] Quote edit/detail workflow.
 - [ ] PDF generation and sharing.
 - [ ] Client approval/rejection tracking.
-- [ ] Convert accepted quote into project.
+- [ ] Convert accepted quote into project action.
 - [ ] Integrate public quote estimator.
 
 ## 4. Delivery / Project Management
 ### Projects
 - [x] Project list/search API and admin screen foundation.
-- [ ] Project CRUD/detail workflow.
-- [ ] Client, source quote/enquiry and project owner.
-- [ ] Start/due dates, value and status.
+- [x] Project create modal with client/accepted quote selection.
+- [ ] Project edit/detail workflow.
+- [ ] Project owner assignment.
+- [x] Start/due dates and value fields.
+- [ ] Status management.
 - [ ] Jobs, tasks, materials, expenses, purchasing, outsourcing, time, installations, documents, invoices and profitability tabs.
 - [ ] Project activity history.
 
@@ -209,7 +211,7 @@ This is the single project task file for the repository. The public website live
 - [x] Organized feature-folder architecture started.
 - [x] Reusable modal component.
 - [x] Initial reusable entity-form styling.
-- [ ] Full loading/empty/error states.
+- [x] Current live screens have loading/empty/error states.
 - [ ] Toast feedback.
 - [ ] Accessibility and keyboard support.
 
