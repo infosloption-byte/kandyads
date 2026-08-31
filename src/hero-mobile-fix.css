@@ -1,0 +1,25 @@
+/* Mobile hero action layout */
+@media (max-width: 600px){
+  .hero-actions{
+    flex-wrap:nowrap;
+    gap:8px;
+    width:100%;
+    margin-top:28px;
+  }
+  .hero-actions .btn{
+    flex:1 1 0;
+    min-width:0;
+    white-space:nowrap;
+    padding:13px 12px;
+    gap:7px;
+    font-size:13px;
+  }
+  .hero-actions .btn svg{width:17px;height:17px;flex:0 0 auto}
+  .hero-bottom{margin-top:20px}
+}
+
+@media (max-width:380px){
+  .hero-actions{gap:6px}
+  .hero-actions .btn{padding:12px 9px;font-size:12px}
+  .hero-actions .btn svg{width:16px;height:16px}
+}
