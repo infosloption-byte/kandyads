@@ -11,6 +11,10 @@ import { enquiriesRoutes } from './modules/enquiries/enquiries.routes.js';
 import { quotesRoutes } from './modules/quotes/quotes.routes.js';
 import { projectsRoutes } from './modules/projects/projects.routes.js';
 import { servicesRoutes } from './modules/services/services.routes.js';
+import { jobsRoutes } from './modules/jobs/jobs.routes.js';
+import { tasksRoutes } from './modules/tasks/tasks.routes.js';
+import { employeesRoutes } from './modules/employees/employees.routes.js';
+import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -26,6 +30,10 @@ export function buildApp(){
   app.register(quotesRoutes);
   app.register(projectsRoutes);
   app.register(servicesRoutes);
+  app.register(jobsRoutes);
+  app.register(tasksRoutes);
+  app.register(employeesRoutes);
+  app.register(timeTrackingRoutes);
   app.setErrorHandler((error,request,reply)=>{request.log.error(error);const status=error.statusCode&&error.statusCode>=400?error.statusCode:500;return reply.status(status).send({error:{code:error.code??'INTERNAL_ERROR',message:error.message??'Unexpected server error',requestId:request.id}})});
   return app;
 }
