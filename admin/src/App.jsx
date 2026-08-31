@@ -1,9 +1,12 @@
 import React from 'react';
 import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { BarChart3, BriefcaseBusiness, ClipboardList, DollarSign, FileText, FolderKanban, HardHat, LayoutDashboard, LogOut, Menu, Package, Settings, ShoppingCart, Truck, Users, Wrench } from 'lucide-react';
-import ClientsPage from './pages/ClientsPage';
-import LoginPage from './LoginPage';
 import { api, clearToken, getToken } from './api';
+import LoginPage from './LoginPage';
+import ClientsPage from './pages/ClientsPage';
+import EnquiriesPage from './pages/EnquiriesPage';
+import QuotesPage from './pages/QuotesPage';
+import ProjectsPage from './pages/ProjectsPage';
 
 const groups = [
   { label:'COMMAND CENTER', items:[['Dashboard','/',LayoutDashboard]] },
@@ -16,22 +19,13 @@ const groups = [
 
 function Dashboard(){
   const [summary,setSummary]=React.useState(null); const [error,setError]=React.useState('');
-  React.useEffect(()=>{ let active=true; api.getDashboardSummary().then(r=>{if(active)setSummary(r.data)}).catch(e=>{if(active)setError(e.message)}); return ()=>{active=false}; },[]);
-  const cards = [
-    ['Active Projects',summary?.activeProjects ?? '—','live from API'],
-    ['Jobs In Production',summary?.jobsNeedingAttention ?? '—','needs attention'],
-    ['Pending Quotes',summary?.pendingQuotes ?? '—','awaiting action'],
-    ['Active Clients',summary?.activeClients ?? '—','current clients'],
-  ];
+  React.useEffect(()=>{let active=true;api.getDashboardSummary().then(r=>{if(active)setSummary(r.data)}).catch(e=>{if(active)setError(e.message)});return()=>{active=false};},[]);
+  const cards=[['Active Projects',summary?.activeProjects??'—','live from API'],['Jobs In Production',summary?.jobsNeedingAttention??'—','needs attention'],['Pending Quotes',summary?.pendingQuotes??'—','awaiting action'],['Active Clients',summary?.activeClients??'—','current clients']];
   return <div><div className="page-head"><div><p className="eyebrow">COMMAND CENTER</p><h1>Good afternoon.</h1><p>Here is what needs attention across Kandy Ads today.</p></div><NavLink to="/projects" className="primary">+ New Project</NavLink></div>{error&&<div className="form-error">{error}</div>}<div className="stat-grid">{cards.map(c=><div className="stat" key={c[0]}><span>{c[0]}</span><strong>{c[1]}</strong><small>{c[2]}</small></div>)}</div><div className="content-grid"><section className="panel"><div className="panel-head"><div><span>DELIVERY</span><h2>Jobs needing attention</h2></div><NavLink to="/jobs">View all →</NavLink></div>{[['KA-1042','DSI Branch Signage','In Production','Due today'],['KA-1047','NinetyNine Retail Graphics','Blocked','Needs artwork'],['KA-1051','KFC Pylon Upgrade','Ready','Starts tomorrow'],['KA-1056','Hotel Signage Package','Outsourced','Vendor delivery']].map(x=><div className="list-row" key={x[0]}><div><b>{x[0]}</b><strong>{x[1]}</strong></div><span className={'badge '+x[2].toLowerCase().replace(' ','-')}>{x[2]}</span><small>{x[3]}</small></div>)}</section><section className="panel"><div className="panel-head"><div><span>STOCK</span><h2>Low stock</h2></div><NavLink to="/inventory">Inventory →</NavLink></div>{[['Acrylic 3mm','8 sheets','Reorder 20'],['LED Module','14 units','Reorder 50'],['ACM Sheet','3 sheets','Reorder 10'],['Vinyl White','12 m','Reorder 40']].map(x=><div className="list-row compact" key={x[0]}><div><strong>{x[0]}</strong><small>{x[2]}</small></div><b>{x[1]}</b></div>)}</section></div></div>;
 }
-function Placeholder({title}){return <div className="page-head"><div><p className="eyebrow">MODULE</p><h1>{title}</h1><p>This module is scaffolded and ready for API-backed CRUD screens.</p></div><button className="primary">+ Add {title.replace(/s$/,'')}</button></div>}
-function Shell({user,onLogout}){const [open,setOpen]=React.useState(false);const loc=useLocation();const navigate=useNavigate();return <div className="admin-shell"><aside className={open?'open':''}><div className="brand"><div className="mark">KA</div><div><strong>KANDY<span>ADS</span></strong><small>OPERATIONS</small></div></div><div className="nav-groups">{groups.map(g=><div key={g.label}><p>{g.label}</p>{g.items.map(([label,path,Icon])=><NavLink end={path==='/' } key={path} to={path} className={({isActive})=>isActive?'active':''} onClick={()=>setOpen(false)}><Icon size={17}/>{label}</NavLink>)}</div>)}</div><div className="sidebar-foot">v0.2 · Operations Platform</div></aside><main className="admin-main"><header><button className="mobile-menu" onClick={()=>setOpen(!open)} aria-label="Toggle navigation"><Menu/></button><div className="crumb">Kandy Ads / {loc.pathname==='/'?'Dashboard':loc.pathname.slice(1).replaceAll('-',' ')}</div><button className="user-chip user-button" onClick={()=>{onLogout();navigate('/login')}}><span>{(user?.name||'AD').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase()}</span><div><b>{user?.name||'Admin'}</b><small>{user?.role||'Administrator'} · Sign out</small></div><LogOut size={15}/></button></header><div className="page-wrap"><Routes><Route path="/" element={<Dashboard/>}/><Route path="/clients" element={<ClientsPage/>}/>{groups.flatMap(g=>g.items).filter(x=>x[1]!=='/' && x[1]!=='/clients').map(([label,path])=><Route key={path} path={path} element={<Placeholder title={label}/>}/>)}</Routes></div></main></div>}
 
-export default function App(){
-  const [user,setUser]=React.useState(null); const [checking,setChecking]=React.useState(Boolean(getToken()));
-  React.useEffect(()=>{ if(!getToken()){setChecking(false);return;} api.me().then(r=>setUser(r.data)).catch(()=>clearToken()).finally(()=>setChecking(false)); },[]);
-  if(checking) return <main className="auth-page"><div className="auth-card"><p className="eyebrow">KANDY ADS OPERATIONS</p><h1>Checking session…</h1></div></main>;
-  if(!user) return <Routes><Route path="/login" element={<LoginPage onLogin={setUser}/>}/><Route path="*" element={<LoginPage onLogin={setUser}/>} /></Routes>;
-  return <Shell user={user} onLogout={()=>{api.logout();setUser(null)}}/>;
-}
+function Placeholder({title}){return <div className="page-head"><div><p className="eyebrow">MODULE</p><h1>{title}</h1><p>This module is scaffolded and ready for API-backed CRUD screens.</p></div><button className="primary">+ Add {title.replace(/s$/,'')}</button></div>}
+
+function Shell({user,onLogout}){const [open,setOpen]=React.useState(false);const loc=useLocation();const navigate=useNavigate();return <div className="admin-shell"><aside className={open?'open':''}><div className="brand"><div className="mark">KA</div><div><strong>KANDY<span>ADS</span></strong><small>OPERATIONS</small></div></div><div className="nav-groups">{groups.map(g=><div key={g.label}><p>{g.label}</p>{g.items.map(([label,path,Icon])=><NavLink end={path==='/' } key={path} to={path} className={({isActive})=>isActive?'active':''} onClick={()=>setOpen(false)}><Icon size={17}/>{label}</NavLink>)}</div>)}</div><div className="sidebar-foot">v0.3 · Operations Platform</div></aside><main className="admin-main"><header><button className="mobile-menu" onClick={()=>setOpen(!open)} aria-label="Toggle navigation"><Menu/></button><div className="crumb">Kandy Ads / {loc.pathname==='/'?'Dashboard':loc.pathname.slice(1).replaceAll('-',' ')}</div><button className="user-chip user-button" onClick={()=>{onLogout();navigate('/login')}}><span>{(user?.name||'AD').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase()}</span><div><b>{user?.name||'Admin'}</b><small>{user?.role||'Administrator'} · Sign out</small></div><LogOut size={15}/></button></header><div className="page-wrap"><Routes><Route path="/" element={<Dashboard/>}/><Route path="/clients" element={<ClientsPage/>}/><Route path="/enquiries" element={<EnquiriesPage/>}/><Route path="/quotes" element={<QuotesPage/>}/><Route path="/projects" element={<ProjectsPage/>}/>{groups.flatMap(g=>g.items).filter(x=>!['/','/clients','/enquiries','/quotes','/projects'].includes(x[1])).map(([label,path])=><Route key={path} path={path} element={<Placeholder title={label}/>}/>)}</Routes></div></main></div>}
+
+export default function App(){const [user,setUser]=React.useState(null);const [checking,setChecking]=React.useState(Boolean(getToken()));React.useEffect(()=>{if(!getToken()){setChecking(false);return;}api.me().then(r=>setUser(r.data)).catch(()=>clearToken()).finally(()=>setChecking(false));},[]);if(checking)return <main className="auth-page"><div className="auth-card"><p className="eyebrow">KANDY ADS OPERATIONS</p><h1>Checking session…</h1></div></main>;if(!user)return <Routes><Route path="/login" element={<LoginPage onLogin={setUser}/>}/><Route path="*" element={<LoginPage onLogin={setUser}/>} /></Routes>;return <Shell user={user} onLogout={()=>{api.logout();setUser(null)}}/>}
