@@ -43,7 +43,9 @@ This is the single project task file for the repository. The public website live
 ### Clients
 - [x] API-backed client list/search.
 - [x] Organized Clients feature module.
-- [ ] Company/client master CRUD.
+- [x] Client create workflow with reusable modal/form.
+- [x] Client create API integration.
+- [ ] Client edit/detail workflow.
 - [ ] Contacts, phone, WhatsApp, email and address.
 - [ ] Industry, payment terms, credit limit and status.
 - [ ] Client notes/documents.
@@ -192,6 +194,7 @@ This is the single project task file for the repository. The public website live
 - [ ] Invoice overdue.
 - [ ] Approval notifications.
 - [ ] In-app notification center.
+- [ ] Email/WhatsApp integrations later.
 
 ## 16. Public Website Integration
 - [ ] Website contact form → API lead/enquiry.
@@ -204,7 +207,8 @@ This is the single project task file for the repository. The public website live
 - [x] Responsive admin shell foundation.
 - [x] Reusable table component.
 - [x] Organized feature-folder architecture started.
-- [ ] Reusable modal/form/confirm components.
+- [x] Reusable modal component.
+- [x] Initial reusable entity-form styling.
 - [ ] Full loading/empty/error states.
 - [ ] Toast feedback.
 - [ ] Accessibility and keyboard support.
