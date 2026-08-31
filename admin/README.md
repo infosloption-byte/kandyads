@@ -1,7 +1,14 @@
 # Kandy Ads Admin
 
-New React admin platform for internal agency operations.
+Internal React operations platform for Kandy Ads.
 
-Target modules are defined in `/TASKS.md` and cover CRM, enquiries, quotations, projects, jobs/tasks, employees, time tracking, vendors/outsourcing, materials/inventory, purchasing, expenses, installations, finance, reports, users/roles, notifications and audit history.
+## Local development
+```bash
+npm install
+npm run dev
+```
 
-Planned stack: React + TypeScript + Vite + React Router + TanStack Query + React Hook Form + Zod.
+The initial shell includes the operational navigation and dashboard scaffold for CRM, delivery, production, team, finance and administration. Data/API integration will be added against `backend/`.
+
+## Stack
+React + Vite + React Router. API access will be centralized in a shared client and secured by backend roles/permissions.
