@@ -39,18 +39,33 @@ export async function materialsRoutes(app: FastifyInstance) {
       orderBy: { name: 'asc' },
     });
 
-    const movementTotals = await prisma.stockMovement.groupBy({
-      by: ['materialId', 'type'],
-      _sum: { quantity: true },
-    });
+    const [movementTotals, requirements] = await Promise.all([
+      prisma.stockMovement.groupBy({ by: ['materialId', 'type'], _sum: { quantity: true } }),
+      prisma.materialRequirement.findMany({ select: { materialId: true, reservedQty: true, job: { select: { status: true } } } }),
+    ]);
+
+    const reservedByMaterial = new Map<number, number>();
+    for (const row of requirements) {
+      if (row.job?.status === 'COMPLETED' || row.job?.status === 'CANCELLED') continue;
+      reservedByMaterial.set(row.materialId, (reservedByMaterial.get(row.materialId) ?? 0) + Number(row.reservedQty ?? 0));
+    }
 
     const data = materials.map((material) => {
       const totals = movementTotals.filter((row) => row.materialId === material.id);
-      const signed = totals.reduce((sum, row) => {
+      const stockOnHand = totals.reduce((sum, row) => {
         const qty = Number(row._sum.quantity ?? 0);
         return ['ISSUE', 'WASTE'].includes(row.type) ? sum - qty : ['TRANSFER'].includes(row.type) ? sum : sum + qty;
       }, 0);
-      return { ...material, stockOnHand: Number(signed.toFixed(3)) };
+      const reservedQty = reservedByMaterial.get(material.id) ?? 0;
+      const availableQty = stockOnHand - reservedQty;
+      const reorderLevel = Number(material.reorderLevel ?? 0);
+      return {
+        ...material,
+        stockOnHand: Number(stockOnHand.toFixed(3)),
+        reservedQty: Number(reservedQty.toFixed(3)),
+        availableQty: Number(availableQty.toFixed(3)),
+        reorderAlert: reorderLevel > 0 && availableQty <= reorderLevel,
+      };
     });
 
     return { data };
