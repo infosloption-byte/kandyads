@@ -2,6 +2,7 @@ import Fastify, { type FastifyError } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import sensible from '@fastify/sensible';
+import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { env, corsOrigins } from './config/env.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
@@ -55,6 +56,10 @@ export function buildApp(){
   app.register(installationsRoutes);
   app.register(financeRoutes);
   app.setErrorHandler((error,request,reply)=>{
+    if (error instanceof z.ZodError) {
+      request.log.warn({ error }, 'Request validation failed');
+      return reply.status(400).send({error:{code:'VALIDATION_ERROR',message:'Request validation failed',details:error.issues,requestId:request.id}});
+    }
     const fastifyError=error as FastifyError;
     request.log.error(fastifyError);
     const status=fastifyError.statusCode&&fastifyError.statusCode>=400?fastifyError.statusCode:500;
