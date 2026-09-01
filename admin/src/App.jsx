@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, BriefcaseBusiness, ClipboardList, DollarSign, FileText, FolderKanban, HardHat, LayoutDashboard, LogOut, Menu, Package, Settings, ShoppingCart, Truck, Users, Wrench } from 'lucide-react';
+import { BarChart3, BriefcaseBusiness, ClipboardList, DollarSign, FileText, FolderKanban, HardHat, LayoutDashboard, LogOut, Menu, Package, Settings, ShoppingCart, Truck, Users, Wrench, Building2 } from 'lucide-react';
 import { api, clearToken, getToken } from './api';
 import LoginPage from './features/auth/pages/LoginPage';
 import AdminRouter from './app/router';
@@ -9,7 +9,7 @@ const groups=[
  {label:'COMMAND CENTER',items:[['Dashboard','/',LayoutDashboard]]},
  {label:'SALES & CRM',items:[['Leads','/leads',Users],['Clients','/clients',Users],['Enquiries','/enquiries',ClipboardList],['Quotes','/quotes',FileText]]},
  {label:'DELIVERY',items:[['Projects','/projects',FolderKanban],['Jobs','/jobs',BriefcaseBusiness],['Tasks','/tasks',ClipboardList]]},
- {label:'PRODUCTION',items:[['Materials','/materials',Package],['Inventory','/inventory',Package],['Purchasing','/purchasing',ShoppingCart],['Outsourcing','/outsourcing',Truck],['Installations','/installations',HardHat]]},
+ {label:'PRODUCTION',items:[['Materials','/materials',Package],['Inventory','/inventory',Package],['Purchasing','/purchasing',ShoppingCart],['Vendors','/vendors',Building2],['Outsourcing','/outsourcing',Truck],['Installations','/installations',HardHat]]},
  {label:'TEAM & FINANCE',items:[['Employees','/employees',Users],['Time Tracking','/time',Wrench],['Expenses','/expenses',DollarSign],['Invoices','/invoices',FileText],['Profitability','/profitability',BarChart3]]},
  {label:'ADMIN',items:[['Reports','/reports',BarChart3],['Settings','/settings',Settings]]}
 ];
