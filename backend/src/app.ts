@@ -6,12 +6,14 @@ import { randomUUID } from 'node:crypto';
 import { env, corsOrigins } from './config/env.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
+import { leadsRoutes } from './modules/leads/leads.routes.js';
 import { clientsRoutes } from './modules/clients/clients.routes.js';
 import { enquiriesRoutes } from './modules/enquiries/enquiries.routes.js';
 import { quotesRoutes } from './modules/quotes/quotes.routes.js';
 import { projectsRoutes } from './modules/projects/projects.routes.js';
 import { servicesRoutes } from './modules/services/services.routes.js';
 import { jobsRoutes } from './modules/jobs/jobs.routes.js';
+import { jobOperationsRoutes } from './modules/jobs/job-operations.routes.js';
 import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { employeesRoutes } from './modules/employees/employees.routes.js';
 import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
@@ -24,7 +26,6 @@ import { purchasingRoutes } from './modules/purchasing/purchasing.routes.js';
 import { profitabilityRoutes } from './modules/profitability/profitability.routes.js';
 import { installationsRoutes } from './modules/installations/installations.routes.js';
 import { financeRoutes } from './modules/finance/finance.routes.js';
-import { leadsRoutes } from './modules/leads/leads.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -42,6 +43,7 @@ export function buildApp(){
   app.register(projectsRoutes);
   app.register(servicesRoutes);
   app.register(jobsRoutes);
+  app.register(jobOperationsRoutes);
   app.register(tasksRoutes);
   app.register(employeesRoutes);
   app.register(timeTrackingRoutes);
