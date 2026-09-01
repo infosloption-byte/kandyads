@@ -99,20 +99,20 @@ This is the single project task file for the repository. The public website live
 - [x] Task creation inside Job detail.
 - [x] Job linkage and employee assignment fields in API.
 - [x] Priority, dates, planned hours and status fields.
-- [ ] Task edit/detail workflow.
+- [x] Task edit/detail workflow.
 - [ ] Dependencies, checklists and subtasks.
 - [ ] Notes, attachments and completion timestamp.
 - [ ] Employee workload view.
 
 ## 5. Team / Labour
 - [x] Employee list/search API and admin screen foundation.
-- [ ] Employee master CRUD.
+- [x] Employee master CRUD.
 - [x] Department, employment type and internal hourly/daily costing fields.
 - [ ] Skills and role management.
 - [x] Employee job assignments.
 - [x] Time entry list/API foundation.
 - [x] Job-level time-entry posting.
-- [ ] Time entry edit/approval workflow.
+- [x] Time entry edit/approval workflow.
 - [x] Automatic labour cost calculation.
 - [ ] Planned vs actual hours reporting.
 
