@@ -43,10 +43,8 @@ export async function convertAcceptedQuoteToProject(quoteId: number, input: Conv
     if (quote.project) throw new QuoteConversionError(`Quote is already converted to project ${quote.project.number}`, 409);
     if (quote.items.length === 0) throw new QuoteConversionError('Quote must contain at least one item before conversion');
 
-    const projectNumber = input.number?.trim() || `PRJ-${quote.id}-${quote.number}`;
-    if (projectNumber.length > 50) throw new QuoteConversionError('Project number must be 50 characters or fewer');
-
-    const projectName = input.name?.trim() || `${quote.client.companyName} — ${quote.number}`;
+    const projectNumber = input.number?.trim() || `PRJ-${quote.id}-${quote.number}`.slice(0, 50);
+    const projectName = (input.name?.trim() || `${quote.client.companyName} — ${quote.number}`).slice(0, 200);
     const startDate = input.startDate ?? new Date();
     const dueDate = input.dueDate ?? quote.enquiry?.targetDate ?? undefined;
     const total = Number(quote.total);
@@ -71,7 +69,7 @@ export async function convertAcceptedQuoteToProject(quoteId: number, input: Conv
           create: quote.items.map((item, index) => ({
             number: `JOB-${quote.id}-${index + 1}`.slice(0, 50),
             serviceId: item.serviceId,
-            title: item.description,
+            title: item.description.slice(0, 200),
             description: `Created from quote ${quote.number}`,
             startDate,
             dueDate,
