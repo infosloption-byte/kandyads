@@ -10,6 +10,7 @@ let clientId = 0;
 let employeeId = 0;
 let projectId = 0;
 let jobId = 0;
+let taskId = 0;
 let materialId = 0;
 let warehouseId = 0;
 let vendorId = 0;
@@ -89,7 +90,22 @@ test('delivery and team modules expose seeded data', async () => {
   employeeId = employees.body.data[0]?.id ?? 0;
   projectId = projects.body.data[0]?.id ?? 0;
   jobId = jobs.body.data[0]?.id ?? 0;
-  assert.ok(employeeId && projectId && jobId);
+  taskId = tasks.body.data.find((t: any) => t.jobId === jobId)?.id ?? tasks.body.data[0]?.id ?? 0;
+  assert.ok(employeeId && projectId && jobId && taskId);
+});
+
+test('task workflow validation and completion process', async () => {
+  const detail = await request(`${base}/tasks/${taskId}`);
+  assert.equal(detail.status, 200);
+  assert.equal(detail.body.data.id, taskId);
+
+  const invalid = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'NOT_A_STATUS' }) });
+  assert.equal(invalid.status, 400);
+
+  const completed = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
+  assert.equal(completed.status, 200);
+  assert.equal(completed.body.data.status, 'COMPLETED');
+  assert.ok(completed.body.data.completedAt);
 });
 
 test('materials, inventory and vendors', async () => {
