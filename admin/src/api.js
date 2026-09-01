@@ -12,7 +12,7 @@ export const api={
  me:()=>request('/auth/me'),logout:()=>clearToken(),getDashboardSummary:()=>request('/dashboard/summary'),
  listLeads:p=>list('leads',p),createLead:i=>create('leads',i),updateLead:(id,i)=>patch('leads',id,i),convertLead:(id,i={})=>request(`/leads/${id}/convert`,{method:'POST',body:JSON.stringify(i)}),
  listClients:p=>list('clients',p),getClient:id=>request(`/clients/${id}`),createClient:i=>create('clients',i),
- listEnquiries:p=>list('enquiries',p),createEnquiry:i=>create('enquiries',i),
+ listEnquiries:p=>list('enquiries',p),createEnquiry:i=>create('enquiries',i),convertEnquiryToQuote:(id,i)=>request(`/enquiries/${id}/convert-to-quote`,{method:'POST',body:JSON.stringify(i)}),
  listQuotes:p=>list('quotes',p),createQuote:i=>create('quotes',i),updateQuoteStatus:(id,i)=>request(`/quotes/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),convertQuoteToProject:(id,i={})=>request(`/quotes/${id}/convert-to-project`,{method:'POST',body:JSON.stringify(i)}),
  listProjects:p=>list('projects',p),getProject:id=>request(`/projects/${id}`),createProject:i=>create('projects',i),updateProjectStatus:(id,i)=>request(`/projects/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
  listServices:p=>list('services',p),createService:i=>create('services',i),
