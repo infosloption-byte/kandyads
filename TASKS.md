@@ -12,7 +12,7 @@ This is the single project task file for the repository. The public website live
 - [x] Backend Node.js + TypeScript + Fastify foundation.
 - [x] MySQL + Prisma schema foundation.
 - [x] Environment validation foundation.
-- [ ] Prisma migrations and production database setup.
+- [x] Development Prisma migration and local database setup.
 - [x] Authentication login/session foundation.
 - [ ] Password reset/change workflow.
 - [ ] Roles and permissions enforcement.
@@ -27,7 +27,7 @@ This is the single project task file for the repository. The public website live
 - [ ] Tax configuration and payment methods.
 - [ ] Units of measure.
 - [x] Service catalogue API foundation.
-- [ ] Material categories.
+- [x] Material categories API foundation.
 - [ ] Expense categories.
 - [ ] Status/workflow configuration.
 
@@ -124,13 +124,16 @@ This is the single project task file for the repository. The public website live
 - [ ] Push actual outsourcing cost to job/project profitability.
 
 ## 7. Materials / Inventory
-- [ ] Materials master.
-- [ ] Warehouses/locations.
-- [ ] Stock by location.
+- [x] Materials master API.
+- [x] Materials admin list/search and create workflow.
+- [x] Material categories API.
+- [x] Warehouses API and admin create workflow.
+- [x] Stock movement API and admin posting workflow.
+- [x] Stock by material/on-hand summary foundation.
 - [ ] Reserved/available quantities.
-- [ ] Job material requirements.
-- [ ] Issue, return, consume and waste tracking.
-- [ ] Stock ledger.
+- [ ] Job material requirements workflow.
+- [ ] Issue, return, consume and waste validation rules.
+- [ ] Stock ledger/reporting.
 - [ ] Reorder alerts.
 
 ## 8. Purchasing
@@ -231,10 +234,11 @@ This is the single project task file for the repository. The public website live
 - [x] Normalized Prisma schema foundation.
 - [x] Foreign keys and unique constraints.
 - [x] Decimal-safe money fields.
+- [x] Development migration history established.
 - [ ] Production migrations.
 - [ ] Archive/soft-delete strategy.
 - [ ] Transaction-safe stock/invoice/payment updates.
-- [ ] Seed/demo data.
+- [x] Seed/demo data.
 - [ ] Backup/restore plan.
 
 ## 20. Testing / Release
