@@ -27,4 +27,7 @@ export const api={
  listPurchaseRequests:p=>list('purchase-requests',p),createPurchaseRequest:i=>create('purchase-requests',i),
  listPurchaseOrders:p=>list('purchase-orders',p),createPurchaseOrder:i=>create('purchase-orders',i),
  listGoodsReceipts:p=>list('goods-receipts',p),createGoodsReceipt:i=>create('goods-receipts',i),
+ listProfitabilityProjects:p=>list('profitability/projects',p),
+ getProfitabilitySummary:()=>request('/profitability/summary'),
+ getJobProfitability:id=>request(`/profitability/jobs/${id}`),
 };
