@@ -118,7 +118,8 @@ test('CRM modules expose seeded data', async () => {
   assert.equal(leads.status, 200);
   assert.equal(enquiries.status, 200);
   assert.equal(quotes.status, 200);
-  quoteId = quotes.body.data[0]?.id ?? 0;
+  quoteId = quotes.body.data.find((quote: any) => quote.status === 'ACCEPTED')?.id ?? 0;
+  assert.ok(quoteId);
 });
 
 test('delivery and team modules expose seeded data', async () => {
