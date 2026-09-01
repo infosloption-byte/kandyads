@@ -46,6 +46,11 @@ test('health and API root', async () => {
   assert.equal(root.statusCode, 200);
 });
 
+test('protected API requires authentication', async () => {
+  const response = await app.inject({ method: 'GET', url: `${base}/clients` });
+  assert.equal(response.statusCode, 401);
+});
+
 test('auth login and session', async () => {
   const result = await request(`${base}/auth/login`, { method: 'POST', body: JSON.stringify({ email: 'admin@kandyads.lk', password: 'ChangeMe!123' }) });
   assert.equal(result.status, 200);
@@ -54,6 +59,14 @@ test('auth login and session', async () => {
   const me = await request(`${base}/auth/me`);
   assert.equal(me.status, 200);
   assert.equal(me.body.data.email, 'admin@kandyads.lk');
+});
+
+test('permission boundary rejects restricted role', async () => {
+  const login = await app.inject({ method: 'POST', url: `${base}/auth/login`, headers: { 'content-type': 'application/json' }, payload: JSON.stringify({ email: 'kasun@kandyads.lk', password: 'ChangeMe!123' }) });
+  assert.equal(login.statusCode, 200);
+  const restrictedToken = JSON.parse(login.body).data.token;
+  const response = await app.inject({ method: 'GET', url: `${base}/clients`, headers: { authorization: `Bearer ${restrictedToken}` } });
+  assert.equal(response.statusCode, 403);
 });
 
 test('dashboard', async () => {
@@ -98,10 +111,8 @@ test('task workflow validation and completion process', async () => {
   const detail = await request(`${base}/tasks/${taskId}`);
   assert.equal(detail.status, 200);
   assert.equal(detail.body.data.id, taskId);
-
   const invalid = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'NOT_A_STATUS' }) });
   assert.equal(invalid.status, 400);
-
   const completed = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
   assert.equal(completed.status, 200);
   assert.equal(completed.body.data.status, 'COMPLETED');
