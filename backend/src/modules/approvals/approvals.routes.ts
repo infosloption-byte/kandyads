@@ -21,6 +21,13 @@ async function audit(request: FastifyRequest, action: string, entity: string, en
   });
 }
 
+function serializeAuditLog(entry: any) {
+  return {
+    ...entry,
+    id: typeof entry.id === 'bigint' ? entry.id.toString() : entry.id,
+  };
+}
+
 const idSchema = z.coerce.number().int().positive();
 const rejectSchema = z.object({ reason: z.string().min(2).max(500).optional() });
 
@@ -33,7 +40,7 @@ export async function approvalsRoutes(app: FastifyInstance) {
       prisma.outsourceOrder.count({ where: { status: 'REQUESTED' } }),
       prisma.auditLog.findMany({ orderBy: { createdAt: 'desc' }, take: 20, include: { user: { select: { id: true, name: true } } } }),
     ]);
-    return { data: { purchaseRequests, purchaseOrders, expenses, outsourcing, recentAudit } };
+    return { data: { purchaseRequests, purchaseOrders, expenses, outsourcing, recentAudit: recentAudit.map(serializeAuditLog) } };
   });
 
   app.get('/api/v1/approvals/pending', async () => {
@@ -178,6 +185,6 @@ export async function approvalsRoutes(app: FastifyInstance) {
   app.get('/api/v1/approvals/audit', async (request) => {
     const query = z.object({ entity: z.string().max(100).optional(), entityId: z.string().max(100).optional(), action: z.string().max(100).optional() }).parse(request.query);
     const data = await prisma.auditLog.findMany({ where: { entity: query.entity, entityId: query.entityId, action: query.action }, include: { user: { select: { id: true, name: true, email: true } } }, orderBy: { createdAt: 'desc' }, take: 200 });
-    return { data };
+    return { data: data.map(serializeAuditLog) };
   });
 }
