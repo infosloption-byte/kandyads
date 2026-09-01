@@ -19,4 +19,6 @@ test('direct URL access follows the same permission boundary', () => {
   assert.equal(canAccessPath('/inventory', ['inventory.read']), true);
   assert.equal(canAccessPath('/projects/123', ['inventory.read']), false);
   assert.equal(canAccessPath('/projects/123', ['projects.read']), true);
+  assert.equal(canAccessPath('/approvals', ['settings.write']), true);
+  assert.equal(canAccessPath('/approvals', ['purchasing.write']), false);
 });
