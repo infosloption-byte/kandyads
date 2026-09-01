@@ -66,6 +66,9 @@ export async function jobsRoutes(app: FastifyInstance) {
         assignments: { include: { employee: true, vendor: true } },
         materialRequirements: { include: { material: true } },
         outsourceOrders: { include: { vendor: true } },
+        expenses: { include: { category: true } },
+        timeEntries: { include: { employee: true, task: true }, orderBy: { workDate: 'desc' } },
+        installations: true,
       },
     });
 
