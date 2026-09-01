@@ -5,13 +5,13 @@
   "type":"module",
   "scripts":{
     "dev":"tsx watch src/server.ts",
+    "prebuild":"prisma generate",
     "build":"tsc -p tsconfig.json",
     "start":"node dist/server.js",
     "prisma:generate":"prisma generate",
     "prisma:migrate":"prisma migrate dev",
     "prisma:seed":"tsx prisma/seed.ts",
-    "test":"tsx --test test/**/*.test.ts",
-    "test:watch":"tsx --test --watch test/**/*.test.ts"
+    "test":"tsx --test test/**/*.test.ts"
   },
   "dependencies":{
     "@fastify/cors":"latest",
