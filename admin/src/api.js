@@ -16,4 +16,8 @@ export const api={
   listTasks:p=>list('tasks',p),createTask:i=>create('tasks',i),
   listEmployees:p=>list('employees',p),createEmployee:i=>create('employees',i),
   listTime:p=>list('time',p),createTime:i=>create('time',i),
+  listMaterialCategories:p=>list('material-categories',p),createMaterialCategory:i=>create('material-categories',i),
+  listMaterials:p=>list('materials',p),createMaterial:i=>create('materials',i),
+  listWarehouses:p=>list('warehouses',p),createWarehouse:i=>create('warehouses',i),
+  listStockMovements:p=>list('stock-movements',p),createStockMovement:i=>create('stock-movements',i),
 };
