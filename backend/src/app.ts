@@ -5,6 +5,7 @@ import sensible from '@fastify/sensible';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { env, corsOrigins } from './config/env.js';
+import { registerAuthGuard } from './modules/auth/auth.guard.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
 import { leadsRoutes } from './modules/leads/leads.routes.js';
@@ -34,6 +35,7 @@ export function buildApp(){
   app.register(jwt,{secret:env.JWT_SECRET});
   app.get('/health',async()=>({status:'ok',service:'kandy-ads-backend',environment:env.NODE_ENV,timestamp:new Date().toISOString()}));
   app.get('/api/v1',async()=>({name:'Kandy Ads Operations API',version:'v1'}));
+  registerAuthGuard(app);
   app.register(authRoutes);
   app.register(dashboardRoutes);
   app.register(leadsRoutes);
