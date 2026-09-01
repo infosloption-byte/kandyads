@@ -10,7 +10,7 @@ const requestSchema = z.object({
   preferredVendorId: z.coerce.number().int().positive().optional().nullable(),
   requiredBy: z.string().datetime().optional().nullable(),
   purpose: z.string().max(500).optional().nullable(),
-  status: z.enum(['DRAFT','SUBMITTED','APPROVED','REJECTED','CONVERTED','CANCELLED']).optional(),
+  status: z.enum(['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'CONVERTED', 'CANCELLED']).optional(),
   items: z.array(z.object({
     materialId: z.coerce.number().int().positive(),
     requestedQty: z.coerce.number().positive(),
@@ -31,7 +31,7 @@ const orderSchema = z.object({
   discount: z.coerce.number().nonnegative().default(0),
   tax: z.coerce.number().nonnegative().default(0),
   total: z.coerce.number().nonnegative(),
-  status: z.enum(['DRAFT','APPROVED','SENT','PARTIALLY_RECEIVED','RECEIVED','CANCELLED']).optional(),
+  status: z.enum(['DRAFT', 'APPROVED', 'SENT', 'PARTIALLY_RECEIVED', 'RECEIVED', 'CANCELLED']).optional(),
   notes: z.string().max(1000).optional().nullable(),
   items: z.array(z.object({
     materialId: z.coerce.number().int().positive(),
@@ -127,11 +127,15 @@ export async function purchasingRoutes(app: FastifyInstance) {
       if (!order) throw app.httpErrors.notFound('Purchase order not found');
       const warehouse = await tx.warehouse.findUnique({ where: { id: input.warehouseId } });
       if (!warehouse) throw app.httpErrors.notFound('Warehouse not found');
+
       for (const item of input.items) {
         const poItem = order.items.find((candidate) => candidate.id === item.purchaseOrderItemId);
         if (!poItem) throw app.httpErrors.badRequest('Goods receipt item does not belong to the purchase order');
-        if (Number(poItem.receivedQty) + item.receivedQty > Number(poItem.quantity)) throw app.httpErrors.badRequest(`Received quantity exceeds ordered quantity for ${poItem.description}`);
+        if (Number(poItem.receivedQty) + item.receivedQty > Number(poItem.quantity)) {
+          throw app.httpErrors.badRequest(`Received quantity exceeds ordered quantity for ${poItem.description}`);
+        }
       }
+
       const receipt = await tx.goodsReceipt.create({
         data: {
           number: input.number,
@@ -141,7 +145,17 @@ export async function purchasingRoutes(app: FastifyInstance) {
           status: 'POSTED',
           supplierReference: input.supplierReference,
           notes: input.notes,
-          items: { create: input.items.map((item) => ({ ...item, unitCost: item.unitCost })) },
+          items: {
+            create: input.items.map((item) => {
+              const poItem = order.items.find((candidate) => candidate.id === item.purchaseOrderItemId)!;
+              return {
+                receivedQty: item.receivedQty,
+                unitCost: item.unitCost,
+                purchaseOrderItem: { connect: { id: item.purchaseOrderItemId } },
+                material: { connect: { id: poItem.materialId } },
+              };
+            }),
+          },
         },
         include: { items: true },
       });
@@ -167,7 +181,10 @@ export async function purchasingRoutes(app: FastifyInstance) {
       const refreshedItems = await tx.purchaseOrderItem.findMany({ where: { purchaseOrderId: order.id } });
       const fullyReceived = refreshedItems.every((item) => Number(item.receivedQty) >= Number(item.quantity));
       const partiallyReceived = refreshedItems.some((item) => Number(item.receivedQty) > 0);
-      await tx.purchaseOrder.update({ where: { id: order.id }, data: { status: fullyReceived ? 'RECEIVED' : partiallyReceived ? 'PARTIALLY_RECEIVED' : order.status } });
+      await tx.purchaseOrder.update({
+        where: { id: order.id },
+        data: { status: fullyReceived ? 'RECEIVED' : partiallyReceived ? 'PARTIALLY_RECEIVED' : order.status },
+      });
       return receipt;
     });
     return reply.code(201).send({ data: result });
