@@ -16,6 +16,8 @@ let warehouseId = 0;
 let vendorId = 0;
 let quoteId = 0;
 let invoiceId = 0;
+let testRoleId = 0;
+let testUserId = 0;
 
 async function request(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers);
@@ -29,12 +31,14 @@ async function request(path: string, options: RequestInit = {}) {
 
 before(async () => {
   if (process.env.NODE_ENV === 'production') throw new Error('Tests must not run against production');
-  if (!process.env.KANDYADS_TEST_MODE) throw new Error('Set KANDYADS_TEST_MODE=1 and point DATABASE_URL to a test database before running the integration suite.');
+  if (!process.env.KANDYADS_TEST_MODE) throw new Error('Set KANDYADS_TEST_MODE=1 before running the integration suite.');
   app = buildApp();
   await app.ready();
 });
 
 after(async () => {
+  if (testUserId) await prisma.user.delete({ where: { id: testUserId } }).catch(() => undefined);
+  if (testRoleId) await prisma.role.delete({ where: { id: testRoleId } }).catch(() => undefined);
   await app.close();
   await prisma.$disconnect();
 });
@@ -73,6 +77,34 @@ test('dashboard', async () => {
   const result = await request(`${base}/dashboard/summary`);
   assert.equal(result.status, 200);
   assert.ok(result.body.data);
+});
+
+test('settings user and role administration', async () => {
+  const roles = await request(`${base}/settings/roles`);
+  const permissions = await request(`${base}/settings/permissions`);
+  const users = await request(`${base}/settings/users`);
+  assert.equal(roles.status, 200);
+  assert.equal(permissions.status, 200);
+  assert.equal(users.status, 200);
+  assert.ok(roles.body.data.length > 0);
+  assert.ok(permissions.body.data.length > 0);
+  const role = await request(`${base}/settings/roles`, { method: 'POST', body: JSON.stringify({ name: `Automated Test Role ${Date.now()}` }) });
+  assert.equal(role.status, 201);
+  testRoleId = role.body.data.id;
+  const permissionIds = permissions.body.data.slice(0, 2).map((permission: any) => permission.id);
+  const rolePermissions = await request(`${base}/settings/roles/${testRoleId}/permissions`, { method: 'PUT', body: JSON.stringify({ permissionIds }) });
+  assert.equal(rolePermissions.status, 200);
+  assert.equal(rolePermissions.body.data.permissions.length, permissionIds.length);
+  const email = `admin-test-${Date.now()}@kandyads.local`;
+  const user = await request(`${base}/settings/users`, { method: 'POST', body: JSON.stringify({ name: 'Automated Test User', email, password: 'TestPass!123', roleId: testRoleId }) });
+  assert.equal(user.status, 201);
+  testUserId = user.body.data.id;
+  assert.equal(user.body.data.roleId, testRoleId);
+  const deactivated = await request(`${base}/settings/users/${testUserId}`, { method: 'PATCH', body: JSON.stringify({ status: 'INACTIVE' }) });
+  assert.equal(deactivated.status, 200);
+  assert.equal(deactivated.body.data.status, 'INACTIVE');
+  const userLogin = await app.inject({ method: 'POST', url: `${base}/auth/login`, headers: { 'content-type': 'application/json' }, payload: JSON.stringify({ email, password: 'TestPass!123' }) });
+  assert.equal(userLogin.statusCode, 401);
 });
 
 test('CRM modules expose seeded data', async () => {
