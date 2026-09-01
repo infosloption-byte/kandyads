@@ -2,7 +2,7 @@ import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 
-const createSchema=z.object({employeeId:z.coerce.number().int().positive(),projectId:z.coerce.number().int().positive().optional(),jobId:z.coerce.number().int().positive().optional(),taskId:z.coerce.number().int().positive().optional(),workDate:z.coerce.date(),startTime:z.coerce.date().optional(),endTime:z.coerce.date().optional(),hours:z.coerce.number().positive(),billable:z.coerce.boolean().default(false),notes:z.string().max(2000).optional()});
+const createSchema=z.object({employeeId:z.coerce.number().int().positive(),projectId:z.coerce.number().int().positive().nullish(),jobId:z.coerce.number().int().positive().nullish(),taskId:z.coerce.number().int().positive().nullish(),workDate:z.coerce.date(),startTime:z.coerce.date().optional(),endTime:z.coerce.date().optional(),hours:z.coerce.number().positive(),billable:z.coerce.boolean().default(false),notes:z.string().max(2000).optional()});
 const updateSchema=createSchema.partial();
 function actorId(request:FastifyRequest){const id=Number((request.user as {sub?:string}).sub);return Number.isInteger(id)&&id>0?id:null;}
 async function audit(request:FastifyRequest,action:string,id:number,before:unknown,after:unknown){await prisma.auditLog.create({data:{userId:actorId(request),action,entity:'TimeEntry',entityId:String(id),beforeJson:before as any,afterJson:after as any}});}
