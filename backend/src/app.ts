@@ -24,6 +24,7 @@ import { purchasingRoutes } from './modules/purchasing/purchasing.routes.js';
 import { profitabilityRoutes } from './modules/profitability/profitability.routes.js';
 import { installationsRoutes } from './modules/installations/installations.routes.js';
 import { financeRoutes } from './modules/finance/finance.routes.js';
+import { leadsRoutes } from './modules/leads/leads.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -34,6 +35,7 @@ export function buildApp(){
   app.get('/api/v1',async()=>({name:'Kandy Ads Operations API',version:'v1'}));
   app.register(authRoutes);
   app.register(dashboardRoutes);
+  app.register(leadsRoutes);
   app.register(clientsRoutes);
   app.register(enquiriesRoutes);
   app.register(quotesRoutes);
