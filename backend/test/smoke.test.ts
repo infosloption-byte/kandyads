@@ -227,6 +227,19 @@ test('task workflow validation and completion process', async () => {
   assert.equal(detail.body.data.id, taskId);
   const invalid = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'NOT_A_STATUS' }) });
   assert.equal(invalid.status, 400);
+
+  const taskBeforeCompletion = await request(`${base}/tasks/${taskId}`);
+  assert.equal(taskBeforeCompletion.status, 200);
+  const currentTaskStatus = taskBeforeCompletion.body.data.status;
+  if (currentTaskStatus === 'PENDING') {
+    const ready = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'READY' }) });
+    assert.equal(ready.status, 200);
+  }
+  const readyTask = await request(`${base}/tasks/${taskId}`);
+  if (readyTask.body.data.status === 'READY') {
+    const inProgress = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'IN_PROGRESS' }) });
+    assert.equal(inProgress.status, 200);
+  }
   const completed = await request(`${base}/tasks/${taskId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
   assert.equal(completed.status, 200);
   assert.equal(completed.body.data.status, 'COMPLETED');
