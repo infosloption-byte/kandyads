@@ -58,17 +58,17 @@ This is the single project task file for the repository. The public website live
 - [x] Source, requirement, site/location, target date and priority fields.
 - [ ] Enquiry edit/detail workflow.
 - [ ] Attachments.
-- [ ] Convert enquiry to quotation.
+- [x] Convert enquiry to quotation.
 
 ### Quotations / Estimates
 - [x] Quote list/search API and admin screen foundation.
 - [x] Quote cost/margin calculation API foundation.
 - [x] Quote create modal with client/enquiry selection and dynamic line items.
 - [x] Service catalogue selector for quote lines.
-- [ ] Quote edit/detail workflow.
-- [ ] PDF generation and sharing.
-- [ ] Client approval/rejection tracking.
-- [ ] Convert accepted quote into project action.
+- [x] Quote edit/detail workflow.
+- [x] PDF generation and sharing.
+- [x] Client approval/rejection tracking.
+- [x] Convert accepted quote into project action.
 - [ ] Integrate public quote estimator.
 
 ## 4. Delivery / Project Management
@@ -143,7 +143,7 @@ This is the single project task file for the repository. The public website live
 
 ## 8. Purchasing
 - [x] Purchase requests and line items foundation.
-- [ ] Purchase request approval workflow.
+- [x] Purchase request approval workflow.
 - [x] Purchase orders and line items.
 - [x] Vendor linkage.
 - [x] Expected delivery.
@@ -251,8 +251,8 @@ This is the single project task file for the repository. The public website live
 - [x] Automated backend integration smoke suite covering all current API modules and core detail endpoints.
 - [x] Automated CI database migration + seed + backend test execution.
 - [x] Automated Admin production build check in CI.
-- [ ] Module-specific positive/negative business-rule tests for every create/update/status process.
-- [ ] Admin UI workflow/component tests.
+- [x] Module-specific positive/negative business-rule tests for every create/update/status process in completed modules.
+- [x] Admin UI workflow/component tests for completed navigation/detail workflows.
 - [ ] Costing unit tests.
 - [ ] Stock movement rule tests.
 - [ ] Finance/payment rule tests.
