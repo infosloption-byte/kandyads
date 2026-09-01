@@ -1,7 +1,7 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
 export function getToken(){ return localStorage.getItem('kandyads_admin_token'); }
 export function clearToken(){ localStorage.removeItem('kandyads_admin_token'); localStorage.removeItem('kandyads_admin_user'); }
-async function request(path, options={}){const token=getToken();const response=await fetch(`${API_BASE}${path}`,{headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},...options});const payload=await response.json().catch(()=>({}));if(!response.ok){if(response.status===401)clearToken();throw new Error(payload?.error?.message||'Request failed')}return payload}
+async function request(path, options={}){const token=getToken();const response=await fetch(`${API_BASE}${path}`,{headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{}),...options.headers},...options});const payload=await response.json().catch(()=>({}));if(!response.ok){if(response.status===401)clearToken();throw new Error(payload?.error?.message||'Request failed')}return payload}
 const list=(resource,params={})=>{const clean=Object.fromEntries(Object.entries(params).filter(([,value])=>value!==undefined&&value!==''));const query=new URLSearchParams(clean).toString();return request(`/${resource}${query?`?${query}`:''}`)};
 const create=(resource,input)=>request(`/${resource}`,{method:'POST',body:JSON.stringify(input)});
 export const api={
@@ -28,6 +28,7 @@ export const api={
  listPurchaseOrders:p=>list('purchase-orders',p),createPurchaseOrder:i=>create('purchase-orders',i),
  listGoodsReceipts:p=>list('goods-receipts',p),createGoodsReceipt:i=>create('goods-receipts',i),
  listProfitabilityProjects:p=>list('profitability/projects',p),
+ listProfitabilityJobs:p=>list('profitability/jobs',p),
  getProfitabilitySummary:()=>request('/profitability/summary'),
  getJobProfitability:id=>request(`/profitability/jobs/${id}`),
 };
