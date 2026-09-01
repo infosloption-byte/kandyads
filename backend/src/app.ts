@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyError } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import sensible from '@fastify/sensible';
@@ -34,6 +34,11 @@ export function buildApp(){
   app.register(tasksRoutes);
   app.register(employeesRoutes);
   app.register(timeTrackingRoutes);
-  app.setErrorHandler((error,request,reply)=>{request.log.error(error);const status=error.statusCode&&error.statusCode>=400?error.statusCode:500;return reply.status(status).send({error:{code:error.code??'INTERNAL_ERROR',message:error.message??'Unexpected server error',requestId:request.id}})});
+  app.setErrorHandler((error,request,reply)=>{
+    const fastifyError=error as FastifyError;
+    request.log.error(fastifyError);
+    const status=fastifyError.statusCode&&fastifyError.statusCode>=400?fastifyError.statusCode:500;
+    return reply.status(status).send({error:{code:fastifyError.code??'INTERNAL_ERROR',message:fastifyError.message??'Unexpected server error',requestId:request.id}});
+  });
   return app;
 }
