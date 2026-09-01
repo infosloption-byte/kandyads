@@ -13,7 +13,7 @@ export const api={
  listLeads:p=>list('leads',p),createLead:i=>create('leads',i),updateLead:(id,i)=>patch('leads',id,i),convertLead:(id,i={})=>request(`/leads/${id}/convert`,{method:'POST',body:JSON.stringify(i)}),
  listClients:p=>list('clients',p),getClient:id=>request(`/clients/${id}`),createClient:i=>create('clients',i),
  listEnquiries:p=>list('enquiries',p),createEnquiry:i=>create('enquiries',i),
- listQuotes:p=>list('quotes',p),createQuote:i=>create('quotes',i),updateQuoteStatus:(id,i)=>request(`/quotes/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
+ listQuotes:p=>list('quotes',p),createQuote:i=>create('quotes',i),updateQuoteStatus:(id,i)=>request(`/quotes/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),convertQuoteToProject:(id,i={})=>request(`/quotes/${id}/convert-to-project`,{method:'POST',body:JSON.stringify(i)}),
  listProjects:p=>list('projects',p),getProject:id=>request(`/projects/${id}`),createProject:i=>create('projects',i),updateProjectStatus:(id,i)=>request(`/projects/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
  listServices:p=>list('services',p),createService:i=>create('services',i),
  listJobs:p=>list('jobs',p),getJob:id=>request(`/jobs/${id}`),createJob:i=>create('jobs',i),updateJobStatus:(id,i)=>request(`/jobs/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),createJobAssignment:(id,i)=>postNested('jobs',id,'assignments',i),createJobMaterialRequirement:(id,i)=>postNested('jobs',id,'material-requirements',i),createJobStockMovement:(id,i)=>postNested('jobs',id,'stock-movements',i),createJobTimeEntry:(id,i)=>postNested('jobs',id,'time-entries',i),
