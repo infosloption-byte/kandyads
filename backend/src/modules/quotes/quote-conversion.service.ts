@@ -25,7 +25,7 @@ function roundMoney(value: number) {
 
 function allocate(total: number, weights: number[], index: number) {
   if (index === weights.length - 1) {
-    const assigned = weights.slice(0, -1).reduce((sum, item) => sum + item, 0);
+    const assigned = weights.slice(0, -1).reduce((sum, weight) => sum + roundMoney(total * weight), 0);
     return roundMoney(total - assigned);
   }
   return roundMoney(total * weights[index]);
