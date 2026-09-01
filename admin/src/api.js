@@ -7,6 +7,7 @@ const create=(resource,input)=>request(`/${resource}`,{method:'POST',body:JSON.s
 const patch=(resource,id,input)=>request(`/${resource}/${id}`,{method:'PATCH',body:JSON.stringify(input)});
 const postNested=(resource,id,action,input)=>request(`/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
 const approval=(resource,id,action,input={})=>request(`/approvals/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
+async function quotePdfBlob(id){const token=getToken();const response=await fetch(`${API_BASE}/quotes/${id}/pdf`,{headers:token?{Authorization:`Bearer ${token}`}:{}});if(!response.ok)throw new Error(`Unable to generate quote PDF (${response.status})`);return response.blob()}
 export const api={
  login:async input=>{const result=await request('/auth/login',{method:'POST',body:JSON.stringify(input)});localStorage.setItem('kandyads_admin_token',result.data.token);localStorage.setItem('kandyads_admin_user',JSON.stringify(result.data.user));return result.data.user},
  me:()=>request('/auth/me'),logout:()=>clearToken(),getDashboardSummary:()=>request('/dashboard/summary'),
@@ -14,7 +15,7 @@ export const api={
  listClients:p=>list('clients',p),getClient:id=>request(`/clients/${id}`),createClient:i=>create('clients',i),
  listEnquiries:p=>list('enquiries',p),createEnquiry:i=>create('enquiries',i),convertEnquiryToQuote:(id,i)=>request(`/enquiries/${id}/convert-to-quote`,{method:'POST',body:JSON.stringify(i)}),
  listQuotes:p=>list('quotes',p),getQuote:id=>request(`/quotes/${id}`),createQuote:i=>create('quotes',i),updateQuote:(id,i)=>patch('quotes',id,i),updateQuoteStatus:(id,i)=>request(`/quotes/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),convertQuoteToProject:(id,i={})=>request(`/quotes/${id}/convert-to-project`,{method:'POST',body:JSON.stringify(i)}),
- downloadQuotePdf:async id=>{const token=getToken();const response=await fetch(`${API_BASE}/quotes/${id}/pdf`,{headers:token?{Authorization:`Bearer ${token}`}:{}});if(!response.ok)throw new Error(`Unable to generate quote PDF (${response.status})`);const blob=await response.blob();return URL.createObjectURL(blob)},
+ downloadQuotePdf:async id=>URL.createObjectURL(await quotePdfBlob(id)),shareQuotePdf:async(id,number)=>{const blob=await quotePdfBlob(id);const file=new File([blob],`${String(number||'quote').replace(/[^a-zA-Z0-9_-]/g,'_')}.pdf`,{type:'application/pdf'});if(!navigator.share||!navigator.canShare?.({files:[file]}))return false;await navigator.share({title:`Kandy Ads quotation ${number||''}`.trim(),files:[file]});return true},
  listProjects:p=>list('projects',p),getProject:id=>request(`/projects/${id}`),createProject:i=>create('projects',i),updateProjectStatus:(id,i)=>request(`/projects/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
  listServices:p=>list('services',p),createService:i=>create('services',i),
  listJobs:p=>list('jobs',p),getJob:id=>request(`/jobs/${id}`),createJob:i=>create('jobs',i),updateJobStatus:(id,i)=>request(`/jobs/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),createJobAssignment:(id,i)=>postNested('jobs',id,'assignments',i),createJobMaterialRequirement:(id,i)=>postNested('jobs',id,'material-requirements',i),createJobStockMovement:(id,i)=>postNested('jobs',id,'stock-movements',i),createJobTimeEntry:(id,i)=>postNested('jobs',id,'time-entries',i),
