@@ -16,7 +16,7 @@ export const api={
  listProjects:p=>list('projects',p),getProject:id=>request(`/projects/${id}`),createProject:i=>create('projects',i),
  listServices:p=>list('services',p),createService:i=>create('services',i),
  listJobs:p=>list('jobs',p),getJob:id=>request(`/jobs/${id}`),createJob:i=>create('jobs',i),updateJobStatus:(id,i)=>request(`/jobs/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),createJobAssignment:(id,i)=>postNested('jobs',id,'assignments',i),createJobMaterialRequirement:(id,i)=>postNested('jobs',id,'material-requirements',i),createJobStockMovement:(id,i)=>postNested('jobs',id,'stock-movements',i),createJobTimeEntry:(id,i)=>postNested('jobs',id,'time-entries',i),
- listTasks:p=>list('tasks',p),createTask:i=>create('tasks',i),
+ listTasks:p=>list('tasks',p),getTask:id=>request(`/tasks/${id}`),createTask:i=>create('tasks',i),updateTask:(id,i)=>patch('tasks',id,i),updateTaskStatus:(id,i)=>request(`/tasks/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
  listEmployees:p=>list('employees',p),createEmployee:i=>create('employees',i),
  listTime:p=>list('time',p),createTime:i=>create('time',i),
  listMaterialCategories:p=>list('material-categories',p),createMaterialCategory:i=>create('material-categories',i),
