@@ -3,7 +3,7 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import sensible from '@fastify/sensible';
 import { randomUUID } from 'node:crypto';
-import { env } from './config/env.js';
+import { env, corsOrigins } from './config/env.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
 import { clientsRoutes } from './modules/clients/clients.routes.js';
@@ -18,7 +18,7 @@ import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
-  app.register(cors,{origin:env.CORS_ORIGIN,credentials:true});
+  app.register(cors,{origin:corsOrigins,credentials:true});
   app.register(sensible);
   app.register(jwt,{secret:env.JWT_SECRET});
   app.get('/health',async()=>({status:'ok',service:'kandy-ads-backend',environment:env.NODE_ENV,timestamp:new Date().toISOString()}));
