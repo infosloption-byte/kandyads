@@ -134,12 +134,12 @@ This is the single project task file for the repository. The public website live
 - [x] Warehouses API and admin create workflow.
 - [x] Stock movement API and admin posting workflow.
 - [x] Stock by material/on-hand summary foundation.
-- [ ] Reserved/available quantities.
+- [x] Reserved/available quantities.
 - [x] Job material requirements workflow foundation.
 - [x] Issue, return and waste transaction endpoints.
 - [x] Issue stock validation.
-- [ ] Full stock ledger/reporting.
-- [ ] Reorder alerts.
+- [x] Full stock ledger/reporting.
+- [x] Reorder alerts.
 
 ## 8. Purchasing
 - [x] Purchase requests and line items foundation.
@@ -254,7 +254,7 @@ This is the single project task file for the repository. The public website live
 - [x] Module-specific positive/negative business-rule tests for every create/update/status process in completed modules.
 - [x] Admin UI workflow/component tests for completed navigation/detail workflows.
 - [ ] Costing unit tests.
-- [ ] Stock movement rule tests.
+- [x] Stock movement rule and inventory availability tests.
 - [ ] Finance/payment rule tests.
 - [ ] Purchasing/receiving rule tests.
 - [ ] Production build checks for frontend/backend/admin on every release.
