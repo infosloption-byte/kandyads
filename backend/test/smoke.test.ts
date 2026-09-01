@@ -19,6 +19,8 @@ let invoiceId = 0;
 let testRoleId = 0;
 let testUserId = 0;
 let testExpenseId = 0;
+let conversionQuoteId = 0;
+let conversionProjectId = 0;
 
 async function request(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers);
@@ -38,6 +40,13 @@ before(async () => {
 });
 
 after(async () => {
+  if (conversionProjectId) {
+    await prisma.project.delete({ where: { id: conversionProjectId } }).catch(() => undefined);
+  }
+  if (conversionQuoteId) {
+    await prisma.auditLog.deleteMany({ where: { entity: 'Quote', entityId: String(conversionQuoteId) } }).catch(() => undefined);
+    await prisma.quote.delete({ where: { id: conversionQuoteId } }).catch(() => undefined);
+  }
   if (testExpenseId) {
     await prisma.auditLog.deleteMany({ where: { entity: 'Expense', entityId: String(testExpenseId) } }).catch(() => undefined);
     await prisma.expense.delete({ where: { id: testExpenseId } }).catch(() => undefined);
@@ -142,6 +151,56 @@ test('CRM modules expose seeded data', async () => {
   assert.equal(quotes.status, 200);
   quoteId = quotes.body.data.find((quote: any) => quote.status === 'ACCEPTED')?.id ?? 0;
   assert.ok(quoteId);
+});
+
+test('accepted quote converts to one project with one job per quote item', async () => {
+  const service = await prisma.service.findFirst({ orderBy: { id: 'asc' } });
+  assert.ok(service);
+  const quote = await prisma.quote.create({
+    data: {
+      number: `TEST-CONVERT-${Date.now()}`,
+      clientId,
+      status: 'ACCEPTED',
+      subtotal: 500,
+      discount: 0,
+      tax: 0,
+      total: 500,
+      expectedMaterial: 100,
+      expectedLabour: 150,
+      expectedOutsource: 50,
+      expectedExpense: 25,
+      expectedMargin: 175,
+      items: {
+        create: [
+          { serviceId: service.id, description: 'Converted display production', quantity: 2, unit: 'pcs', rate: 100, discount: 0, tax: 0, total: 200 },
+          { serviceId: service.id, description: 'Converted installation', quantity: 1, unit: 'job', rate: 300, discount: 0, tax: 0, total: 300 },
+        ],
+      },
+    },
+  });
+  conversionQuoteId = quote.id;
+
+  const converted = await request(`${base}/quotes/${quote.id}/convert-to-project`, { method: 'POST', body: JSON.stringify({}) });
+  assert.equal(converted.status, 201);
+  conversionProjectId = converted.body.data.id;
+  assert.equal(converted.body.data.clientId, clientId);
+  assert.equal(Number(converted.body.data.value), 500);
+  assert.equal(converted.body.data.jobs.length, 2);
+  assert.deepEqual(converted.body.data.jobs.map((job: any) => job.title), ['Converted display production', 'Converted installation']);
+  assert.equal(converted.body.data.jobs.reduce((sum: number, job: any) => sum + Number(job.revenue), 0), 500);
+  assert.equal(converted.body.data.jobs.reduce((sum: number, job: any) => sum + Number(job.estimatedMaterial), 0), 100);
+  assert.equal(converted.body.data.jobs.reduce((sum: number, job: any) => sum + Number(job.estimatedLabour), 0), 150);
+  assert.equal(converted.body.data.jobs.reduce((sum: number, job: any) => sum + Number(job.estimatedOutsource), 0), 50);
+  assert.equal(converted.body.data.jobs.reduce((sum: number, job: any) => sum + Number(job.estimatedExpense), 0), 25);
+
+  const secondAttempt = await request(`${base}/quotes/${quote.id}/convert-to-project`, { method: 'POST', body: '{}' });
+  assert.equal(secondAttempt.status, 409);
+  assert.match(secondAttempt.body.error.message, /already converted/i);
+
+  const audit = await request(`${base}/approvals/audit?entity=Quote&entityId=${quote.id}&action=CONVERT`);
+  assert.equal(audit.status, 200);
+  assert.equal(audit.body.data.length, 1);
+  assert.equal(audit.body.data[0].action, 'CONVERT');
 });
 
 test('delivery and team modules expose seeded data', async () => {
