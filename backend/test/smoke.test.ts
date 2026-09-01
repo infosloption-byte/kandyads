@@ -18,6 +18,7 @@ let quoteId = 0;
 let invoiceId = 0;
 let testRoleId = 0;
 let testUserId = 0;
+let testExpenseId = 0;
 
 async function request(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers);
@@ -37,6 +38,10 @@ before(async () => {
 });
 
 after(async () => {
+  if (testExpenseId) {
+    await prisma.auditLog.deleteMany({ where: { entity: 'Expense', entityId: String(testExpenseId) } }).catch(() => undefined);
+    await prisma.expense.delete({ where: { id: testExpenseId } }).catch(() => undefined);
+  }
   if (testUserId) await prisma.user.delete({ where: { id: testUserId } }).catch(() => undefined);
   if (testRoleId) await prisma.role.delete({ where: { id: testRoleId } }).catch(() => undefined);
   await app.close();
@@ -105,6 +110,23 @@ test('settings user and role administration', async () => {
   assert.equal(deactivated.body.data.status, 'INACTIVE');
   const userLogin = await app.inject({ method: 'POST', url: `${base}/auth/login`, headers: { 'content-type': 'application/json' }, payload: JSON.stringify({ email, password: 'TestPass!123' }) });
   assert.equal(userLogin.statusCode, 401);
+});
+
+test('approval workflow submits, approves and audits an expense', async () => {
+  const category = await prisma.expenseCategory.findFirst({ orderBy: { id: 'asc' } });
+  assert.ok(category);
+  const expense = await prisma.expense.create({ data: { number: `TEST-EXP-${Date.now()}`, categoryId: category.id, amount: 1250, expenseDate: new Date(), status: 'DRAFT', notes: 'Automated approval workflow test' } });
+  testExpenseId = expense.id;
+  const submitted = await request(`${base}/approvals/expenses/${expense.id}/submit`, { method: 'POST', body: '{}' });
+  assert.equal(submitted.status, 200);
+  assert.equal(submitted.body.data.status, 'SUBMITTED');
+  const approved = await request(`${base}/approvals/expenses/${expense.id}/approve`, { method: 'POST', body: '{}' });
+  assert.equal(approved.status, 200);
+  assert.equal(approved.body.data.status, 'APPROVED');
+  const audit = await request(`${base}/approvals/audit?entity=Expense&entityId=${expense.id}`);
+  assert.equal(audit.status, 200);
+  assert.equal(audit.body.data.length, 2);
+  assert.deepEqual(audit.body.data.map((entry: any) => entry.action).sort(), ['APPROVE', 'SUBMIT']);
 });
 
 test('CRM modules expose seeded data', async () => {
