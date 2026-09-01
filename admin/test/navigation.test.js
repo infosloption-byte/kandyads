@@ -22,3 +22,8 @@ test('direct URL access follows the same permission boundary', () => {
   assert.equal(canAccessPath('/approvals', ['settings.write']), true);
   assert.equal(canAccessPath('/approvals', ['purchasing.write']), false);
 });
+
+test('quote detail paths remain protected by quote read permission', () => {
+  assert.equal(canAccessPath('/quotes/123', ['quotes.read']), true);
+  assert.equal(canAccessPath('/quotes/123', ['projects.read']), false);
+});
