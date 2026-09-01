@@ -14,8 +14,8 @@ function calculateMaterialCost(movements: Array<{ type: string; quantity: unknow
 }
 
 async function calculateJob(jobId: number) {
-  const job = await prisma.job.findUnique({
-    where: { id: jobId },
+  const job = await prisma.job.findFirst({
+    where: { id: jobId, project: { isNot: null } },
     include: { project: { include: { client: true } }, service: true },
   });
   if (!job) return null;
@@ -56,7 +56,7 @@ async function calculateJob(jobId: number) {
 
 export async function profitabilityRoutes(app: FastifyInstance) {
   app.get('/api/v1/profitability/jobs', async () => {
-    const jobs = await prisma.job.findMany({ select: { id: true }, orderBy: { createdAt: 'desc' } });
+    const jobs = await prisma.job.findMany({ where: { project: { isNot: null } }, select: { id: true }, orderBy: { createdAt: 'desc' } });
     const data = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean);
     return { data };
   });
@@ -91,12 +91,16 @@ export async function profitabilityRoutes(app: FastifyInstance) {
   });
 
   app.get('/api/v1/profitability/summary', async () => {
-    const [jobs, projects] = await Promise.all([prisma.job.count(), prisma.project.count()]);
     const projectRows = await prisma.project.findMany({ select: { id: true, value: true } });
-    const jobRows = await prisma.job.findMany({ select: { id: true } });
-    const details = (await Promise.all(jobRows.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
-    const revenue = details.length ? details.reduce((sum, item) => sum + item.revenue, 0) : projectRows.reduce((sum, item) => sum + Number(item.value), 0);
-    const actualCost = details.reduce((sum, item) => sum + item.actual.total, 0);
+    const jobRows = await prisma.job.findMany({ where: { project: { isNot: null } }, select: { id: true } });
+    const [projects, jobs, details] = await Promise.all([
+      prisma.project.count(),
+      prisma.job.count({ where: { project: { isNot: null } } }),
+      Promise.all(jobRows.map((job) => calculateJob(job.id))),
+    ]);
+    const validDetails = details.filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
+    const revenue = validDetails.length ? validDetails.reduce((sum, item) => sum + item.revenue, 0) : projectRows.reduce((sum, item) => sum + Number(item.value), 0);
+    const actualCost = validDetails.reduce((sum, item) => sum + item.actual.total, 0);
     const grossProfit = revenue - actualCost;
     return { data: { projects, jobs, revenue: money(revenue), actualCost: money(actualCost), grossProfit: money(grossProfit), marginPercent: revenue > 0 ? money((grossProfit / revenue) * 100) : null } };
   });
