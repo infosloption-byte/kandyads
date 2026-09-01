@@ -15,7 +15,7 @@ function calculateMaterialCost(movements: Array<{ type: string; quantity: unknow
 
 async function calculateJob(jobId: number) {
   const job = await prisma.job.findFirst({
-    where: { id: jobId, project: { isNot: null } },
+    where: { id: jobId, project: { is: {} } },
     include: { project: { include: { client: true } }, service: true },
   });
   if (!job) return null;
@@ -56,7 +56,7 @@ async function calculateJob(jobId: number) {
 
 export async function profitabilityRoutes(app: FastifyInstance) {
   app.get('/api/v1/profitability/jobs', async () => {
-    const jobs = await prisma.job.findMany({ where: { project: { isNot: null } }, select: { id: true }, orderBy: { createdAt: 'desc' } });
+    const jobs = await prisma.job.findMany({ where: { project: { is: {} } }, select: { id: true }, orderBy: { createdAt: 'desc' } });
     const data = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean);
     return { data };
   });
@@ -92,10 +92,10 @@ export async function profitabilityRoutes(app: FastifyInstance) {
 
   app.get('/api/v1/profitability/summary', async () => {
     const projectRows = await prisma.project.findMany({ select: { id: true, value: true } });
-    const jobRows = await prisma.job.findMany({ where: { project: { isNot: null } }, select: { id: true } });
+    const jobRows = await prisma.job.findMany({ where: { project: { is: {} } }, select: { id: true } });
     const [projects, jobs, details] = await Promise.all([
       prisma.project.count(),
-      prisma.job.count({ where: { project: { isNot: null } } }),
+      prisma.job.count({ where: { project: { is: {} } } }),
       Promise.all(jobRows.map((job) => calculateJob(job.id))),
     ]);
     const validDetails = details.filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
