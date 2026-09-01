@@ -76,12 +76,12 @@ This is the single project task file for the repository. The public website live
 - [x] Project list/search API and admin screen foundation.
 - [x] Project create modal with client/accepted quote selection.
 - [x] Project detail view and related-record drill-down.
-- [ ] Project edit/detail workflow.
+- [x] Project edit/detail workflow.
 - [x] Project owner assignment field.
 - [x] Start/due dates and value fields.
-- [ ] Status management rules.
+- [x] Status management rules.
 - [x] Related jobs, expenses, purchasing, installations, invoices and profitability visibility.
-- [ ] Activity history.
+- [x] Activity history.
 
 ### Jobs — Core Production Model
 - [x] Job list/search API and admin screen foundation.
