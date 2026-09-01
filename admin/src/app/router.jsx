@@ -16,12 +16,14 @@ import OutsourcingPage from '../features/outsourcing/pages/OutsourcingPage';
 import ExpensesPage from '../features/expenses/pages/ExpensesPage';
 import PurchasingPage from '../features/purchasing/pages/PurchasingPage';
 import ProfitabilityPage from '../features/profitability/pages/ProfitabilityPage';
+import InstallationsPage from '../features/installations/pages/InstallationsPage';
+import InvoicesPage from '../features/invoices/pages/InvoicesPage';
 
 const placeholderPages = [
-  ['leads','Leads'],['installations','Installations'],['invoices','Invoices'],['reports','Reports'],['settings','Settings'],
+  ['leads','Leads'],['reports','Reports'],['settings','Settings'],
 ];
 function Placeholder({title}){return <div className="page-head"><div><p className="eyebrow">MODULE</p><h1>{title}</h1><p>This module is structured and ready for its API-backed workflow.</p></div><button className="primary">+ Add {title.replace(/s$/,'')}</button></div>}
 export default function AdminRouter(){return <Routes>
- <Route path="/" element={<DashboardPage/>}/><Route path="/clients" element={<ClientsPage/>}/><Route path="/enquiries" element={<EnquiriesPage/>}/><Route path="/quotes" element={<QuotesPage/>}/><Route path="/projects" element={<ProjectsPage/>}/><Route path="/jobs" element={<JobsPage/>}/><Route path="/tasks" element={<TasksPage/>}/><Route path="/employees" element={<EmployeesPage/>}/><Route path="/time" element={<TimeTrackingPage/>}/><Route path="/materials" element={<MaterialsPage/>}/><Route path="/inventory" element={<InventoryPage/>}/><Route path="/vendors" element={<VendorsPage/>}/><Route path="/outsourcing" element={<OutsourcingPage/>}/><Route path="/expenses" element={<ExpensesPage/>}/><Route path="/purchasing" element={<PurchasingPage/>}/><Route path="/profitability" element={<ProfitabilityPage/>}/>
+ <Route path="/" element={<DashboardPage/>}/><Route path="/clients" element={<ClientsPage/>}/><Route path="/enquiries" element={<EnquiriesPage/>}/><Route path="/quotes" element={<QuotesPage/>}/><Route path="/projects" element={<ProjectsPage/>}/><Route path="/jobs" element={<JobsPage/>}/><Route path="/tasks" element={<TasksPage/>}/><Route path="/employees" element={<EmployeesPage/>}/><Route path="/time" element={<TimeTrackingPage/>}/><Route path="/materials" element={<MaterialsPage/>}/><Route path="/inventory" element={<InventoryPage/>}/><Route path="/vendors" element={<VendorsPage/>}/><Route path="/outsourcing" element={<OutsourcingPage/>}/><Route path="/expenses" element={<ExpensesPage/>}/><Route path="/purchasing" element={<PurchasingPage/>}/><Route path="/profitability" element={<ProfitabilityPage/>}/><Route path="/installations" element={<InstallationsPage/>}/><Route path="/invoices" element={<InvoicesPage/>}/>
  {placeholderPages.map(([path,title])=><Route key={path} path={`/${path}`} element={<Placeholder title={title}/>}/>)}
  </Routes>}
