@@ -6,7 +6,8 @@ This is the single project task file for the repository. The public website live
 - [x] Repository separated into `frontend/`, `admin/`, `backend/`.
 - [x] Master task document is at repository root.
 - [ ] Add shared development conventions and environment documentation.
-- [ ] Add CI checks and production deployment documentation.
+- [x] Add CI checks for backend integration tests and Admin production build.
+- [ ] Add production deployment documentation.
 
 ## 1. Platform Foundation
 - [x] Backend Node.js + TypeScript + Fastify foundation.
@@ -33,12 +34,12 @@ This is the single project task file for the repository. The public website live
 
 ## 3. Sales / CRM
 ### Leads
-- [ ] Lead CRUD, search/filter/sort.
-- [ ] Lead source and pipeline.
-- [ ] Assign sales owner.
+- [x] Lead CRUD, search/filter foundation.
+- [x] Lead source and pipeline.
+- [x] Assign sales owner.
 - [ ] Follow-up reminders.
 - [ ] Notes, activity timeline and attachments.
-- [ ] Convert lead to client/enquiry.
+- [x] Convert lead to client/enquiry.
 
 ### Clients
 - [x] API-backed client list/search.
@@ -46,10 +47,10 @@ This is the single project task file for the repository. The public website live
 - [x] Client create workflow with reusable modal/form.
 - [x] Client create API integration.
 - [ ] Client edit/detail workflow.
-- [ ] Contacts, phone, WhatsApp, email and address.
-- [ ] Industry, payment terms, credit limit and status.
+- [x] Contacts, phone, WhatsApp, email and address fields.
+- [x] Industry, payment terms, credit limit and status fields.
 - [ ] Client notes/documents.
-- [ ] Client project/quote/invoice history.
+- [x] Client project/quote/invoice history detail view.
 
 ### Enquiries
 - [x] Enquiry list/search API and admin screen foundation.
@@ -74,29 +75,31 @@ This is the single project task file for the repository. The public website live
 ### Projects
 - [x] Project list/search API and admin screen foundation.
 - [x] Project create modal with client/accepted quote selection.
+- [x] Project detail view and related-record drill-down.
 - [ ] Project edit/detail workflow.
-- [ ] Project owner assignment.
+- [x] Project owner assignment field.
 - [x] Start/due dates and value fields.
-- [ ] Status management.
-- [ ] Jobs, tasks, materials, expenses, purchasing, outsourcing, time, installations, documents, invoices and profitability tabs.
-- [ ] Project activity history.
+- [ ] Status management rules.
+- [x] Related jobs, expenses, purchasing, installations, invoices and profitability visibility.
+- [ ] Activity history.
 
 ### Jobs — Core Production Model
 - [x] Job list/search API and admin screen foundation.
-- [x] Job detail API foundation.
-- [ ] Job CRUD/create modal and detail workflow.
+- [x] Job detail API and Admin detail screen.
+- [x] Job create workflow.
 - [x] Job/project/service linkage in API.
 - [x] Internal / outsourced / mixed assignment field.
 - [x] Revenue and estimated material/labour/outsourcing/expense cost fields.
-- [ ] Actual cost calculation from production transactions.
-- [ ] Gross profit/margin dashboard.
+- [x] Actual cost calculation from production transactions.
+- [x] Gross profit/margin dashboard.
 - [ ] Attachments, activity and completion approval.
 
 ### Tasks / Work Breakdown
 - [x] Task list/search API and admin screen foundation.
-- [ ] Tasks create/edit/detail workflow.
+- [x] Task creation inside Job detail.
 - [x] Job linkage and employee assignment fields in API.
 - [x] Priority, dates, planned hours and status fields.
+- [ ] Task edit/detail workflow.
 - [ ] Dependencies, checklists and subtasks.
 - [ ] Notes, attachments and completion timestamp.
 - [ ] Employee workload view.
@@ -106,22 +109,23 @@ This is the single project task file for the repository. The public website live
 - [ ] Employee master CRUD.
 - [x] Department, employment type and internal hourly/daily costing fields.
 - [ ] Skills and role management.
-- [ ] Employee job assignments.
+- [x] Employee job assignments.
 - [x] Time entry list/API foundation.
-- [ ] Time entry create/edit/approval workflow.
-- [ ] Automatic labour cost calculation.
-- [ ] Planned vs actual hours.
+- [x] Job-level time-entry posting.
+- [ ] Time entry edit/approval workflow.
+- [x] Automatic labour cost calculation.
+- [ ] Planned vs actual hours reporting.
 
 ## 6. Vendors / Outsourcing
-- [ ] Vendor/supplier master.
-- [ ] Contacts, category, capabilities and payment terms.
-- [ ] Bank/payment details.
+- [x] Vendor/supplier master foundation.
+- [x] Contacts, category, capabilities and payment terms fields.
+- [x] Bank/payment details field.
 - [ ] Vendor documents.
-- [ ] Outsource requests.
-- [ ] Vendor selection, scope, quantity/specification and due date.
-- [ ] Agreed cost and status workflow.
+- [x] Outsource requests/order foundation.
+- [x] Vendor selection, scope, quantity/specification and due date.
+- [x] Agreed cost and status workflow fields.
 - [ ] Vendor deliverables/invoices.
-- [ ] Push actual outsourcing cost to job/project profitability.
+- [x] Push actual outsourcing cost to job/project profitability.
 
 ## 7. Materials / Inventory
 - [x] Materials master API.
@@ -131,43 +135,45 @@ This is the single project task file for the repository. The public website live
 - [x] Stock movement API and admin posting workflow.
 - [x] Stock by material/on-hand summary foundation.
 - [ ] Reserved/available quantities.
-- [ ] Job material requirements workflow.
-- [ ] Issue, return, consume and waste validation rules.
-- [ ] Stock ledger/reporting.
+- [x] Job material requirements workflow foundation.
+- [x] Issue, return and waste transaction endpoints.
+- [x] Issue stock validation.
+- [ ] Full stock ledger/reporting.
 - [ ] Reorder alerts.
 
 ## 8. Purchasing
-- [ ] Purchase requests and approvals.
-- [ ] Purchase orders and line items.
-- [ ] Vendor linkage.
-- [ ] Expected delivery.
-- [ ] Goods receipts and partial receipts.
-- [ ] Inventory receipt integration.
+- [x] Purchase requests and line items foundation.
+- [ ] Purchase request approval workflow.
+- [x] Purchase orders and line items.
+- [x] Vendor linkage.
+- [x] Expected delivery.
+- [x] Goods receipts and partial receipts foundation.
+- [x] Inventory receipt integration.
 - [ ] Supplier invoice linkage.
 
 ## 9. Expenses
-- [ ] Project/job expenses.
-- [ ] General business expenses.
-- [ ] Categories, approval and receipts.
-- [ ] Direct/general classification.
-- [ ] Push approved direct cost into profitability.
+- [x] Project/job expenses foundation.
+- [x] General business expense model foundation.
+- [x] Categories, approval/status and receipts fields.
+- [x] Direct/general classification.
+- [x] Push approved direct cost into profitability.
 
 ## 10. Field Operations
-- [ ] Installation orders.
-- [ ] Site/contact details.
-- [ ] Scheduling/team assignment.
-- [ ] Vehicle/transport assignment.
-- [ ] Installation workflow/status.
-- [ ] Before/after photos and completion proof.
+- [x] Installation orders foundation.
+- [x] Site/contact details.
+- [x] Scheduling/team assignment fields.
+- [x] Vehicle/transport assignment field.
+- [x] Installation workflow/status foundation.
+- [ ] Before/after photos and completion proof workflow.
 
 ## 11. Finance
-- [ ] Invoices.
+- [x] Invoices foundation.
 - [ ] Invoice PDF.
-- [ ] Payments.
-- [ ] Partial payment allocation.
-- [ ] Outstanding balances and overdue calculation.
-- [ ] Job/project profitability.
-- [ ] Estimate vs actual.
+- [x] Payments foundation.
+- [x] Partial payment calculation.
+- [x] Outstanding balance calculation.
+- [x] Job/project profitability.
+- [ ] Estimate vs actual reporting.
 - [ ] Forecast/variance reporting.
 
 ## 12. Documents
@@ -227,7 +233,7 @@ This is the single project task file for the repository. The public website live
 - [x] Pagination/filtering foundation.
 - [x] Standard error responses.
 - [ ] Authorization middleware.
-- [ ] Transactions for stock and financial operations.
+- [x] Transactions for stock and financial operations where implemented.
 - [ ] OpenAPI documentation.
 
 ## 19. Database Integrity
@@ -237,17 +243,25 @@ This is the single project task file for the repository. The public website live
 - [x] Development migration history established.
 - [ ] Production migrations.
 - [ ] Archive/soft-delete strategy.
-- [ ] Transaction-safe stock/invoice/payment updates.
+- [ ] Transaction-safe stock/invoice/payment updates across every mutation.
 - [x] Seed/demo data.
 - [ ] Backup/restore plan.
 
 ## 20. Testing / Release
+- [x] Automated backend integration smoke suite covering all current API modules and core detail endpoints.
+- [x] Automated CI database migration + seed + backend test execution.
+- [x] Automated Admin production build check in CI.
+- [ ] Module-specific positive/negative business-rule tests for every create/update/status process.
+- [ ] Admin UI workflow/component tests.
 - [ ] Costing unit tests.
-- [ ] Stock movement tests.
-- [ ] API integration tests.
-- [ ] Admin workflow tests.
-- [ ] Production build checks.
+- [ ] Stock movement rule tests.
+- [ ] Finance/payment rule tests.
+- [ ] Purchasing/receiving rule tests.
+- [ ] Production build checks for frontend/backend/admin on every release.
 - [ ] Deployment checklist.
+
+## Testing rule for all future modules
+Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
