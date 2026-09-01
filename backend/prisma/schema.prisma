@@ -111,14 +111,14 @@ enum StockMovementType {
 
 model Role {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String @unique @db.VarChar(100)
   users User[]
   permissions RolePermission[]
 }
 
 model Permission {
   id Int @id @default(autoincrement())
-  key String @unique
+  key String @unique @db.VarChar(150)
   description String?
   roles RolePermission[]
 }
@@ -133,9 +133,9 @@ model RolePermission {
 
 model User {
   id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  passwordHash String
+  name String @db.VarChar(150)
+  email String @unique @db.VarChar(191)
+  passwordHash String @db.VarChar(255)
   status UserStatus @default(ACTIVE)
   roleId Int
   role Role @relation(fields: [roleId], references: [id])
@@ -147,8 +147,8 @@ model User {
 
 model Employee {
   id Int @id @default(autoincrement())
-  code String @unique
-  name String
+  code String @unique @db.VarChar(50)
+  name String @db.VarChar(150)
   phone String?
   email String?
   department String?
@@ -168,8 +168,8 @@ model Employee {
 
 model Client {
   id Int @id @default(autoincrement())
-  code String @unique
-  companyName String
+  code String @unique @db.VarChar(50)
+  companyName String @db.VarChar(200)
   contactName String?
   phone String?
   whatsapp String?
@@ -210,7 +210,7 @@ model Lead {
 
 model Enquiry {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   clientId Int
   client Client @relation(fields: [clientId], references: [id])
   source String?
@@ -226,8 +226,8 @@ model Enquiry {
 
 model Service {
   id Int @id @default(autoincrement())
-  name String @unique
-  slug String @unique
+  name String @unique @db.VarChar(150)
+  slug String @unique @db.VarChar(150)
   description String?
   active Boolean @default(true)
   quoteItems QuoteItem[]
@@ -236,7 +236,7 @@ model Service {
 
 model Quote {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   clientId Int
   client Client @relation(fields: [clientId], references: [id])
   enquiryId Int? @unique
@@ -275,8 +275,8 @@ model QuoteItem {
 
 model Project {
   id Int @id @default(autoincrement())
-  number String @unique
-  name String
+  number String @unique @db.VarChar(50)
+  name String @db.VarChar(200)
   clientId Int
   client Client @relation(fields: [clientId], references: [id])
   quoteId Int? @unique
@@ -299,12 +299,12 @@ model Project {
 
 model Job {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   projectId Int
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   serviceId Int?
   service Service? @relation(fields: [serviceId], references: [id])
-  title String
+  title String @db.VarChar(200)
   description String?
   priority String?
   startDate DateTime?
@@ -346,7 +346,7 @@ model Task {
   id Int @id @default(autoincrement())
   jobId Int
   job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  title String
+  title String @db.VarChar(200)
   description String?
   employeeId Int?
   employee Employee? @relation(fields: [employeeId], references: [id])
@@ -382,8 +382,8 @@ model TimeEntry {
 
 model Vendor {
   id Int @id @default(autoincrement())
-  code String @unique
-  companyName String
+  code String @unique @db.VarChar(50)
+  companyName String @db.VarChar(200)
   contactName String?
   phone String?
   whatsapp String?
@@ -401,7 +401,7 @@ model Vendor {
 
 model OutsourceOrder {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   jobId Int
   job Job @relation(fields: [jobId], references: [id])
   vendorId Int
@@ -417,17 +417,17 @@ model OutsourceOrder {
 
 model MaterialCategory {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String @unique @db.VarChar(150)
   materials Material[]
 }
 
 model Material {
   id Int @id @default(autoincrement())
-  sku String @unique
-  name String
+  sku String @unique @db.VarChar(100)
+  name String @db.VarChar(200)
   categoryId Int?
   category MaterialCategory? @relation(fields: [categoryId], references: [id])
-  unit String
+  unit String @db.VarChar(30)
   standardCost Decimal @db.Decimal(14, 2)
   sellingPrice Decimal? @db.Decimal(14, 2)
   reorderLevel Decimal @default(0) @db.Decimal(12, 3)
@@ -441,7 +441,7 @@ model Material {
 
 model Warehouse {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String @unique @db.VarChar(150)
   address String?
   active Boolean @default(true)
   movements StockMovement[]
@@ -480,13 +480,13 @@ model StockMovement {
 
 model ExpenseCategory {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String @unique @db.VarChar(150)
   expenses Expense[]
 }
 
 model Expense {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   categoryId Int
   category ExpenseCategory @relation(fields: [categoryId], references: [id])
   projectId Int?
@@ -507,7 +507,7 @@ model Expense {
 
 model Installation {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   projectId Int
   project Project @relation(fields: [projectId], references: [id])
   jobId Int?
@@ -527,7 +527,7 @@ model Installation {
 
 model Invoice {
   id Int @id @default(autoincrement())
-  number String @unique
+  number String @unique @db.VarChar(50)
   clientId Int
   client Client @relation(fields: [clientId], references: [id])
   projectId Int?
@@ -575,7 +575,7 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id])
   action String
   entity String
-  entityId String
+  entityId String @db.VarChar(100)
   beforeJson Json?
   afterJson Json?
   createdAt DateTime @default(now())
