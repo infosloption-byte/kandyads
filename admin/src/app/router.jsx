@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
 import LeadsPage from '../features/leads/pages/LeadsPage';
 import ClientsPage from '../features/clients/pages/ClientsPage';
@@ -24,10 +24,17 @@ import ProfitabilityPage from '../features/profitability/pages/ProfitabilityPage
 import InstallationsPage from '../features/installations/pages/InstallationsPage';
 import InvoicesPage from '../features/invoices/pages/InvoicesPage';
 import SettingsPage from '../features/settings/pages/SettingsPage';
+import { canAccessPath } from '../config/navigation';
 
 const placeholderPages = [['reports','Reports']];
-function Placeholder({title}){return <div className="page-head"><div><p className="eyebrow">MODULE</p><h1>{title}</h1><p>This module is structured and ready for its API-backed workflow.</p></div><button className="primary">+ Add {title.replace(/s$/,'')}</button></div>}
-export default function AdminRouter(){return <Routes>
- <Route path="/" element={<DashboardPage/>}/><Route path="/leads" element={<LeadsPage/>}/><Route path="/clients" element={<ClientsPage/>}/><Route path="/clients/:id" element={<ClientDetailPage/>}/><Route path="/enquiries" element={<EnquiriesPage/>}/><Route path="/quotes" element={<QuotesPage/>}/><Route path="/projects" element={<ProjectsPage/>}/><Route path="/projects/:id" element={<ProjectDetailPage/>}/><Route path="/jobs" element={<JobsPage/>}/><Route path="/jobs/:id" element={<JobDetailPage/>}/><Route path="/tasks" element={<TasksPage/>}/><Route path="/tasks/:id" element={<TaskDetailPage/>}/><Route path="/employees" element={<EmployeesPage/>}/><Route path="/time" element={<TimeTrackingPage/>}/><Route path="/materials" element={<MaterialsPage/>}/><Route path="/inventory" element={<InventoryPage/>}/><Route path="/vendors" element={<VendorsPage/>}/><Route path="/outsourcing" element={<OutsourcingPage/>}/><Route path="/expenses" element={<ExpensesPage/>}/><Route path="/purchasing" element={<PurchasingPage/>}/><Route path="/profitability" element={<ProfitabilityPage/>}/><Route path="/installations" element={<InstallationsPage/>}/><Route path="/invoices" element={<InvoicesPage/>}/><Route path="/settings" element={<SettingsPage/>}/>
- {placeholderPages.map(([path,title])=><Route key={path} path={`/${path}`} element={<Placeholder title={title}/>}/>)}
- </Routes>}
+function Placeholder({title}){return <div className="page-head"><div><p className="eyebrow">MODULE</p><h1>{title}</h1><p>This module is structured and ready for its API-backed workflow.</p></div></div>}
+function AccessDenied(){return <div className="page-head"><div><p className="eyebrow">ACCESS RESTRICTED</p><h1>Access restricted</h1><p>Your role does not have permission to open this module.</p></div></div>}
+
+export default function AdminRouter({ user }) {
+  const location = useLocation();
+  if (!canAccessPath(location.pathname, user?.permissions || [])) return <AccessDenied />;
+  return <Routes>
+   <Route path="/" element={<DashboardPage/>}/><Route path="/leads" element={<LeadsPage/>}/><Route path="/clients" element={<ClientsPage/>}/><Route path="/clients/:id" element={<ClientDetailPage/>}/><Route path="/enquiries" element={<EnquiriesPage/>}/><Route path="/quotes" element={<QuotesPage/>}/><Route path="/projects" element={<ProjectsPage/>}/><Route path="/projects/:id" element={<ProjectDetailPage/>}/><Route path="/jobs" element={<JobsPage/>}/><Route path="/jobs/:id" element={<JobDetailPage/>}/><Route path="/tasks" element={<TasksPage/>}/><Route path="/tasks/:id" element={<TaskDetailPage/>}/><Route path="/employees" element={<EmployeesPage/>}/><Route path="/time" element={<TimeTrackingPage/>}/><Route path="/materials" element={<MaterialsPage/>}/><Route path="/inventory" element={<InventoryPage/>}/><Route path="/vendors" element={<VendorsPage/>}/><Route path="/outsourcing" element={<OutsourcingPage/>}/><Route path="/expenses" element={<ExpensesPage/>}/><Route path="/purchasing" element={<PurchasingPage/>}/><Route path="/profitability" element={<ProfitabilityPage/>}/><Route path="/installations" element={<InstallationsPage/>}/><Route path="/invoices" element={<InvoicesPage/>}/><Route path="/settings" element={<SettingsPage/>}/>
+   {placeholderPages.map(([path,title])=><Route key={path} path={`/${path}`} element={<Placeholder title={title}/>}/>)}
+  </Routes>;
+}
