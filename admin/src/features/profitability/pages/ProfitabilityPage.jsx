@@ -1,6 +1,7 @@
 import React from 'react';
 import { api } from '../../../api';
 import ResourceTable from '../../shared/components/ResourceTable';
+import '../styles/profitability.css';
 
 const money = (value) => `LKR ${Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -39,20 +40,21 @@ export default function ProfitabilityPage() {
       <button className="secondary" onClick={load}>Refresh</button>
     </div>
 
-    {summary && <div className="stats-grid">
-      <div className="stat-card"><span>Projects</span><strong>{summary.projects}</strong></div>
-      <div className="stat-card"><span>Jobs</span><strong>{summary.jobs}</strong></div>
-      <div className="stat-card"><span>Revenue</span><strong>{money(summary.revenue)}</strong></div>
-      <div className="stat-card"><span>Actual cost</span><strong>{money(summary.actualCost)}</strong></div>
-      <div className="stat-card"><span>Gross profit</span><strong className={Number(summary.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(summary.grossProfit)}</strong></div>
-      <div className="stat-card"><span>Margin</span><strong>{summary.marginPercent == null ? '—' : `${Number(summary.marginPercent).toFixed(1)}%`}</strong></div>
+    {summary && <div className="stat-grid">
+      <div className="stat"><span>Projects</span><strong>{summary.projects}</strong></div>
+      <div className="stat"><span>Jobs</span><strong>{summary.jobs}</strong></div>
+      <div className="stat"><span>Revenue</span><strong>{money(summary.revenue)}</strong></div>
+      <div className="stat"><span>Actual cost</span><strong>{money(summary.actualCost)}</strong></div>
+      <div className="stat"><span>Gross profit</span><strong className={Number(summary.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(summary.grossProfit)}</strong></div>
+      <div className="stat"><span>Margin</span><strong>{summary.marginPercent == null ? '—' : `${Number(summary.marginPercent).toFixed(1)}%`}</strong></div>
     </div>}
 
     <ResourceTable columns={columns} rows={rows} loading={loading} error={error}/>
 
-    <div className="section-card" style={{ marginTop: 24 }}>
-      <div className="section-card-head"><div><p className="eyebrow">JOB COST ENGINE</p><h2>Actual job costs</h2></div></div>
-      <p className="muted">Project profitability is calculated from actual labour time, job stock movements, non-cancelled outsourcing and approved or paid direct expenses.</p>
+    <div className="profitability-detail">
+      <p className="eyebrow">JOB COST ENGINE</p>
+      <h2>How actual cost is calculated</h2>
+      <p className="muted">Each job combines employee time, job stock usage, outsourcing and approved or paid direct expenses. Return movements reduce material cost.</p>
     </div>
   </>;
 }
