@@ -28,6 +28,7 @@ import { profitabilityRoutes } from './modules/profitability/profitability.route
 import { installationsRoutes } from './modules/installations/installations.routes.js';
 import { financeRoutes } from './modules/finance/finance.routes.js';
 import { settingsRoutes } from './modules/settings/settings.routes.js';
+import { approvalsRoutes } from './modules/approvals/approvals.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -59,6 +60,7 @@ export function buildApp(){
   app.register(installationsRoutes);
   app.register(financeRoutes);
   app.register(settingsRoutes);
+  app.register(approvalsRoutes);
   app.setErrorHandler((error,request,reply)=>{
     if (error instanceof z.ZodError) {
       request.log.warn({ error }, 'Request validation failed');
