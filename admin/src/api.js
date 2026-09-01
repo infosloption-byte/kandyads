@@ -6,6 +6,7 @@ const list=(resource,params={})=>{const clean=Object.fromEntries(Object.entries(
 const create=(resource,input)=>request(`/${resource}`,{method:'POST',body:JSON.stringify(input)});
 const patch=(resource,id,input)=>request(`/${resource}/${id}`,{method:'PATCH',body:JSON.stringify(input)});
 const postNested=(resource,id,action,input)=>request(`/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
+const approval=(resource,id,action,input={})=>request(`/approvals/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
 export const api={
  login:async input=>{const result=await request('/auth/login',{method:'POST',body:JSON.stringify(input)});localStorage.setItem('kandyads_admin_token',result.data.token);localStorage.setItem('kandyads_admin_user',JSON.stringify(result.data.user));return result.data.user},
  me:()=>request('/auth/me'),logout:()=>clearToken(),getDashboardSummary:()=>request('/dashboard/summary'),
@@ -37,4 +38,10 @@ export const api={
  listSettingsUsers:p=>list('settings/users',p),createSettingsUser:i=>create('settings/users',i),updateSettingsUser:(id,i)=>patch('settings/users',id,i),
  listSettingsRoles:()=>request('/settings/roles'),createSettingsRole:i=>create('settings/roles',i),
  listSettingsPermissions:()=>request('/settings/permissions'),updateSettingsRolePermissions:(id,i)=>request(`/settings/roles/${id}/permissions`,{method:'PUT',body:JSON.stringify(i)}),
+ getApprovalSummary:()=>request('/approvals/summary'),getPendingApprovals:()=>request('/approvals/pending'),getApprovalAudit:p=>list('approvals/audit',p),
+ submitPurchaseRequest:(id)=>approval('purchase-requests',id,'submit'),approvePurchaseRequest:(id)=>approval('purchase-requests',id,'approve'),rejectPurchaseRequest:(id,reason)=>approval('purchase-requests',id,'reject',{reason}),
+ approvePurchaseOrder:(id)=>approval('purchase-orders',id,'approve'),sendPurchaseOrder:(id)=>approval('purchase-orders',id,'send'),
+ submitExpense:(id)=>approval('expenses',id,'submit'),approveExpense:(id)=>approval('expenses',id,'approve'),rejectExpense:(id,reason)=>approval('expenses',id,'reject',{reason}),markExpensePaid:(id)=>approval('expenses',id,'mark-paid'),
+ approveOutsource:(id)=>approval('outsourcing',id,'approve'),rejectOutsource:(id,reason)=>approval('outsourcing',id,'reject',{reason}),
+ approveTimeEntry:(id)=>approval('time',id,'approve'),
 };
