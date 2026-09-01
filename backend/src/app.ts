@@ -21,6 +21,7 @@ import { vendorsRoutes } from './modules/vendors/vendors.routes.js';
 import { outsourcingRoutes } from './modules/outsourcing/outsourcing.routes.js';
 import { expensesRoutes } from './modules/expenses/expenses.routes.js';
 import { purchasingRoutes } from './modules/purchasing/purchasing.routes.js';
+import { profitabilityRoutes } from './modules/profitability/profitability.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -46,6 +47,7 @@ export function buildApp(){
   app.register(outsourcingRoutes);
   app.register(expensesRoutes);
   app.register(purchasingRoutes);
+  app.register(profitabilityRoutes);
   app.setErrorHandler((error,request,reply)=>{
     const fastifyError=error as FastifyError;
     request.log.error(fastifyError);
