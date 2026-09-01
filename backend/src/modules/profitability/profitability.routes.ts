@@ -4,6 +4,15 @@ import { prisma } from '../../lib/prisma.js';
 
 const money = (value: number) => Number(value.toFixed(2));
 
+function calculateMaterialCost(movements: Array<{ type: string; quantity: unknown; unitCost: unknown; material: { standardCost: unknown } }>) {
+  return movements.reduce((sum, movement) => {
+    const cost = Number(movement.quantity) * Number(movement.unitCost ?? movement.material.standardCost);
+    if (movement.type === 'RETURN') return sum - cost;
+    if (movement.type === 'ISSUE' || movement.type === 'WASTE') return sum + cost;
+    return sum;
+  }, 0);
+}
+
 async function calculateJob(jobId: number) {
   const job = await prisma.job.findUnique({
     where: { id: jobId },
@@ -19,14 +28,9 @@ async function calculateJob(jobId: number) {
   ]);
 
   const labourCost = timeEntries.reduce((sum, entry) => sum + Number(entry.hours) * Number(entry.employee.hourlyCost), 0);
-  const materialCost = stockMovements.reduce((sum, movement) => {
-    const cost = Number(movement.quantity) * Number(movement.unitCost ?? movement.material.standardCost);
-    if (movement.type === 'RETURN') return sum - cost;
-    if (movement.type === 'ISSUE' || movement.type === 'WASTE') return sum + cost;
-    return sum;
-  }, 0);
+  const materialCost = calculateMaterialCost(stockMovements);
   const outsourceCost = outsourceOrders
-    .filter((order) => !['REJECTED', 'CANCELLED'].includes(order.status))
+    .filter((order) => order.status === 'RECEIVED')
     .reduce((sum, order) => sum + Number(order.agreedCost), 0);
   const directExpense = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
   const actualCost = labourCost + materialCost + outsourceCost + directExpense;
@@ -71,9 +75,19 @@ export async function profitabilityRoutes(app: FastifyInstance) {
     const results = [];
     for (const project of projects) {
       const jobs = (await Promise.all(project.jobs.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
+
+      const [projectTime, projectStock, projectExpenses] = await Promise.all([
+        prisma.timeEntry.findMany({ where: { projectId: project.id, jobId: null }, include: { employee: true } }),
+        prisma.stockMovement.findMany({ where: { projectId: project.id, jobId: null }, include: { material: true } }),
+        prisma.expense.findMany({ where: { projectId: project.id, jobId: null, status: { in: ['APPROVED', 'PAID'] } } }),
+      ]);
+
+      const unassignedLabour = projectTime.reduce((sum, entry) => sum + Number(entry.hours) * Number(entry.employee.hourlyCost), 0);
+      const unassignedMaterial = calculateMaterialCost(projectStock);
+      const unassignedExpense = projectExpenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
       const revenue = jobs.length ? jobs.reduce((sum, item) => sum + item.revenue, 0) : Number(project.value);
       const estimatedCost = jobs.reduce((sum, item) => sum + item.estimated.total, 0);
-      const actualCost = jobs.reduce((sum, item) => sum + item.actual.total, 0);
+      const actualCost = jobs.reduce((sum, item) => sum + item.actual.total, 0) + unassignedLabour + unassignedMaterial + unassignedExpense;
       const grossProfit = revenue - actualCost;
       results.push({
         id: project.id,
@@ -93,10 +107,7 @@ export async function profitabilityRoutes(app: FastifyInstance) {
   });
 
   app.get('/api/v1/profitability/summary', async () => {
-    const [jobs, projects] = await Promise.all([
-      prisma.job.count(),
-      prisma.project.count(),
-    ]);
+    const [jobs, projects] = await Promise.all([prisma.job.count(), prisma.project.count()]);
     const projectRows = await prisma.project.findMany({ select: { id: true, value: true } });
     const jobRows = await prisma.job.findMany({ select: { id: true } });
     const details = (await Promise.all(jobRows.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
