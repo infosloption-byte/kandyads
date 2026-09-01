@@ -151,6 +151,19 @@ test('task workflow validation and completion process', async () => {
   assert.ok(completed.body.data.completedAt);
 });
 
+test('business workflow blocks invalid quote, job and project transitions', async () => {
+  const acceptedQuote = await request(`${base}/quotes/${quoteId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'SENT' }) });
+  assert.equal(acceptedQuote.status, 400);
+
+  const incompleteJob = await request(`${base}/jobs/${jobId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
+  assert.equal(incompleteJob.status, 400);
+  assert.match(incompleteJob.body.error.message, /tasks are still open/i);
+
+  const incompleteProject = await request(`${base}/projects/${projectId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
+  assert.equal(incompleteProject.status, 400);
+  assert.match(incompleteProject.body.error.message, /jobs are still open/i);
+});
+
 test('materials, inventory and vendors', async () => {
   const materials = await request(`${base}/materials`);
   const warehouses = await request(`${base}/warehouses`);
