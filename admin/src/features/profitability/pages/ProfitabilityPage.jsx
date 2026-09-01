@@ -6,7 +6,8 @@ import '../styles/profitability.css';
 const money = (value) => `LKR ${Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export default function ProfitabilityPage() {
-  const [rows, setRows] = React.useState([]);
+  const [projects, setProjects] = React.useState([]);
+  const [jobs, setJobs] = React.useState([]);
   const [summary, setSummary] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState('');
@@ -14,15 +15,21 @@ export default function ProfitabilityPage() {
   const load = React.useCallback(async () => {
     setLoading(true); setError('');
     try {
-      const [projects, totals] = await Promise.all([api.listProfitabilityProjects(), api.getProfitabilitySummary()]);
-      setRows(projects.data ?? []); setSummary(totals.data ?? null);
+      const [projectResult, jobResult, totals] = await Promise.all([
+        api.listProfitabilityProjects(),
+        api.listProfitabilityJobs(),
+        api.getProfitabilitySummary(),
+      ]);
+      setProjects(projectResult.data ?? []);
+      setJobs(jobResult.data ?? []);
+      setSummary(totals.data ?? null);
     } catch (e) { setError(e.message || 'Unable to load profitability.'); }
     finally { setLoading(false); }
   }, []);
 
   React.useEffect(() => { load(); }, [load]);
 
-  const columns = [
+  const projectColumns = [
     { key: 'number', label: 'Project' },
     { key: 'name', label: 'Project name' },
     { key: 'clientName', label: 'Client' },
@@ -31,12 +38,22 @@ export default function ProfitabilityPage() {
     { key: 'actualCost', label: 'Actual cost', render: r => money(r.actualCost) },
     { key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },
     { key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` },
-    { key: 'status', label: 'Status' },
+  ];
+
+  const jobColumns = [
+    { key: 'number', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },
+    { key: 'project', label: 'Project', render: r => r.job.projectName },
+    { key: 'service', label: 'Service', render: r => r.job.service || '—' },
+    { key: 'hours', label: 'Hours' },
+    { key: 'revenue', label: 'Revenue', render: r => money(r.revenue) },
+    { key: 'actual', label: 'Actual cost', render: r => money(r.actual.total) },
+    { key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },
+    { key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` },
   ];
 
   return <>
     <div className="page-head">
-      <div><p className="eyebrow">TEAM & FINANCE / PROFITABILITY</p><h1>Profitability</h1><p>See revenue, actual delivery cost and gross margin across projects.</p></div>
+      <div><p className="eyebrow">TEAM & FINANCE / PROFITABILITY</p><h1>Profitability</h1><p>See project and production-job performance from the real costs recorded in operations.</p></div>
       <button className="secondary" onClick={load}>Refresh</button>
     </div>
 
@@ -49,12 +66,15 @@ export default function ProfitabilityPage() {
       <div className="stat"><span>Margin</span><strong>{summary.marginPercent == null ? '—' : `${Number(summary.marginPercent).toFixed(1)}%`}</strong></div>
     </div>}
 
-    <ResourceTable columns={columns} rows={rows} loading={loading} error={error}/>
+    <section>
+      <div className="panel-head"><div><span>PROJECT PROFITABILITY</span><h2>Project performance</h2></div></div>
+      <ResourceTable columns={projectColumns} rows={projects} loading={loading} error={error}/>
+    </section>
 
-    <div className="profitability-detail">
-      <p className="eyebrow">JOB COST ENGINE</p>
-      <h2>How actual cost is calculated</h2>
-      <p className="muted">Each job combines employee time, job stock usage, outsourcing and approved or paid direct expenses. Return movements reduce material cost.</p>
-    </div>
+    <section className="profitability-detail">
+      <div className="panel-head"><div><span>JOB COST ENGINE</span><h2>Production job performance</h2></div></div>
+      <p className="muted">Actual job cost combines employee time, job stock usage, received outsourcing and approved or paid direct expenses. Returned stock reduces material cost.</p>
+      <div style={{ marginTop: 18 }}><ResourceTable columns={jobColumns} rows={jobs} loading={loading} error={error} /></div>
+    </section>
   </>;
 }
