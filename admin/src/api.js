@@ -20,4 +20,8 @@ export const api={
   listMaterials:p=>list('materials',p),createMaterial:i=>create('materials',i),
   listWarehouses:p=>list('warehouses',p),createWarehouse:i=>create('warehouses',i),
   listStockMovements:p=>list('stock-movements',p),createStockMovement:i=>create('stock-movements',i),
+  listVendors:p=>list('vendors',p),createVendor:i=>create('vendors',i),
+  listOutsourcing:p=>list('outsourcing',p),createOutsourceOrder:i=>create('outsourcing',i),
+  listExpenseCategories:p=>list('expense-categories',p),createExpenseCategory:i=>create('expense-categories',i),
+  listExpenses:p=>list('expenses',p),createExpense:i=>create('expenses',i),
 };
