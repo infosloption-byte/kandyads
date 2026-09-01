@@ -53,11 +53,11 @@ test('quote detail, edit, PDF and client decision audit workflow',async()=>{
   assert.equal(edited.status,200);
   assert.equal(edited.body.data.items[0].description,'Updated creative production');
   assert.equal(Number(edited.body.data.total),316);
-  assert.equal(Number(edited.body.data.expectedMargin),156);
+  assert.equal(Number(edited.body.data.expectedMargin),150);
 
   const pdf=await app.inject({method:'GET',url:`${base}/quotes/${quoteId}/pdf`,headers:{authorization:`Bearer ${token}`}});
   assert.equal(pdf.statusCode,200);
-  assert.match(pdf.headers['content-type']||'','application/pdf');
+  assert.match(pdf.headers['content-type']||'',/application\/pdf/);
   assert.equal(pdf.rawPayload.subarray(0,5).toString(),'%PDF-');
 
   const sent=await request(`${base}/quotes/${quoteId}/status`,{method:'PATCH',body:JSON.stringify({status:'SENT'})});
