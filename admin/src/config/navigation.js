@@ -3,6 +3,7 @@ export const navigationGroups = [
     label: 'COMMAND CENTER',
     items: [
       ['Dashboard', '/', 'dashboard.view'],
+      ['Approvals', '/approvals', 'settings.write'],
     ],
   },
   {
