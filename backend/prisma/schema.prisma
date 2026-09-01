@@ -7,18 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserStatus { ACTIVE INACTIVE }
-enum LeadStatus { NEW CONTACTED QUALIFIED PROPOSAL NEGOTIATION WON LOST }
-enum EnquiryStatus { OPEN QUOTING CONVERTED CLOSED }
-enum QuoteStatus { DRAFT SENT VIEWED ACCEPTED REJECTED EXPIRED CANCELLED }
-enum ProjectStatus { PLANNED ACTIVE ON_HOLD COMPLETED CANCELLED }
-enum JobStatus { DRAFT READY IN_PROGRESS BLOCKED REVIEW COMPLETED CANCELLED }
-enum AssignmentType { INTERNAL OUTSOURCED MIXED }
-enum TaskStatus { PENDING READY IN_PROGRESS BLOCKED REVIEW COMPLETED CANCELLED }
-enum OutsourceStatus { REQUESTED APPROVED SENT IN_PROGRESS RECEIVED REJECTED CANCELLED }
-enum ExpenseStatus { DRAFT SUBMITTED APPROVED REJECTED PAID }
-enum InvoiceStatus { DRAFT ISSUED PARTIALLY_PAID PAID OVERDUE CANCELLED }
-enum StockMovementType { PURCHASE_RECEIPT ISSUE RETURN TRANSFER ADJUSTMENT WASTE }
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum EnquiryStatus {
+  OPEN
+  QUOTING
+  CONVERTED
+  CLOSED
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum JobStatus {
+  DRAFT
+  READY
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum AssignmentType {
+  INTERNAL
+  OUTSOURCED
+  MIXED
+}
+
+enum TaskStatus {
+  PENDING
+  READY
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum OutsourceStatus {
+  REQUESTED
+  APPROVED
+  SENT
+  IN_PROGRESS
+  RECEIVED
+  REJECTED
+  CANCELLED
+}
+
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum StockMovementType {
+  PURCHASE_RECEIPT
+  ISSUE
+  RETURN
+  TRANSFER
+  ADJUSTMENT
+  WASTE
+}
 
 model Role {
   id Int @id @default(autoincrement())
@@ -490,6 +579,5 @@ model AuditLog {
   beforeJson Json?
   afterJson Json?
   createdAt DateTime @default(now())
-
   @@index([entity, entityId])
 }
