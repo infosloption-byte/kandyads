@@ -4,7 +4,7 @@ const PUBLIC_PATHS = new Set(['/health', '/api/v1', '/api/v1/auth/login']);
 
 const RESOURCE_ALIASES: Record<string, string> = {
   dashboard:'dashboard', leads:'leads', clients:'clients', enquiries:'enquiries', quotes:'quotes', projects:'projects',
-  services:'settings', settings:'settings', jobs:'jobs', tasks:'tasks', employees:'employees', time:'time', materials:'materials', 'material-categories':'materials',
+  services:'settings', settings:'settings', approvals:'settings', jobs:'jobs', tasks:'tasks', employees:'employees', time:'time', materials:'materials', 'material-categories':'materials',
   warehouses:'inventory', 'stock-movements':'inventory', vendors:'outsourcing', outsourcing:'outsourcing', expenses:'expenses',
   'expense-categories':'expenses', 'purchase-requests':'purchasing', 'purchase-orders':'purchasing', 'goods-receipts':'purchasing',
   installations:'installations', invoices:'invoices', payments:'payments', profitability:'reports',
