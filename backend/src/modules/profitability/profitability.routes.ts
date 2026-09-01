@@ -29,9 +29,7 @@ async function calculateJob(jobId: number) {
 
   const labourCost = timeEntries.reduce((sum, entry) => sum + Number(entry.hours) * Number(entry.employee.hourlyCost), 0);
   const materialCost = calculateMaterialCost(stockMovements);
-  const outsourceCost = outsourceOrders
-    .filter((order) => order.status === 'RECEIVED')
-    .reduce((sum, order) => sum + Number(order.agreedCost), 0);
+  const outsourceCost = outsourceOrders.filter((order) => order.status === 'RECEIVED').reduce((sum, order) => sum + Number(order.agreedCost), 0);
   const directExpense = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
   const actualCost = labourCost + materialCost + outsourceCost + directExpense;
   const revenue = Number(job.revenue);
@@ -48,13 +46,7 @@ async function calculateJob(jobId: number) {
       expense: money(Number(job.estimatedExpense)),
       total: money(Number(job.estimatedMaterial) + Number(job.estimatedLabour) + Number(job.estimatedOutsource) + Number(job.estimatedExpense)),
     },
-    actual: {
-      material: money(materialCost),
-      labour: money(labourCost),
-      outsource: money(outsourceCost),
-      expense: money(directExpense),
-      total: money(actualCost),
-    },
+    actual: { material: money(materialCost), labour: money(labourCost), outsource: money(outsourceCost), expense: money(directExpense), total: money(actualCost) },
     grossProfit: money(grossProfit),
     marginPercent: margin === null ? null : money(margin),
     hours: money(timeEntries.reduce((sum, entry) => sum + Number(entry.hours), 0)),
@@ -63,6 +55,12 @@ async function calculateJob(jobId: number) {
 }
 
 export async function profitabilityRoutes(app: FastifyInstance) {
+  app.get('/api/v1/profitability/jobs', async () => {
+    const jobs = await prisma.job.findMany({ select: { id: true }, orderBy: { createdAt: 'desc' } });
+    const data = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean);
+    return { data };
+  });
+
   app.get('/api/v1/profitability/jobs/:id', async (request, reply) => {
     const id = z.coerce.number().int().positive().parse((request.params as any).id);
     const data = await calculateJob(id);
@@ -75,13 +73,11 @@ export async function profitabilityRoutes(app: FastifyInstance) {
     const results = [];
     for (const project of projects) {
       const jobs = (await Promise.all(project.jobs.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
-
       const [projectTime, projectStock, projectExpenses] = await Promise.all([
         prisma.timeEntry.findMany({ where: { projectId: project.id, jobId: null }, include: { employee: true } }),
         prisma.stockMovement.findMany({ where: { projectId: project.id, jobId: null }, include: { material: true } }),
         prisma.expense.findMany({ where: { projectId: project.id, jobId: null, status: { in: ['APPROVED', 'PAID'] } } }),
       ]);
-
       const unassignedLabour = projectTime.reduce((sum, entry) => sum + Number(entry.hours) * Number(entry.employee.hourlyCost), 0);
       const unassignedMaterial = calculateMaterialCost(projectStock);
       const unassignedExpense = projectExpenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
@@ -89,19 +85,7 @@ export async function profitabilityRoutes(app: FastifyInstance) {
       const estimatedCost = jobs.reduce((sum, item) => sum + item.estimated.total, 0);
       const actualCost = jobs.reduce((sum, item) => sum + item.actual.total, 0) + unassignedLabour + unassignedMaterial + unassignedExpense;
       const grossProfit = revenue - actualCost;
-      results.push({
-        id: project.id,
-        number: project.number,
-        name: project.name,
-        clientName: project.client.companyName,
-        status: project.status,
-        revenue: money(revenue),
-        estimatedCost: money(estimatedCost),
-        actualCost: money(actualCost),
-        grossProfit: money(grossProfit),
-        marginPercent: revenue > 0 ? money((grossProfit / revenue) * 100) : null,
-        jobs: jobs.length,
-      });
+      results.push({ id: project.id, number: project.number, name: project.name, clientName: project.client.companyName, status: project.status, revenue: money(revenue), estimatedCost: money(estimatedCost), actualCost: money(actualCost), grossProfit: money(grossProfit), marginPercent: revenue > 0 ? money((grossProfit / revenue) * 100) : null, jobs: jobs.length });
     }
     return { data: results };
   });
