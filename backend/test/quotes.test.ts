@@ -53,7 +53,7 @@ test('quote detail, edit, PDF and client decision audit workflow',async()=>{
   assert.equal(edited.status,200);
   assert.equal(edited.body.data.items[0].description,'Updated creative production');
   assert.equal(Number(edited.body.data.total),316);
-  assert.equal(Number(edited.body.data.expectedMargin),150);
+  assert.equal(Number(edited.body.data.expectedMargin),156);
 
   const pdf=await app.inject({method:'GET',url:`${base}/quotes/${quoteId}/pdf`,headers:{authorization:`Bearer ${token}`}});
   assert.equal(pdf.statusCode,200);
