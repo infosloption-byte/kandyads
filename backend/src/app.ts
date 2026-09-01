@@ -15,6 +15,8 @@ import { jobsRoutes } from './modules/jobs/jobs.routes.js';
 import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { employeesRoutes } from './modules/employees/employees.routes.js';
 import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
+import { materialsRoutes } from './modules/materials/materials.routes.js';
+import { inventoryRoutes } from './modules/inventory/inventory.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
@@ -34,6 +36,8 @@ export function buildApp(){
   app.register(tasksRoutes);
   app.register(employeesRoutes);
   app.register(timeTrackingRoutes);
+  app.register(materialsRoutes);
+  app.register(inventoryRoutes);
   app.setErrorHandler((error,request,reply)=>{
     const fastifyError=error as FastifyError;
     request.log.error(fastifyError);
