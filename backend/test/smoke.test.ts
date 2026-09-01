@@ -156,13 +156,49 @@ test('business workflow blocks invalid quote, job and project transitions', asyn
   const acceptedQuote = await request(`${base}/quotes/${quoteId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'SENT' }) });
   assert.equal(acceptedQuote.status, 400);
 
-  const incompleteJob = await request(`${base}/jobs/${jobId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
-  assert.equal(incompleteJob.status, 400);
-  assert.match(incompleteJob.body.error.message, /tasks are still open/i);
+  const jobBefore = await request(`${base}/jobs/${jobId}`);
+  assert.equal(jobBefore.status, 200);
+  const originalJobStatus = jobBefore.body.data.status;
+  const projectBefore = await request(`${base}/projects/${projectId}`);
+  assert.equal(projectBefore.status, 200);
+  const originalProjectStatus = projectBefore.body.data.status;
 
-  const incompleteProject = await request(`${base}/projects/${projectId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
-  assert.equal(incompleteProject.status, 400);
-  assert.match(incompleteProject.body.error.message, /jobs are still open/i);
+  if (originalJobStatus === 'DRAFT') {
+    const ready = await request(`${base}/jobs/${jobId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'READY' }) });
+    assert.equal(ready.status, 200);
+  }
+  const readyJob = await request(`${base}/jobs/${jobId}`);
+  if (readyJob.body.data.status === 'READY') {
+    const inProgress = await request(`${base}/jobs/${jobId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'IN_PROGRESS' }) });
+    assert.equal(inProgress.status, 200);
+  }
+
+  const tempTask = await prisma.task.create({
+    data: {
+      jobId,
+      title: `Automated workflow guard ${Date.now()}`,
+      status: 'READY',
+      employeeId: employeeId || undefined,
+    },
+  });
+
+  try {
+    const incompleteJob = await request(`${base}/jobs/${jobId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
+    assert.equal(incompleteJob.status, 400);
+    assert.match(incompleteJob.body.error.message, /tasks are still open/i);
+
+    if (originalProjectStatus === 'PLANNED') {
+      const activeProject = await request(`${base}/projects/${projectId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'ACTIVE' }) });
+      assert.equal(activeProject.status, 200);
+    }
+    const incompleteProject = await request(`${base}/projects/${projectId}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'COMPLETED' }) });
+    assert.equal(incompleteProject.status, 400);
+    assert.match(incompleteProject.body.error.message, /jobs are still open/i);
+  } finally {
+    await prisma.task.delete({ where: { id: tempTask.id } }).catch(() => undefined);
+    await prisma.job.update({ where: { id: jobId }, data: { status: originalJobStatus } }).catch(() => undefined);
+    await prisma.project.update({ where: { id: projectId }, data: { status: originalProjectStatus } }).catch(() => undefined);
+  }
 });
 
 test('materials, inventory and vendors', async () => {
