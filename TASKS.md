@@ -172,12 +172,12 @@ This is the single project task file for the repository. The public website live
 
 ## 11. Finance
 - [x] Invoices foundation.
-- [ ] Invoice PDF.
+- [x] Invoice PDF.
 - [x] Payments foundation.
 - [x] Partial payment calculation.
 - [x] Outstanding balance calculation.
 - [x] Job/project profitability.
-- [ ] Estimate vs actual reporting.
+- [x] Estimate vs actual reporting.
 - [ ] Forecast/variance reporting.
 
 ## 12. Documents
@@ -268,6 +268,8 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
+- 2026-09-02: Completed estimate-versus-actual cost reporting. Profitability now exposes job-level material, labour, outsourcing and expense estimate/actual amounts with signed variance amounts and percentages, optional job/project filters, aggregate totals and an Admin variance report with drill-down tooltips; isolated integration coverage validates authorization, variance arithmetic and filters.
 - 2026-09-02: Completed installation before/after photo and completion-proof workflow. Installation completion now requires both proof photo URLs, detail responses expose installation attachments, Admin supports before/after proof capture and completion, and isolated integration tests cover validation, successful completion, detail exposure and authentication.
 - 2026-09-02: Completed supplier invoice linkage for Purchasing. Vendor invoices can now link to purchase orders and goods receipts, validate vendor ownership and PO/GR consistency, infer the PO from a selected goods receipt, expose purchasing-linked supplier invoices through a list endpoint and Admin Purchasing tab/form, persist the links transactionally with audit metadata, and run isolated integration coverage. CI explicitly provisions the new raw-SQL-backed columns.
 - 2026-09-02: Added vendor deliverable and supplier invoice integration-test coverage, including authentication, missing/invalid records, outsource-order ownership validation, persistence, duplicate supplier-invoice protection, vendor detail exposure and audit side effects.
