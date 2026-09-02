@@ -4,10 +4,10 @@ This is the single project task file for the repository. The public website live
 
 ## 0. Workspace
 - [x] Repository separated into `frontend/`, `admin/`, `backend/`.
-- [ ] Add shared development conventions and environment documentation.
+- [x] Add shared development conventions and environment documentation.
 - [x] Master task document is at repository root.
 - [x] Add CI checks for backend integration tests and Admin production build.
-- [ ] Add production deployment documentation.
+- [x] Add production deployment documentation.
 
 ## 1. Platform Foundation
 - [x] Backend Node.js + TypeScript + Fastify foundation.
@@ -268,6 +268,9 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Added shared development conventions and environment documentation covering repository layout, local setup, environment variables, test isolation, database-change conventions and release commands.
+- 2026-09-02: Added production deployment documentation covering frontend/Admin/backend topology, production environment configuration, migration safety, release verification and rollback guidance.
+- 2026-09-02: Updated the backend test script to disable test-file concurrency because the integration suite shares a database and otherwise permits cross-file fixture races. The inventory workflow passed in isolation while intermittently failing in the full suite before this guard was added.
 - 2026-09-02: Added a version-controlled Prisma migration for the generic `Attachment` table so client-document registration/listing works against a database created from the repository schema.
 - 2026-09-02: Attachment creation already performs the attachment insert and `ATTACHMENT_ADDED` audit entry in one transaction, with the created attachment ID recorded in `afterJson`; the audit failure was a consequence of the missing attachment table preventing the transaction from completing.
 - 2026-09-02: Updated CI test-database provisioning to use the complete Prisma schema before seeding, avoiding a fresh-database failure caused by the repository not yet containing a complete historical migration chain.
