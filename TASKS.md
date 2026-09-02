@@ -273,6 +273,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Implemented authenticated password-change workflow with current-password verification, new-password validation, transactional credential update and `PASSWORD_CHANGED` audit entry; added `auth-password.test.ts` covering authentication boundary, validation failure, successful credential replacement and audit side effect.
 - 2026-09-02: Added `rbac-workflows.test.ts` covering user/role/permission administration boundaries, role permission replacement validation/transaction behavior, and separate read-versus-write authorization enforcement.
 - 2026-09-02: Fixed five integration failures (53/58): enquiry workflow tests now use isolated records rather than shared seeded enquiries, password validation tests assert structured validation details, and RBAC action-level tests use a dedicated read-only role so concurrent tests cannot mutate authorization state.
+- 2026-09-02: Fixed the final enquiry workflow test failure by aligning its detail assertion with the Prisma relation shape: `quote` is a single nullable related record, not an array.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
