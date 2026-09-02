@@ -9,8 +9,11 @@ let app:Awaited<ReturnType<typeof buildApp>>;
 let adminToken='';
 let limitedToken='';
 let roleId=0;
+let actionRoleId=0;
 let userId=0;
+let actionUserId=0;
 const email=`rbac-test-${Date.now()}@kandyads.lk`;
+const actionEmail=`rbac-action-${Date.now()}@kandyads.lk`;
 
 async function request(path:string,options:RequestInit={},authToken=adminToken){
   const headers=new Headers(options.headers);
@@ -34,15 +37,19 @@ before(async()=>{
   app=buildApp();
   await app.ready();
   adminToken=await login('admin@kandyads.lk','ChangeMe!123');
-  const role=await prisma.role.create({data:{name:`RBAC Test ${Date.now()}`}});
-  roleId=role.id;
-  const user=await prisma.user.create({data:{name:'RBAC Test User',email,passwordHash:createPasswordHash('Original!123'),roleId,status:'ACTIVE'}});
-  userId=user.id;
+  const readPermission=await prisma.permission.findUnique({where:{key:'clients.read'}}); assert.ok(readPermission);
+  const role=await prisma.role.create({data:{name:`RBAC Test ${Date.now()}`}}); roleId=role.id;
+  const user=await prisma.user.create({data:{name:'RBAC Test User',email,passwordHash:createPasswordHash('Original!123'),roleId,status:'ACTIVE'}}); userId=user.id;
+  const actionRole=await prisma.role.create({data:{name:`RBAC Action Test ${Date.now()}`}}); actionRoleId=actionRole.id;
+  await prisma.rolePermission.create({data:{roleId:actionRole.id,permissionId:readPermission.id}});
+  const actionUser=await prisma.user.create({data:{name:'RBAC Action User',email:actionEmail,passwordHash:createPasswordHash('Original!123'),roleId:actionRole.id,status:'ACTIVE'}}); actionUserId=actionUser.id;
   limitedToken=await login(email,'Original!123');
 });
 
 after(async()=>{
+  if(actionUserId)await prisma.user.delete({where:{id:actionUserId}}).catch(()=>undefined);
   if(userId)await prisma.user.delete({where:{id:userId}}).catch(()=>undefined);
+  if(actionRoleId)await prisma.role.delete({where:{id:actionRoleId}}).catch(()=>undefined);
   if(roleId)await prisma.role.delete({where:{id:roleId}}).catch(()=>undefined);
   await app.close();
   await prisma.$disconnect();
@@ -79,10 +86,10 @@ test('role permission replacement validates permission ids and updates transacti
 });
 
 test('action-level authorization distinguishes read and write permissions',async()=>{
-  limitedToken=await login(email,'Original!123');
-  const readAllowed=await request(`${base}/clients?pageSize=1`,{},limitedToken);
+  const actionToken=await login(actionEmail,'Original!123');
+  const readAllowed=await request(`${base}/clients?pageSize=1`,{},actionToken);
   assert.equal(readAllowed.status,200);
-  const writeDenied=await request(`${base}/clients`,{method:'POST',body:JSON.stringify({companyName:'RBAC should be denied'})},limitedToken);
+  const writeDenied=await request(`${base}/clients`,{method:'POST',body:JSON.stringify({companyName:'RBAC should be denied'})},actionToken);
   assert.equal(writeDenied.status,403);
   assert.match(writeDenied.body.error.message,/clients\.write/i);
 });
