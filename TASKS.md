@@ -153,7 +153,7 @@ This is the single project task file for the repository. The public website live
 - [x] Expected delivery.
 - [x] Goods receipts and partial receipts foundation.
 - [x] Inventory receipt integration.
-- [ ] Supplier invoice linkage.
+- [x] Supplier invoice linkage.
 
 ## 9. Expenses
 - [x] Project/job expenses foundation.
@@ -268,6 +268,7 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Completed supplier invoice linkage for Purchasing. Vendor invoices can now link to purchase orders and goods receipts, validate vendor ownership and PO/GR consistency, infer the PO from a selected goods receipt, expose purchasing-linked supplier invoices through a list endpoint and Admin Purchasing tab/form, persist the links transactionally with audit metadata, and run isolated integration coverage. CI explicitly provisions the new raw-SQL-backed columns.
 - 2026-09-02: Added vendor deliverable and supplier invoice integration-test coverage, including authentication, missing/invalid records, outsource-order ownership validation, persistence, duplicate supplier-invoice protection, vendor detail exposure and audit side effects.
 - 2026-09-02: Added vendor detail and document management using the existing generic attachment system, including Vendor document registration/list/detail exposure and isolated authentication, missing-record and validation tests.
 - 2026-09-02: Added configurable status/workflow management for quotes, enquiries, projects, jobs and tasks. Workflow transitions are stored in a version-controlled raw-SQL table, exposed through authorized Admin settings APIs/UI, audited transactionally, loaded into the existing runtime transition rules at startup, and covered by isolated integration tests without removing shared seeded configuration.
