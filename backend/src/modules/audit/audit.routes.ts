@@ -36,7 +36,7 @@ export async function auditRoutes(app: FastifyInstance) {
       prisma.auditLog.count({ where }),
     ]);
     return {
-      data: items,
+      data: items.map((item) => ({ ...item, id: item.id.toString() })),
       meta: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.ceil(total / query.pageSize) },
     };
   });
