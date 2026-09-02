@@ -13,132 +13,43 @@ const branchCreateSchema = z.object({ code: z.string().min(1).max(50), name: z.s
 const branchUpdateSchema = branchCreateSchema.partial();
 const sequenceCreateSchema = z.object({ entity: z.string().min(2).max(100), prefix: z.string().max(30), nextValue: z.coerce.number().int().positive().optional(), padding: z.coerce.number().int().min(1).max(12).optional(), active: z.boolean().optional() });
 const sequenceUpdateSchema = sequenceCreateSchema.omit({ entity: true }).partial();
+const taxSettingSchema = z.object({ name: z.string().min(2).max(150), rate: z.coerce.number().min(0).max(100), inclusive: z.boolean().optional(), active: z.boolean().optional() });
+const paymentMethodSchema = z.object({ name: z.string().min(2).max(100), code: z.string().min(1).max(50), active: z.boolean().optional(), sortOrder: z.coerce.number().int().min(0).optional() });
+const unitSchema = z.object({ name: z.string().min(1).max(100), code: z.string().min(1).max(30), active: z.boolean().optional() });
+const categorySchema = z.object({ name: z.string().min(1).max(150) });
 
 type RawDbClient = Pick<typeof prisma, '$queryRaw' | '$executeRaw'>;
 
-async function getCompanySettings(client: RawDbClient) {
-  const rows = await client.$queryRaw<Array<{ id: number; companyName: string; legalName: string | null; phone: string | null; email: string | null; address: string | null; website: string | null; taxNumber: string | null; updatedAt: Date }>>`SELECT id, companyName, legalName, phone, email, address, website, taxNumber, updatedAt FROM CompanySetting WHERE id = 1 LIMIT 1`;
-  return rows[0] ?? null;
-}
-
-async function listBranches(client: RawDbClient) {
-  return client.$queryRaw<Array<{ id: number; code: string; name: string; address: string | null; phone: string | null; email: string | null; active: number; createdAt: Date; updatedAt: Date }>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch ORDER BY active DESC, name ASC`;
-}
-
-async function listSequences(client: RawDbClient) {
-  return client.$queryRaw<Array<{ id: number; entity: string; prefix: string; nextValue: number; padding: number; active: number; updatedAt: Date }>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence ORDER BY entity ASC`;
-}
+async function getCompanySettings(client: RawDbClient) { const rows = await client.$queryRaw<Array<any>>`SELECT id, companyName, legalName, phone, email, address, website, taxNumber, updatedAt FROM CompanySetting WHERE id = 1 LIMIT 1`; return rows[0] ?? null; }
+async function listBranches(client: RawDbClient) { return client.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch ORDER BY active DESC, name ASC`; }
+async function listSequences(client: RawDbClient) { return client.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence ORDER BY entity ASC`; }
 
 export async function settingsRoutes(app: FastifyInstance) {
-  app.get('/api/v1/settings/company', async (request, reply) => {
-    const company = await getCompanySettings(prisma);
-    if (!company) return reply.notFound('Company settings not found');
-    return { data: company };
-  });
-
-  app.put('/api/v1/settings/company', async (request) => {
-    const input = companySettingsSchema.parse(request.body);
-    const userId = actorId(request);
-    return prisma.$transaction(async (tx) => {
-      const before = await getCompanySettings(tx);
-      await tx.$executeRaw`INSERT INTO CompanySetting (id, companyName, legalName, phone, email, address, website, taxNumber) VALUES (1, ${input.companyName}, ${input.legalName ?? null}, ${input.phone ?? null}, ${input.email ?? null}, ${input.address ?? null}, ${input.website ?? null}, ${input.taxNumber ?? null}) ON DUPLICATE KEY UPDATE companyName = VALUES(companyName), legalName = VALUES(legalName), phone = VALUES(phone), email = VALUES(email), address = VALUES(address), website = VALUES(website), taxNumber = VALUES(taxNumber)`;
-      const after = await getCompanySettings(tx);
-      await writeAudit(tx, { userId, action: 'COMPANY_SETTINGS_UPDATED', entity: 'CompanySetting', entityId: '1', beforeJson: before, afterJson: after });
-      return { data: after };
-    });
-  });
-
+  app.get('/api/v1/settings/company', async (request, reply) => { const company = await getCompanySettings(prisma); if (!company) return reply.notFound('Company settings not found'); return { data: company }; });
+  app.put('/api/v1/settings/company', async (request) => { const input = companySettingsSchema.parse(request.body); const userId = actorId(request); return prisma.$transaction(async (tx) => { const before = await getCompanySettings(tx); await tx.$executeRaw`INSERT INTO CompanySetting (id, companyName, legalName, phone, email, address, website, taxNumber) VALUES (1, ${input.companyName}, ${input.legalName ?? null}, ${input.phone ?? null}, ${input.email ?? null}, ${input.address ?? null}, ${input.website ?? null}, ${input.taxNumber ?? null}) ON DUPLICATE KEY UPDATE companyName = VALUES(companyName), legalName = VALUES(legalName), phone = VALUES(phone), email = VALUES(email), address = VALUES(address), website = VALUES(website), taxNumber = VALUES(taxNumber)`; const after = await getCompanySettings(tx); await writeAudit(tx, { userId, action: 'COMPANY_SETTINGS_UPDATED', entity: 'CompanySetting', entityId: '1', beforeJson: before, afterJson: after }); return { data: after }; }); });
   app.get('/api/v1/settings/branches', async () => ({ data: await listBranches(prisma) }));
-
-  app.post('/api/v1/settings/branches', async (request, reply) => {
-    const input = branchCreateSchema.parse(request.body);
-    const existing = await prisma.$queryRaw<Array<{ id: number }>>`SELECT id FROM Branch WHERE code = ${input.code} LIMIT 1`;
-    if (existing[0]) return reply.conflict('Branch code is already in use');
-    const created = await prisma.$executeRaw`INSERT INTO Branch (code, name, address, phone, email, active) VALUES (${input.code}, ${input.name}, ${input.address ?? null}, ${input.phone ?? null}, ${input.email ?? null}, ${input.active ?? true})`;
-    if (!created) return reply.internalServerError('Unable to create branch');
-    const rows = await prisma.$queryRaw<Array<{ id: number; code: string; name: string; address: string | null; phone: string | null; email: string | null; active: number; createdAt: Date; updatedAt: Date }>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch WHERE code = ${input.code} LIMIT 1`;
-    return reply.code(201).send({ data: rows[0] });
-  });
-
-  app.patch('/api/v1/settings/branches/:id', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as any).id);
-    const input = branchUpdateSchema.parse(request.body);
-    const existing = await prisma.$queryRaw<Array<{ id: number; code: string }>>`SELECT id, code FROM Branch WHERE id = ${id} LIMIT 1`;
-    if (!existing[0]) return reply.notFound('Branch not found');
-    if (input.code && input.code !== existing[0].code) {
-      const duplicate = await prisma.$queryRaw<Array<{ id: number }>>`SELECT id FROM Branch WHERE code = ${input.code} AND id <> ${id} LIMIT 1`;
-      if (duplicate[0]) return reply.conflict('Branch code is already in use');
-    }
-    const current = await prisma.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch WHERE id = ${id} LIMIT 1`;
-    await prisma.$executeRaw`UPDATE Branch SET code = COALESCE(${input.code ?? null}, code), name = COALESCE(${input.name ?? null}, name), address = ${input.address === undefined ? current[0].address : input.address}, phone = ${input.phone === undefined ? current[0].phone : input.phone}, email = ${input.email === undefined ? current[0].email : input.email}, active = COALESCE(${input.active === undefined ? null : input.active}, active) WHERE id = ${id}`;
-    const after = (await prisma.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch WHERE id = ${id} LIMIT 1`)[0];
-    return { data: after };
-  });
-
+  app.post('/api/v1/settings/branches', async (request, reply) => { const input = branchCreateSchema.parse(request.body); const existing = await prisma.$queryRaw<Array<any>>`SELECT id FROM Branch WHERE code = ${input.code} LIMIT 1`; if (existing[0]) return reply.conflict('Branch code is already in use'); await prisma.$executeRaw`INSERT INTO Branch (code, name, address, phone, email, active) VALUES (${input.code}, ${input.name}, ${input.address ?? null}, ${input.phone ?? null}, ${input.email ?? null}, ${input.active ?? true})`; const data = (await prisma.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch WHERE code = ${input.code} LIMIT 1`)[0]; return reply.code(201).send({ data }); });
+  app.patch('/api/v1/settings/branches/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = branchUpdateSchema.parse(request.body); const existing = (await prisma.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active FROM Branch WHERE id = ${id} LIMIT 1`)[0]; if (!existing) return reply.notFound('Branch not found'); if (input.code && input.code !== existing.code) { const duplicate = await prisma.$queryRaw<Array<any>>`SELECT id FROM Branch WHERE code = ${input.code} AND id <> ${id} LIMIT 1`; if (duplicate[0]) return reply.conflict('Branch code is already in use'); } await prisma.$executeRaw`UPDATE Branch SET code = COALESCE(${input.code ?? null}, code), name = COALESCE(${input.name ?? null}, name), address = ${input.address === undefined ? existing.address : input.address}, phone = ${input.phone === undefined ? existing.phone : input.phone}, email = ${input.email === undefined ? existing.email : input.email}, active = COALESCE(${input.active === undefined ? null : input.active}, active) WHERE id = ${id}`; return { data: (await prisma.$queryRaw<Array<any>>`SELECT id, code, name, address, phone, email, active, createdAt, updatedAt FROM Branch WHERE id = ${id} LIMIT 1`)[0] }; });
   app.get('/api/v1/settings/number-sequences', async () => ({ data: await listSequences(prisma) }));
+  app.post('/api/v1/settings/number-sequences', async (request, reply) => { const input = sequenceCreateSchema.parse(request.body); const existing = await prisma.$queryRaw<Array<any>>`SELECT id FROM NumberSequence WHERE entity = ${input.entity} LIMIT 1`; if (existing[0]) return reply.conflict('Number sequence entity already exists'); await prisma.$executeRaw`INSERT INTO NumberSequence (entity, prefix, nextValue, padding, active) VALUES (${input.entity}, ${input.prefix}, ${input.nextValue ?? 1}, ${input.padding ?? 4}, ${input.active ?? true})`; const sequence = (await prisma.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence WHERE entity = ${input.entity} LIMIT 1`)[0]; return reply.code(201).send({ data: sequence }); });
+  app.patch('/api/v1/settings/number-sequences/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = sequenceUpdateSchema.parse(request.body); const existing = (await prisma.$queryRaw<Array<any>>`SELECT id FROM NumberSequence WHERE id = ${id} LIMIT 1`)[0]; if (!existing) return reply.notFound('Number sequence not found'); await prisma.$executeRaw`UPDATE NumberSequence SET prefix = COALESCE(${input.prefix ?? null}, prefix), nextValue = COALESCE(${input.nextValue ?? null}, nextValue), padding = COALESCE(${input.padding ?? null}, padding), active = COALESCE(${input.active === undefined ? null : input.active}, active) WHERE id = ${id}`; return { data: (await prisma.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence WHERE id = ${id} LIMIT 1`)[0] }; });
+  app.post('/api/v1/settings/number-sequences/:id/next', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const userId = actorId(request); return prisma.$transaction(async (tx) => { const sequence = (await tx.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active FROM NumberSequence WHERE id = ${id} FOR UPDATE`)[0]; if (!sequence) return reply.notFound('Number sequence not found'); if (!sequence.active) return reply.badRequest('Number sequence is inactive'); const value = Number(sequence.nextValue); const number = `${sequence.prefix}${String(value).padStart(Number(sequence.padding), '0')}`; await tx.$executeRaw`UPDATE NumberSequence SET nextValue = ${value + 1} WHERE id = ${id}`; await writeAudit(tx, { userId, action: 'NUMBER_SEQUENCE_ADVANCED', entity: 'NumberSequence', entityId: String(id), beforeJson: { ...sequence, nextValue: value }, afterJson: { ...sequence, nextValue: value + 1, generatedNumber: number } }); return { data: { id, entity: sequence.entity, number, value } }; }); });
 
-  app.post('/api/v1/settings/number-sequences', async (request, reply) => {
-    const input = sequenceCreateSchema.parse(request.body);
-    const existing = await prisma.$queryRaw<Array<{ id: number }>>`SELECT id FROM NumberSequence WHERE entity = ${input.entity} LIMIT 1`;
-    if (existing[0]) return reply.conflict('Number sequence entity already exists');
-    await prisma.$executeRaw`INSERT INTO NumberSequence (entity, prefix, nextValue, padding, active) VALUES (${input.entity}, ${input.prefix}, ${input.nextValue ?? 1}, ${input.padding ?? 4}, ${input.active ?? true})`;
-    const sequence = (await prisma.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence WHERE entity = ${input.entity} LIMIT 1`)[0];
-    return reply.code(201).send({ data: sequence });
-  });
+  app.get('/api/v1/settings/tax', async (_, reply) => { const row = (await prisma.$queryRaw<Array<any>>`SELECT id, name, rate, inclusive, active, updatedAt FROM TaxSetting WHERE id = 1 LIMIT 1`)[0]; if (!row) return reply.notFound('Tax setting not found'); return { data: { ...row, rate: Number(row.rate) } }; });
+  app.put('/api/v1/settings/tax', async (request) => { const input = taxSettingSchema.parse(request.body); const userId = actorId(request); return prisma.$transaction(async (tx) => { const before = (await tx.$queryRaw<Array<any>>`SELECT id, name, rate, inclusive, active, updatedAt FROM TaxSetting WHERE id = 1 LIMIT 1`)[0] ?? null; await tx.$executeRaw`INSERT INTO TaxSetting (id, name, rate, inclusive, active) VALUES (1, ${input.name}, ${input.rate}, ${input.inclusive ?? false}, ${input.active ?? true}) ON DUPLICATE KEY UPDATE name = VALUES(name), rate = VALUES(rate), inclusive = VALUES(inclusive), active = VALUES(active)`; const after = (await tx.$queryRaw<Array<any>>`SELECT id, name, rate, inclusive, active, updatedAt FROM TaxSetting WHERE id = 1 LIMIT 1`)[0]; await writeAudit(tx, { userId, action: 'TAX_SETTING_UPDATED', entity: 'TaxSetting', entityId: '1', beforeJson: before, afterJson: after }); return { data: { ...after, rate: Number(after.rate) } }; }); });
+  app.get('/api/v1/settings/payment-methods', async () => ({ data: await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active, sortOrder FROM PaymentMethodSetting ORDER BY sortOrder ASC, name ASC` }));
+  app.post('/api/v1/settings/payment-methods', async (request, reply) => { const input = paymentMethodSchema.parse(request.body); const existing = await prisma.$queryRaw<Array<any>>`SELECT id FROM PaymentMethodSetting WHERE code = ${input.code} OR name = ${input.name} LIMIT 1`; if (existing[0]) return reply.conflict('Payment method already exists'); await prisma.$executeRaw`INSERT INTO PaymentMethodSetting (name, code, active, sortOrder) VALUES (${input.name}, ${input.code}, ${input.active ?? true}, ${input.sortOrder ?? 0})`; const data = (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active, sortOrder FROM PaymentMethodSetting WHERE code = ${input.code} LIMIT 1`)[0]; return reply.code(201).send({ data }); });
+  app.patch('/api/v1/settings/payment-methods/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = paymentMethodSchema.partial().parse(request.body); const existing = (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active, sortOrder FROM PaymentMethodSetting WHERE id = ${id} LIMIT 1`)[0]; if (!existing) return reply.notFound('Payment method not found'); if (input.code || input.name) { const duplicate = await prisma.$queryRaw<Array<any>>`SELECT id FROM PaymentMethodSetting WHERE id <> ${id} AND (code = ${input.code ?? existing.code} OR name = ${input.name ?? existing.name}) LIMIT 1`; if (duplicate[0]) return reply.conflict('Payment method already exists'); } await prisma.$executeRaw`UPDATE PaymentMethodSetting SET name = COALESCE(${input.name ?? null}, name), code = COALESCE(${input.code ?? null}, code), active = COALESCE(${input.active === undefined ? null : input.active}, active), sortOrder = COALESCE(${input.sortOrder === undefined ? null : input.sortOrder}, sortOrder) WHERE id = ${id}`; return { data: (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active, sortOrder FROM PaymentMethodSetting WHERE id = ${id} LIMIT 1`)[0] }; });
+  app.get('/api/v1/settings/units', async () => ({ data: await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active FROM UnitOfMeasure ORDER BY name ASC` }));
+  app.post('/api/v1/settings/units', async (request, reply) => { const input = unitSchema.parse(request.body); const existing = await prisma.$queryRaw<Array<any>>`SELECT id FROM UnitOfMeasure WHERE code = ${input.code} OR name = ${input.name} LIMIT 1`; if (existing[0]) return reply.conflict('Unit already exists'); await prisma.$executeRaw`INSERT INTO UnitOfMeasure (name, code, active) VALUES (${input.name}, ${input.code}, ${input.active ?? true})`; const data = (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active FROM UnitOfMeasure WHERE code = ${input.code} LIMIT 1`)[0]; return reply.code(201).send({ data }); });
+  app.patch('/api/v1/settings/units/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = unitSchema.partial().parse(request.body); const existing = (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active FROM UnitOfMeasure WHERE id = ${id} LIMIT 1`)[0]; if (!existing) return reply.notFound('Unit not found'); if (input.code || input.name) { const duplicate = await prisma.$queryRaw<Array<any>>`SELECT id FROM UnitOfMeasure WHERE id <> ${id} AND (code = ${input.code ?? existing.code} OR name = ${input.name ?? existing.name}) LIMIT 1`; if (duplicate[0]) return reply.conflict('Unit already exists'); } await prisma.$executeRaw`UPDATE UnitOfMeasure SET name = COALESCE(${input.name ?? null}, name), code = COALESCE(${input.code ?? null}, code), active = COALESCE(${input.active === undefined ? null : input.active}, active) WHERE id = ${id}`; return { data: (await prisma.$queryRaw<Array<any>>`SELECT id, name, code, active FROM UnitOfMeasure WHERE id = ${id} LIMIT 1`)[0] }; });
+  app.get('/api/v1/expense-categories', async () => ({ data: await prisma.expenseCategory.findMany({ orderBy: { name: 'asc' } }) }));
+  app.post('/api/v1/expense-categories', async (request, reply) => { const input = categorySchema.parse(request.body); const existing = await prisma.expenseCategory.findUnique({ where: { name: input.name } }); if (existing) return reply.conflict('Expense category already exists'); const data = await prisma.expenseCategory.create({ data: input }); return reply.code(201).send({ data }); });
+  app.patch('/api/v1/expense-categories/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = categorySchema.parse(request.body); const existing = await prisma.expenseCategory.findUnique({ where: { id } }); if (!existing) return reply.notFound('Expense category not found'); const duplicate = await prisma.expenseCategory.findFirst({ where: { name: input.name, id: { not: id } } }); if (duplicate) return reply.conflict('Expense category already exists'); return { data: await prisma.expenseCategory.update({ where: { id }, data: input }) }; });
 
-  app.patch('/api/v1/settings/number-sequences/:id', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as any).id);
-    const input = sequenceUpdateSchema.parse(request.body);
-    const existing = (await prisma.$queryRaw<Array<any>>`SELECT id, prefix, nextValue, padding, active FROM NumberSequence WHERE id = ${id} LIMIT 1`)[0];
-    if (!existing) return reply.notFound('Number sequence not found');
-    await prisma.$executeRaw`UPDATE NumberSequence SET prefix = COALESCE(${input.prefix ?? null}, prefix), nextValue = COALESCE(${input.nextValue ?? null}, nextValue), padding = COALESCE(${input.padding ?? null}, padding), active = COALESCE(${input.active === undefined ? null : input.active}, active) WHERE id = ${id}`;
-    return { data: (await prisma.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active, updatedAt FROM NumberSequence WHERE id = ${id} LIMIT 1`)[0] };
-  });
-
-  app.post('/api/v1/settings/number-sequences/:id/next', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as any).id);
-    const userId = actorId(request);
-    return prisma.$transaction(async (tx) => {
-      const rows = await tx.$queryRaw<Array<any>>`SELECT id, entity, prefix, nextValue, padding, active FROM NumberSequence WHERE id = ${id} FOR UPDATE`;
-      const sequence = rows[0];
-      if (!sequence) return reply.notFound('Number sequence not found');
-      if (!sequence.active) return reply.badRequest('Number sequence is inactive');
-      const value = Number(sequence.nextValue);
-      const number = `${sequence.prefix}${String(value).padStart(Number(sequence.padding), '0')}`;
-      await tx.$executeRaw`UPDATE NumberSequence SET nextValue = ${value + 1} WHERE id = ${id}`;
-      await writeAudit(tx, { userId, action: 'NUMBER_SEQUENCE_ADVANCED', entity: 'NumberSequence', entityId: String(id), beforeJson: { ...sequence, nextValue: value }, afterJson: { ...sequence, nextValue: value + 1, generatedNumber: number } });
-      return { data: { id, entity: sequence.entity, number, value } };
-    });
-  });
-
-  app.get('/api/v1/settings/users', async (request) => {
-    const query = z.object({ status: z.string().optional(), q: z.string().optional() }).parse(request.query);
-    const users = await prisma.user.findMany({ where: { ...(query.status ? { status: query.status as any } : {}), ...(query.q ? { OR: [{ name: { contains: query.q } }, { email: { contains: query.q } }] } : {}) }, select: { id: true, name: true, email: true, status: true, roleId: true, createdAt: true, updatedAt: true, role: { select: { id: true, name: true } }, employee: { select: { id: true, code: true, department: true } } }, orderBy: { name: 'asc' } });
-    return { data: users };
-  });
-
-  app.post('/api/v1/settings/users', async (request, reply) => {
-    const input = userCreateSchema.parse(request.body);
-    const role = await prisma.role.findUnique({ where: { id: input.roleId } });
-    if (!role) return reply.badRequest('Role not found');
-    const existing = await prisma.user.findUnique({ where: { email: input.email } });
-    if (existing) return reply.conflict('Email is already in use');
-    const user = await prisma.user.create({ data: { name: input.name, email: input.email, passwordHash: createPasswordHash(input.password), roleId: input.roleId, status: input.status ?? 'ACTIVE' }, select: { id: true, name: true, email: true, status: true, roleId: true, role: { select: { id: true, name: true } } } });
-    return reply.code(201).send({ data: user });
-  });
-
-  app.patch('/api/v1/settings/users/:id', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as any).id);
-    const input = userUpdateSchema.parse(request.body);
-    const existing = await prisma.user.findUnique({ where: { id } });
-    if (!existing) return reply.notFound('User not found');
-    if (input.roleId) { const role = await prisma.role.findUnique({ where: { id: input.roleId } }); if (!role) return reply.badRequest('Role not found'); }
-    if (input.email && input.email !== existing.email) { const duplicate = await prisma.user.findUnique({ where: { email: input.email } }); if (duplicate) return reply.conflict('Email is already in use'); }
-    const data: any = { ...input }; if (input.password) data.passwordHash = createPasswordHash(input.password); delete data.password;
-    const user = await prisma.user.update({ where: { id }, data, select: { id: true, name: true, email: true, status: true, roleId: true, role: { select: { id: true, name: true } } } });
-    return { data: user };
-  });
-
+  app.get('/api/v1/settings/users', async (request) => { const query = z.object({ status: z.string().optional(), q: z.string().optional() }).parse(request.query); const users = await prisma.user.findMany({ where: { ...(query.status ? { status: query.status as any } : {}), ...(query.q ? { OR: [{ name: { contains: query.q } }, { email: { contains: query.q } }] } : {}) }, select: { id: true, name: true, email: true, status: true, roleId: true, createdAt: true, updatedAt: true, role: { select: { id: true, name: true } }, employee: { select: { id: true, code: true, department: true } } }, orderBy: { name: 'asc' } }); return { data: users }; });
+  app.post('/api/v1/settings/users', async (request, reply) => { const input = userCreateSchema.parse(request.body); const role = await prisma.role.findUnique({ where: { id: input.roleId } }); if (!role) return reply.badRequest('Role not found'); const existing = await prisma.user.findUnique({ where: { email: input.email } }); if (existing) return reply.conflict('Email is already in use'); const user = await prisma.user.create({ data: { name: input.name, email: input.email, passwordHash: createPasswordHash(input.password), roleId: input.roleId, status: input.status ?? 'ACTIVE' }, select: { id: true, name: true, email: true, status: true, roleId: true, role: { select: { id: true, name: true } } } }); return reply.code(201).send({ data: user }); });
+  app.patch('/api/v1/settings/users/:id', async (request, reply) => { const id = z.coerce.number().int().positive().parse((request.params as any).id); const input = userUpdateSchema.parse(request.body); const existing = await prisma.user.findUnique({ where: { id } }); if (!existing) return reply.notFound('User not found'); if (input.roleId) { const role = await prisma.role.findUnique({ where: { id: input.roleId } }); if (!role) return reply.badRequest('Role not found'); } if (input.email && input.email !== existing.email) { const duplicate = await prisma.user.findUnique({ where: { email: input.email } }); if (duplicate) return reply.conflict('Email is already in use'); } const data: any = { ...input }; if (input.password) data.passwordHash = createPasswordHash(input.password); delete data.password; const user = await prisma.user.update({ where: { id }, data, select: { id: true, name: true, email: true, status: true, roleId: true, role: { select: { id: true, name: true } } } }); return { data: user }; });
   app.get('/api/v1/settings/roles', async () => ({ data: await prisma.role.findMany({ orderBy: { name: 'asc' }, include: { permissions: { include: { permission: true } }, _count: { select: { users: true } } } }) }));
   app.post('/api/v1/settings/roles', async (request, reply) => { const input = roleCreateSchema.parse(request.body); const existing = await prisma.role.findUnique({ where: { name: input.name } }); if (existing) return reply.conflict('Role already exists'); const role = await prisma.role.create({ data: { name: input.name } }); return reply.code(201).send({ data: role }); });
   app.get('/api/v1/settings/permissions', async () => ({ data: await prisma.permission.findMany({ orderBy: { key: 'asc' } }) }));
