@@ -23,8 +23,8 @@ This is the single project task file for the repository. The public website live
 
 ## 2. Master Data / Settings
 - [x] Company profile/settings.
-- [ ] Branch/location settings.
-- [ ] Number sequences.
+- [x] Branch/location settings.
+- [x] Number sequences.
 - [ ] Tax configuration and payment methods.
 - [ ] Units of measure.
 - [x] Service catalogue API foundation.
@@ -268,6 +268,7 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Added company profile settings plus branch/location management and transactional number sequences, including version-controlled raw-SQL migrations, Admin controls, authorization/validation coverage and audit side effects for number allocation.
 - 2026-09-02: Added a single-row Company Settings profile with validated API read/update, transactional audit logging, Admin Settings UI and version-controlled database migration. CI explicitly provisions the raw-SQL-backed settings table.
 - 2026-09-02: Added shared development conventions and environment documentation covering repository layout, local setup, environment variables, test isolation, database-change conventions and release commands.
 - 2026-09-02: Added production deployment documentation covering frontend/Admin/backend topology, production environment configuration, migration safety, release verification and rollback guidance.
