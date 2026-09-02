@@ -1,0 +1,42 @@
+CREATE TABLE EmployeeRole (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (id),
+  UNIQUE KEY EmployeeRole_name_key (name)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE Skill (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(120) NOT NULL,
+  description VARCHAR(500) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (id),
+  UNIQUE KEY Skill_name_key (name)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE EmployeeSkill (
+  employeeId INT NOT NULL,
+  skillId INT NOT NULL,
+  level INT NOT NULL DEFAULT 1,
+  createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (employeeId, skillId),
+  KEY EmployeeSkill_skillId_idx (skillId),
+  CONSTRAINT EmployeeSkill_employeeId_fkey FOREIGN KEY (employeeId) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT EmployeeSkill_skillId_fkey FOREIGN KEY (skillId) REFERENCES Skill(id) ON DELETE CASCADE ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE EmployeeRoleAssignment (
+  employeeId INT NOT NULL,
+  roleId INT NOT NULL,
+  createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (employeeId),
+  KEY EmployeeRoleAssignment_roleId_idx (roleId),
+  CONSTRAINT EmployeeRoleAssignment_employeeId_fkey FOREIGN KEY (employeeId) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT EmployeeRoleAssignment_roleId_fkey FOREIGN KEY (roleId) REFERENCES EmployeeRole(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
