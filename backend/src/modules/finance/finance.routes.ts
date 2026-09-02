@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 import { actorId, writeAudit } from '../audit/audit.service.js';
+import { createTextPdf } from '../../lib/simple-pdf.js';
 
 const invoiceItemSchema = z.object({
   description: z.string().min(1), quantity: z.coerce.number().positive(), unit: z.string().min(1).max(30), rate: z.coerce.number().nonnegative(), total: z.coerce.number().nonnegative(),
@@ -48,6 +49,34 @@ export async function financeRoutes(app: FastifyInstance) {
     const data = await prisma.invoice.findUnique({ where: { id }, include: { client: true, project: true, items: true, payments: true } });
     if (!data) return reply.notFound('Invoice not found');
     return { data };
+  });
+
+  app.get('/api/v1/invoices/:id/pdf', async (request, reply) => {
+    const id = z.coerce.number().int().positive().parse((request.params as any).id);
+    const invoice = await prisma.invoice.findUnique({ where: { id }, include: { client: true, project: true, items: true } });
+    if (!invoice) return reply.notFound('Invoice not found');
+    const money=(value:unknown)=>`LKR ${Number(value??0).toFixed(2)}`;
+    const lines=[
+      'KANDY ADS — CUSTOMER INVOICE',
+      `Invoice: ${invoice.number}`,
+      `Invoice date: ${invoice.invoiceDate.toISOString().slice(0,10)}    Due: ${invoice.dueDate.toISOString().slice(0,10)}`,
+      `Client: ${invoice.client.companyName}`,
+      ...(invoice.project?[`Project: ${invoice.project.number} — ${invoice.project.name}`]:[]),
+      '',
+      'Description                         Qty     Rate        Total',
+      ...invoice.items.map(item=>`${item.description}    ${Number(item.quantity).toFixed(2)}    ${money(item.rate)}    ${money(item.total)}`),
+      '',
+      `Subtotal: ${money(invoice.subtotal)}`,
+      `Discount: ${money(invoice.discount)}`,
+      `Tax: ${money(invoice.tax)}`,
+      `Total: ${money(invoice.total)}`,
+      `Paid: ${money(invoice.amountPaid)}`,
+      `Outstanding: ${money(invoice.balance)}`,
+      `Status: ${invoice.status}`,
+    ];
+    const pdf=createTextPdf(lines);
+    reply.header('Content-Type','application/pdf').header('Content-Disposition',`inline; filename="${invoice.number.replace(/[^a-zA-Z0-9_-]/g,'_')}.pdf"`);
+    return reply.send(pdf);
   });
 
   app.post('/api/v1/payments', async (request, reply) => {
