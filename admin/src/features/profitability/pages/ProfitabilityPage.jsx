@@ -7,99 +7,17 @@ const money = (value) => `LKR ${Number(value || 0).toLocaleString(undefined, { m
 const variance = (row) => `${money(row.variance)}${row.variancePercent == null ? '' : ` (${Number(row.variancePercent).toFixed(1)}%)`}`;
 
 export default function ProfitabilityPage() {
-  const [projects, setProjects] = React.useState([]);
-  const [jobs, setJobs] = React.useState([]);
-  const [estimateReport, setEstimateReport] = React.useState(null);
-  const [summary, setSummary] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
-
-  const load = React.useCallback(async () => {
-    setLoading(true); setError('');
-    try {
-      const [projectResult, jobResult, totals, estimateResult] = await Promise.all([
-        api.listProfitabilityProjects(),
-        api.listProfitabilityJobs(),
-        api.getProfitabilitySummary(),
-        api.getEstimateVsActual(),
-      ]);
-      setProjects(projectResult.data ?? []);
-      setJobs(jobResult.data ?? []);
-      setSummary(totals.data ?? null);
-      setEstimateReport(estimateResult.data ?? null);
-    } catch (e) { setError(e.message || 'Unable to load profitability.'); }
-    finally { setLoading(false); }
-  }, []);
-
+  const [projects, setProjects] = React.useState([]); const [jobs, setJobs] = React.useState([]); const [estimateReport, setEstimateReport] = React.useState(null); const [forecastReport, setForecastReport] = React.useState(null); const [summary, setSummary] = React.useState(null); const [loading, setLoading] = React.useState(true); const [error, setError] = React.useState('');
+  const load = React.useCallback(async () => { setLoading(true); setError(''); try { const [projectResult, jobResult, totals, estimateResult, forecastResult] = await Promise.all([api.listProfitabilityProjects(), api.listProfitabilityJobs(), api.getProfitabilitySummary(), api.getEstimateVsActual(), api.getProfitabilityForecast()]); setProjects(projectResult.data ?? []); setJobs(jobResult.data ?? []); setSummary(totals.data ?? null); setEstimateReport(estimateResult.data ?? null); setForecastReport(forecastResult.data ?? null); } catch (e) { setError(e.message || 'Unable to load profitability.'); } finally { setLoading(false); } }, []);
   React.useEffect(() => { load(); }, [load]);
-
-  const projectColumns = [
-    { key: 'number', label: 'Project' },
-    { key: 'name', label: 'Project name' },
-    { key: 'clientName', label: 'Client' },
-    { key: 'jobs', label: 'Jobs' },
-    { key: 'revenue', label: 'Revenue', render: r => money(r.revenue) },
-    { key: 'estimatedCost', label: 'Estimated cost', render: r => money(r.estimatedCost) },
-    { key: 'actualCost', label: 'Actual cost', render: r => money(r.actualCost) },
-    { key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },
-    { key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` },
-  ];
-
-  const jobColumns = [
-    { key: 'number', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },
-    { key: 'project', label: 'Project', render: r => r.job.projectName },
-    { key: 'service', label: 'Service', render: r => r.job.service || '—' },
-    { key: 'hours', label: 'Hours' },
-    { key: 'revenue', label: 'Revenue', render: r => money(r.revenue) },
-    { key: 'actual', label: 'Actual cost', render: r => money(r.actual.total) },
-    { key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },
-    { key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` },
-  ];
-
-  const estimateColumns = [
-    { key: 'job', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },
-    { key: 'material', label: 'Materials', render: r => <span title={`Estimate ${money(r.material.estimated)} · Actual ${money(r.material.actual)}`}>{variance(r.material)}</span> },
-    { key: 'labour', label: 'Labour', render: r => <span title={`Estimate ${money(r.labour.estimated)} · Actual ${money(r.labour.actual)}`}>{variance(r.labour)}</span> },
-    { key: 'outsource', label: 'Outsourcing', render: r => <span title={`Estimate ${money(r.outsource.estimated)} · Actual ${money(r.outsource.actual)}`}>{variance(r.outsource)}</span> },
-    { key: 'expense', label: 'Expenses', render: r => <span title={`Estimate ${money(r.expense.estimated)} · Actual ${money(r.expense.actual)}`}>{variance(r.expense)}</span> },
-    { key: 'total', label: 'Total variance', render: r => <strong className={Number(r.total.variance) <= 0 ? 'positive' : 'negative'} title={`Estimate ${money(r.total.estimated)} · Actual ${money(r.total.actual)}`}>{variance(r.total)}</strong> },
-  ];
-
-  return <>
-    <div className="page-head">
-      <div><p className="eyebrow">TEAM & FINANCE / PROFITABILITY</p><h1>Profitability</h1><p>See project and production-job performance from the real costs recorded in operations.</p></div>
-      <button className="secondary" onClick={load}>Refresh</button>
-    </div>
-
-    {summary && <div className="stat-grid">
-      <div className="stat"><span>Projects</span><strong>{summary.projects}</strong></div>
-      <div className="stat"><span>Jobs</span><strong>{summary.jobs}</strong></div>
-      <div className="stat"><span>Revenue</span><strong>{money(summary.revenue)}</strong></div>
-      <div className="stat"><span>Actual cost</span><strong>{money(summary.actualCost)}</strong></div>
-      <div className="stat"><span>Gross profit</span><strong className={Number(summary.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(summary.grossProfit)}</strong></div>
-      <div className="stat"><span>Margin</span><strong>{summary.marginPercent == null ? '—' : `${Number(summary.marginPercent).toFixed(1)}%`}</strong></div>
-    </div>}
-
-    <section>
-      <div className="panel-head"><div><span>PROJECT PROFITABILITY</span><h2>Project performance</h2></div></div>
-      <ResourceTable columns={projectColumns} rows={projects} loading={loading} error={error}/>
-    </section>
-
-    <section className="profitability-detail">
-      <div className="panel-head"><div><span>ESTIMATE VS ACTUAL</span><h2>Cost variance by job</h2></div></div>
-      <p className="muted">Positive variance means actual cost is above estimate. Values show variance amount and percentage; hover a value for the estimate and actual amounts.</p>
-      {estimateReport?.totals && <div className="stat-grid">
-        <div className="stat"><span>Estimated cost</span><strong>{money(estimateReport.totals.total.estimated)}</strong></div>
-        <div className="stat"><span>Actual cost</span><strong>{money(estimateReport.totals.total.actual)}</strong></div>
-        <div className="stat"><span>Total variance</span><strong className={Number(estimateReport.totals.total.variance) <= 0 ? 'positive' : 'negative'}>{variance(estimateReport.totals.total)}</strong></div>
-      </div>}
-      <ResourceTable columns={estimateColumns} rows={estimateReport?.rows ?? []} loading={loading} error={error}/>
-    </section>
-
-    <section className="profitability-detail">
-      <div className="panel-head"><div><span>JOB COST ENGINE</span><h2>Production job performance</h2></div></div>
-      <p className="muted">Actual job cost combines employee time, job stock usage, received outsourcing and approved or paid direct expenses. Returned stock reduces material cost.</p>
-      <div style={{ marginTop: 18 }}><ResourceTable columns={jobColumns} rows={jobs} loading={loading} error={error} /></div>
-    </section>
-  </>;
+  const projectColumns = [{ key: 'number', label: 'Project' },{ key: 'name', label: 'Project name' },{ key: 'clientName', label: 'Client' },{ key: 'jobs', label: 'Jobs' },{ key: 'revenue', label: 'Revenue', render: r => money(r.revenue) },{ key: 'estimatedCost', label: 'Estimated cost', render: r => money(r.estimatedCost) },{ key: 'actualCost', label: 'Actual cost', render: r => money(r.actualCost) },{ key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },{ key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` }];
+  const jobColumns = [{ key: 'number', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },{ key: 'project', label: 'Project', render: r => r.job.projectName },{ key: 'service', label: 'Service', render: r => r.job.service || '—' },{ key: 'hours', label: 'Hours' },{ key: 'revenue', label: 'Revenue', render: r => money(r.revenue) },{ key: 'actual', label: 'Actual cost', render: r => money(r.actual.total) },{ key: 'grossProfit', label: 'Gross profit', render: r => <strong className={Number(r.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(r.grossProfit)}</strong> },{ key: 'marginPercent', label: 'Margin', render: r => r.marginPercent == null ? '—' : `${Number(r.marginPercent).toFixed(1)}%` }];
+  const estimateColumns = [{ key: 'job', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },{ key: 'material', label: 'Materials', render: r => <span title={`Estimate ${money(r.material.estimated)} · Actual ${money(r.material.actual)}`}>{variance(r.material)}</span> },{ key: 'labour', label: 'Labour', render: r => <span title={`Estimate ${money(r.labour.estimated)} · Actual ${money(r.labour.actual)}`}>{variance(r.labour)}</span> },{ key: 'outsource', label: 'Outsourcing', render: r => <span title={`Estimate ${money(r.outsource.estimated)} · Actual ${money(r.outsource.actual)}`}>{variance(r.outsource)}</span> },{ key: 'expense', label: 'Expenses', render: r => <span title={`Estimate ${money(r.expense.estimated)} · Actual ${money(r.expense.actual)}`}>{variance(r.expense)}</span> },{ key: 'total', label: 'Total variance', render: r => <strong className={Number(r.total.variance) <= 0 ? 'positive' : 'negative'} title={`Estimate ${money(r.total.estimated)} · Actual ${money(r.total.actual)}`}>{variance(r.total)}</strong> }];
+  const forecastColumns = [{ key: 'job', label: 'Job', render: r => <><strong>{r.job.number}</strong><small>{r.job.title}</small></> },{ key: 'estimatedCost', label: 'Estimate', render: r => money(r.estimatedCost) },{ key: 'actualCost', label: 'Actual to date', render: r => money(r.actualCost) },{ key: 'remainingEstimate', label: 'Remaining estimate', render: r => money(r.remainingEstimate) },{ key: 'forecastCost', label: 'Forecast cost', render: r => money(r.forecastCost) },{ key: 'forecastVariance', label: 'Forecast variance', render: r => <strong className={Number(r.forecastVariance) <= 0 ? 'positive' : 'negative'}>{money(r.forecastVariance)}{r.forecastVariancePercent == null ? '' : ` (${Number(r.forecastVariancePercent).toFixed(1)}%)`}</strong> },{ key: 'forecastProfit', label: 'Forecast profit', render: r => <strong className={Number(r.forecastProfit) >= 0 ? 'positive' : 'negative'}>{money(r.forecastProfit)}</strong> }];
+  return <><div className="page-head"><div><p className="eyebrow">TEAM & FINANCE / PROFITABILITY</p><h1>Profitability</h1><p>See project performance, cost variance and the current forecast from recorded operations.</p></div><button className="secondary" onClick={load}>Refresh</button></div>
+    {summary && <div className="stat-grid"><div className="stat"><span>Projects</span><strong>{summary.projects}</strong></div><div className="stat"><span>Jobs</span><strong>{summary.jobs}</strong></div><div className="stat"><span>Revenue</span><strong>{money(summary.revenue)}</strong></div><div className="stat"><span>Actual cost</span><strong>{money(summary.actualCost)}</strong></div><div className="stat"><span>Gross profit</span><strong className={Number(summary.grossProfit) >= 0 ? 'positive' : 'negative'}>{money(summary.grossProfit)}</strong></div><div className="stat"><span>Margin</span><strong>{summary.marginPercent == null ? '—' : `${Number(summary.marginPercent).toFixed(1)}%`}</strong></div></div>}
+    <section><div className="panel-head"><div><span>PROJECT PROFITABILITY</span><h2>Project performance</h2></div></div><ResourceTable columns={projectColumns} rows={projects} loading={loading} error={error}/></section>
+    <section className="profitability-detail"><div className="panel-head"><div><span>FORECAST / VARIANCE</span><h2>Expected final cost</h2></div></div><p className="muted">Forecast uses actual cost recorded to date plus the remaining estimate. Completed and cancelled jobs use their actual cost as the final forecast.</p>{forecastReport?.totals && <div className="stat-grid"><div className="stat"><span>Estimated cost</span><strong>{money(forecastReport.totals.estimatedCost)}</strong></div><div className="stat"><span>Actual to date</span><strong>{money(forecastReport.totals.actualCost)}</strong></div><div className="stat"><span>Remaining estimate</span><strong>{money(forecastReport.totals.remainingEstimate)}</strong></div><div className="stat"><span>Forecast cost</span><strong>{money(forecastReport.totals.forecastCost)}</strong></div><div className="stat"><span>Forecast variance</span><strong className={Number(forecastReport.totals.forecastVariance) <= 0 ? 'positive' : 'negative'}>{money(forecastReport.totals.forecastVariance)}</strong></div><div className="stat"><span>Forecast profit</span><strong className={Number(forecastReport.totals.forecastProfit) >= 0 ? 'positive' : 'negative'}>{money(forecastReport.totals.forecastProfit)}</strong></div></div>}<ResourceTable columns={forecastColumns} rows={forecastReport?.rows ?? []} loading={loading} error={error}/></section>
+    <section className="profitability-detail"><div className="panel-head"><div><span>ESTIMATE VS ACTUAL</span><h2>Cost variance by job</h2></div></div><p className="muted">Positive variance means actual cost is above estimate. Hover a value for the estimate and actual amounts.</p>{estimateReport?.totals && <div className="stat-grid"><div className="stat"><span>Estimated cost</span><strong>{money(estimateReport.totals.total.estimated)}</strong></div><div className="stat"><span>Actual cost</span><strong>{money(estimateReport.totals.total.actual)}</strong></div><div className="stat"><span>Total variance</span><strong className={Number(estimateReport.totals.total.variance) <= 0 ? 'positive' : 'negative'}>{variance(estimateReport.totals.total)}</strong></div></div>}<ResourceTable columns={estimateColumns} rows={estimateReport?.rows ?? []} loading={loading} error={error}/></section>
+    <section className="profitability-detail"><div className="panel-head"><div><span>JOB COST ENGINE</span><h2>Production job performance</h2></div></div><p className="muted">Actual job cost combines employee time, job stock usage, received outsourcing and approved or paid direct expenses. Returned stock reduces material cost.</p><div style={{ marginTop: 18 }}><ResourceTable columns={jobColumns} rows={jobs} loading={loading} error={error} /></div></section></>;
 }
