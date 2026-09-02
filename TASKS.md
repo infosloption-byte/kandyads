@@ -112,7 +112,7 @@ This is the single project task file for the repository. The public website live
 - [x] Employee list/search API and admin screen foundation.
 - [x] Employee master CRUD.
 - [x] Department, employment type and internal hourly/daily costing fields.
-- [ ] Skills and role management.
+- [x] Skills and role management.
 - [x] Employee job assignments.
 - [x] Time entry list/API foundation.
 - [x] Job-level time-entry posting.
@@ -281,6 +281,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added task dependencies, circular-dependency protection, required checklists and subtasks with same-job validation and completion blockers. The implementation uses the dedicated task-structure tables while preserving the stable Prisma schema/client path.
 - 2026-09-02: Completed task notes, task attachment visibility/registration and completion timestamp coverage. Task notes are stored in a dedicated nullable `Task.notes` column; task detail/list responses expose notes and attachments, and the Admin task form/detail UI supports editing notes and registering URL-backed attachments.
 - 2026-09-02: Added the Employee workload API and Admin view. Workload groups active employee-assigned tasks with planned/actual/remaining hours, overdue counts, optional date-window filtering and employee filtering; actual hours are derived from logged task time entries when present, and the integration tests use isolated employee/job fixtures to avoid cross-suite mutation races.
+- 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
