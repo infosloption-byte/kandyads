@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify';
-import { Prisma, z } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 import { actorId, writeAudit } from '../audit/audit.service.js';
-import { loadWorkflowConfiguration, workflowEntities, workflowRows, workflowStatuses, type WorkflowEntity } from './workflow.config.js';
+import { loadWorkflowConfiguration, workflowEntities, workflowRows, workflowStatuses } from './workflow.config.js';
 
 const transitionSchema = z.object({
   fromStatus: z.string().min(1).max(50),
