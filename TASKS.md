@@ -16,7 +16,7 @@ This is the single project task file for the repository. The public website live
 - [x] Development Prisma migration and local database setup.
 - [x] Authentication login/session foundation.
 - [x] Password reset/change workflow.
-- [ ] Roles and permissions enforcement.
+- [x] Roles and permissions enforcement.
 - [x] API validation, base error format, request logging and request IDs.
 - [ ] Audit logging implementation.
 - [x] Admin protected application shell, navigation and responsive layout.
@@ -195,8 +195,8 @@ This is the single project task file for the repository. The public website live
 
 ## 14. Users / Security / Audit
 - [x] Basic login/session handling.
-- [ ] Users, roles and permissions.
-- [ ] Action-level authorization.
+- [x] Users, roles and permissions.
+- [x] Action-level authorization.
 - [ ] Activity/audit log.
 - [ ] Financial/inventory change history.
 
@@ -234,7 +234,7 @@ This is the single project task file for the repository. The public website live
 - [x] Request validation.
 - [x] Pagination/filtering foundation.
 - [x] Standard error responses.
-- [ ] Authorization middleware.
+- [x] Authorization middleware.
 - [x] Transactions for stock and financial operations where implemented.
 - [ ] OpenAPI documentation.
 
@@ -271,6 +271,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Updated CI test-database provisioning to use the complete Prisma schema before seeding, avoiding a fresh-database failure caused by the repository not yet containing a complete historical migration chain.
 - 2026-09-02: The latest recorded backend integration run was 49/51 passing; the two failures were both in `attachment-workflows.test.ts` and were caused by the missing `attachment` table and the resulting absence of its audit record.
 - 2026-09-02: Implemented authenticated password-change workflow with current-password verification, new-password validation, transactional credential update and `PASSWORD_CHANGED` audit entry; added `auth-password.test.ts` covering authentication boundary, validation failure, successful credential replacement and audit side effect.
+- 2026-09-02: Added `rbac-workflows.test.ts` covering user/role/permission administration boundaries, role permission replacement validation/transaction behavior, and separate read-versus-write authorization enforcement.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
