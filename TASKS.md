@@ -118,7 +118,7 @@ This is the single project task file for the repository. The public website live
 - [x] Job-level time-entry posting.
 - [x] Time entry edit/approval workflow.
 - [x] Automatic labour cost calculation.
-- [ ] Planned vs actual hours reporting.
+- [x] Planned vs actual hours reporting.
 
 ## 6. Vendors / Outsourcing
 - [x] Vendor/supplier master foundation.
@@ -282,6 +282,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Completed task notes, task attachment visibility/registration and completion timestamp coverage. Task notes are stored in a dedicated nullable `Task.notes` column; task detail/list responses expose notes and attachments, and the Admin task form/detail UI supports editing notes and registering URL-backed attachments.
 - 2026-09-02: Added the Employee workload API and Admin view. Workload groups active employee-assigned tasks with planned/actual/remaining hours, overdue counts, optional date-window filtering and employee filtering; actual hours are derived from logged task time entries when present, and the integration tests use isolated employee/job fixtures to avoid cross-suite mutation races.
 - 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
+- 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
