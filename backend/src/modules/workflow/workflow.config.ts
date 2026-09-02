@@ -27,7 +27,7 @@ function mapFor(entity: WorkflowEntity): Record<string, string[]> {
 export function workflowRows(entity: WorkflowEntity) {
   const map = mapFor(entity);
   return workflowStatuses[entity].flatMap((from) =>
-    (map[from] ?? []).map((to) => ({ fromStatus: from, toStatus: String(to), active: true }))
+    (map[from] ?? []).map((to: string) => ({ fromStatus: from, toStatus: String(to), active: true }))
   );
 }
 
