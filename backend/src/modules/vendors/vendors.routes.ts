@@ -16,7 +16,7 @@ function actorId(request:FastifyRequest){const id=Number((request.user as {sub?:
 async function resolveInvoiceLinks(vendorId:number,input:z.infer<typeof invoiceSchema>){
   let purchaseOrderId=input.purchaseOrderId??null;
   if(input.goodsReceiptId){
-    const receipt=await prisma.goodsReceipt.findUnique({where:{id:input.goodsReceiptId},include:{purchaseOrder:{select:{id:true,vendorId:true}}});
+    const receipt=await prisma.goodsReceipt.findUnique({where:{id:input.goodsReceiptId},include:{purchaseOrder:{select:{id:true,vendorId:true}}}});
     if(!receipt) throw new Error('Goods receipt not found');
     if(receipt.purchaseOrder.vendorId!==vendorId) throw new Error('Goods receipt does not belong to this vendor');
     if(purchaseOrderId&&receipt.purchaseOrder.id!==purchaseOrderId) throw new Error('Goods receipt does not belong to selected purchase order');
