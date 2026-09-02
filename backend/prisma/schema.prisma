@@ -1,1 +1,737 @@
-x
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum EnquiryStatus {
+  OPEN
+  QUOTING
+  CONVERTED
+  CLOSED
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum JobStatus {
+  DRAFT
+  READY
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum AssignmentType {
+  INTERNAL
+  OUTSOURCED
+  MIXED
+}
+
+enum TaskStatus {
+  PENDING
+  READY
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum OutsourceStatus {
+  REQUESTED
+  APPROVED
+  SENT
+  IN_PROGRESS
+  RECEIVED
+  REJECTED
+  CANCELLED
+}
+
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum StockMovementType {
+  PURCHASE_RECEIPT
+  ISSUE
+  RETURN
+  TRANSFER
+  ADJUSTMENT
+  WASTE
+}
+
+enum PurchaseRequestStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  CONVERTED
+  CANCELLED
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  APPROVED
+  SENT
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+enum GoodsReceiptStatus {
+  DRAFT
+  POSTED
+  CANCELLED
+}
+
+model Role {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique @db.VarChar(100)
+  users       User[]
+  permissions RolePermission[]
+}
+
+model Permission {
+  id          Int             @id @default(autoincrement())
+  key         String          @unique @db.VarChar(150)
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model User {
+  id                 Int          @id @default(autoincrement())
+  name               String       @db.VarChar(150)
+  email              String       @unique @db.VarChar(191)
+  passwordHash       String       @db.VarChar(255)
+  status             UserStatus   @default(ACTIVE)
+  roleId             Int
+  role               Role         @relation(fields: [roleId], references: [id])
+  employee           Employee?
+  auditLogs          AuditLog[]
+  uploadedAttachments Attachment[] @relation("AttachmentUploader")
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Employee {
+  id               Int          @id @default(autoincrement())
+  code             String       @unique @db.VarChar(50)
+  name             String       @db.VarChar(150)
+  phone            String?
+  email            String?
+  department       String?
+  employmentType   String?
+  hourlyCost       Decimal      @db.Decimal(12, 2)
+  dailyCost        Decimal?     @db.Decimal(12, 2)
+  status           UserStatus   @default(ACTIVE)
+  userId           Int?         @unique
+  user             User?        @relation(fields: [userId], references: [id])
+  leads            Lead[]
+  projects         Project[]
+  tasks            Task[]
+  assignments      JobAssignment[]
+  timeEntries      TimeEntry[]
+  expenses         Expense[]
+  purchaseRequests PurchaseRequest[]
+}
+
+model Client {
+  id           Int        @id @default(autoincrement())
+  code         String     @unique @db.VarChar(50)
+  companyName  String     @db.VarChar(200)
+  contactName  String?
+  phone        String?
+  whatsapp     String?
+  email        String?
+  address      String?
+  industry     String?
+  paymentTerms String?
+  creditLimit  Decimal?   @db.Decimal(14, 2)
+  notes        String?
+  active       Boolean    @default(true)
+  leads        Lead[]
+  enquiries    Enquiry[]
+  quotes       Quote[]
+  projects     Project[]
+  invoices     Invoice[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Lead {
+  id            Int         @id @default(autoincrement())
+  name          String
+  company       String?
+  phone         String?
+  email         String?
+  source        String?
+  requirement   String?
+  estimatedValue Decimal?    @db.Decimal(14, 2)
+  status        LeadStatus  @default(NEW)
+  assignedToId  Int?
+  assignedTo    Employee?   @relation(fields: [assignedToId], references: [id])
+  clientId      Int?
+  client        Client?     @relation(fields: [clientId], references: [id])
+  followUpAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Enquiry {
+  id           Int           @id @default(autoincrement())
+  number       String        @unique @db.VarChar(50)
+  clientId     Int
+  client       Client        @relation(fields: [clientId], references: [id])
+  source       String?
+  requirement  String
+  siteLocation String?
+  targetDate   DateTime?
+  priority     String?
+  status       EnquiryStatus @default(OPEN)
+  quote        Quote?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Service {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique @db.VarChar(150)
+  slug        String      @unique @db.VarChar(150)
+  description String?
+  active      Boolean     @default(true)
+  quoteItems  QuoteItem[]
+  jobs        Job[]
+}
+
+model Quote {
+  id               Int         @id @default(autoincrement())
+  number           String      @unique @db.VarChar(50)
+  clientId         Int
+  client           Client      @relation(fields: [clientId], references: [id])
+  enquiryId        Int?        @unique
+  enquiry          Enquiry?    @relation(fields: [enquiryId], references: [id])
+  status           QuoteStatus @default(DRAFT)
+  validUntil       DateTime?
+  subtotal         Decimal     @db.Decimal(14, 2)
+  discount         Decimal     @default(0) @db.Decimal(14, 2)
+  tax              Decimal     @default(0) @db.Decimal(14, 2)
+  total            Decimal     @db.Decimal(14, 2)
+  expectedMaterial Decimal     @default(0) @db.Decimal(14, 2)
+  expectedLabour   Decimal     @default(0) @db.Decimal(14, 2)
+  expectedOutsource Decimal    @db.Decimal(14, 2)
+  expectedExpense  Decimal     @db.Decimal(14, 2)
+  expectedMargin   Decimal?    @db.Decimal(14, 2)
+  items            QuoteItem[]
+  project          Project?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model QuoteItem {
+  id          Int      @id @default(autoincrement())
+  quoteId     Int
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  serviceId   Int?
+  service     Service? @relation(fields: [serviceId], references: [id])
+  description String
+  quantity    Decimal  @db.Decimal(12, 3)
+  unit        String
+  rate        Decimal  @db.Decimal(14, 2)
+  discount    Decimal  @default(0) @db.Decimal(14, 2)
+  tax         Decimal  @default(0) @db.Decimal(14, 2)
+  total       Decimal  @db.Decimal(14, 2)
+}
+
+model Project {
+  id              Int             @id @default(autoincrement())
+  number          String          @unique @db.VarChar(50)
+  name            String          @db.VarChar(200)
+  clientId        Int
+  client          Client          @relation(fields: [clientId], references: [id])
+  quoteId         Int?            @unique
+  quote           Quote?          @relation(fields: [quoteId], references: [id])
+  ownerId         Int?
+  owner           Employee?       @relation(fields: [ownerId], references: [id])
+  startDate       DateTime?
+  dueDate         DateTime?
+  value           Decimal         @default(0) @db.Decimal(14, 2)
+  status          ProjectStatus   @default(PLANNED)
+  jobs            Job[]
+  expenses        Expense[]
+  installations   Installation[]
+  invoices        Invoice[]
+  stockMovements  StockMovement[]
+  timeEntries     TimeEntry[]
+  purchaseRequests PurchaseRequest[]
+  purchaseOrders  PurchaseOrder[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Job {
+  id                  Int             @id @default(autoincrement())
+  number              String          @unique @db.VarChar(50)
+  projectId           Int
+  project             Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  serviceId           Int?
+  service             Service?        @relation(fields: [serviceId], references: [id])
+  title               String          @db.VarChar(200)
+  description         String?
+  priority            String?
+  startDate           DateTime?
+  dueDate             DateTime?
+  status              JobStatus       @default(DRAFT)
+  assignmentType      AssignmentType  @default(INTERNAL)
+  revenue             Decimal         @default(0) @db.Decimal(14, 2)
+  estimatedMaterial   Decimal         @default(0) @db.Decimal(14, 2)
+  estimatedLabour     Decimal         @default(0) @db.Decimal(14, 2)
+  estimatedOutsource  Decimal         @default(0) @db.Decimal(14, 2)
+  estimatedExpense    Decimal         @default(0) @db.Decimal(14, 2)
+  tasks               Task[]
+  assignments         JobAssignment[]
+  materialRequirements MaterialRequirement[]
+  outsourceOrders     OutsourceOrder[]
+  expenses            Expense[]
+  timeEntries         TimeEntry[]
+  stockMovements      StockMovement[]
+  installations       Installation[]
+  purchaseRequests    PurchaseRequest[]
+  purchaseOrders      PurchaseOrder[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model JobAssignment {
+  id            Int       @id @default(autoincrement())
+  jobId         Int
+  job           Job       @relation(fields: [jobId], references: [id])
+  employeeId    Int?
+  employee      Employee? @relation(fields: [employeeId], references: [id])
+  vendorId      Int?
+  vendor        Vendor?   @relation(fields: [vendorId], references: [id])
+  estimatedHours Decimal?  @db.Decimal(10, 2)
+  agreedCost    Decimal?  @db.Decimal(14, 2)
+  startDate     DateTime?
+  dueDate       DateTime?
+}
+
+model Task {
+  id             Int         @id @default(autoincrement())
+  jobId          Int
+  job            Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  title          String      @db.VarChar(200)
+  description    String?
+  employeeId     Int?
+  employee       Employee?   @relation(fields: [employeeId], references: [id])
+  timeEntries    TimeEntry[]
+  priority       String?
+  startDate      DateTime?
+  dueDate        DateTime?
+  estimatedHours Decimal?    @db.Decimal(10, 2)
+  actualHours    Decimal?    @db.Decimal(10, 2)
+  status         TaskStatus  @default(PENDING)
+  completedAt    DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model TimeEntry {
+  id         Int       @id @default(autoincrement())
+  employeeId Int
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  projectId  Int?
+  project    Project?  @relation(fields: [projectId], references: [id])
+  jobId      Int?
+  job        Job?      @relation(fields: [jobId], references: [id])
+  taskId     Int?
+  task       Task?     @relation(fields: [taskId], references: [id])
+  workDate   DateTime
+  startTime  DateTime?
+  endTime    DateTime?
+  hours      Decimal   @db.Decimal(10, 2)
+  billable   Boolean   @default(false)
+  notes      String?
+}
+
+model Vendor {
+  id               Int              @id @default(autoincrement())
+  code             String           @unique @db.VarChar(50)
+  companyName      String           @db.VarChar(200)
+  contactName      String?
+  phone             String?
+  whatsapp          String?
+  email             String?
+  address           String?
+  category          String?
+  capabilities      String?
+  paymentTerms      String?
+  bankDetails      String?
+  active            Boolean         @default(true)
+  assignments       JobAssignment[]
+  outsourceOrders   OutsourceOrder[]
+  preferredMaterials Material[]
+  purchaseRequests PurchaseRequest[]
+  purchaseOrders   PurchaseOrder[]
+}
+
+model OutsourceOrder {
+  id            Int             @id @default(autoincrement())
+  number        String          @unique @db.VarChar(50)
+  jobId         Int
+  job           Job             @relation(fields: [jobId], references: [id])
+  vendorId      Int
+  vendor        Vendor          @relation(fields: [vendorId], references: [id])
+  scope         String
+  specification String?
+  quantity      Decimal?        @db.Decimal(12, 3)
+  dueDate       DateTime?
+  agreedCost    Decimal         @db.Decimal(14, 2)
+  status        OutsourceStatus @default(REQUESTED)
+  receivedAt    DateTime?
+}
+
+model MaterialCategory {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique @db.VarChar(150)
+  materials Material[]
+}
+
+model Material {
+  id                    Int                    @id @default(autoincrement())
+  sku                   String                 @unique @db.VarChar(100)
+  name                  String                 @db.VarChar(200)
+  categoryId            Int?
+  category              MaterialCategory?      @relation(fields: [categoryId], references: [id])
+  unit                  String                 @db.VarChar(30)
+  standardCost          Decimal                @db.Decimal(14, 2)
+  sellingPrice          Decimal?               @db.Decimal(14, 2)
+  reorderLevel          Decimal                @default(0) @db.Decimal(12, 3)
+  minimumStock          Decimal                @default(0) @db.Decimal(12, 3)
+  preferredVendorId     Int?
+  preferredVendor       Vendor?                @relation(fields: [preferredVendorId], references: [id])
+  active                Boolean                @default(true)
+  movements             StockMovement[]
+  requirements          MaterialRequirement[]
+  purchaseRequestItems  PurchaseRequestItem[]
+  purchaseOrderItems    PurchaseOrderItem[]
+  goodsReceiptItems     GoodsReceiptItem[]
+}
+
+model Warehouse {
+  id           Int             @id @default(autoincrement())
+  name         String          @unique @db.VarChar(150)
+  address      String?
+  active       Boolean         @default(true)
+  movements    StockMovement[]
+  goodsReceipts GoodsReceipt[]
+}
+
+model MaterialRequirement {
+  id            Int      @id @default(autoincrement())
+  jobId         Int
+  job           Job      @relation(fields: [jobId], references: [id])
+  materialId    Int
+  material      Material @relation(fields: [materialId], references: [id])
+  requiredQty   Decimal  @db.Decimal(12, 3)
+  reservedQty   Decimal  @default(0) @db.Decimal(12, 3)
+  issuedQty     Decimal  @default(0) @db.Decimal(12, 3)
+  consumedQty   Decimal  @default(0) @db.Decimal(12, 3)
+  returnedQty   Decimal  @default(0) @db.Decimal(12, 3)
+  wastedQty     Decimal  @default(0) @db.Decimal(12, 3)
+}
+
+model StockMovement {
+  id          Int               @id @default(autoincrement())
+  materialId  Int
+  material    Material          @relation(fields: [materialId], references: [id])
+  warehouseId Int
+  warehouse   Warehouse         @relation(fields: [warehouseId], references: [id])
+  type        StockMovementType
+  quantity    Decimal           @db.Decimal(12, 3)
+  unitCost    Decimal?          @db.Decimal(14, 2)
+  projectId   Int?
+  project     Project?          @relation(fields: [projectId], references: [id])
+  jobId       Int?
+  job         Job?              @relation(fields: [jobId], references: [id])
+  reference   String?
+  createdAt   DateTime          @default(now())
+}
+
+model PurchaseRequest {
+  id                Int                  @id @default(autoincrement())
+  number            String               @unique @db.VarChar(50)
+  projectId         Int?
+  project           Project?             @relation(fields: [projectId], references: [id])
+  jobId             Int?
+  job               Job?                 @relation(fields: [jobId], references: [id])
+  requestedById     Int?
+  requestedBy       Employee?            @relation(fields: [requestedById], references: [id])
+  preferredVendorId Int?
+  preferredVendor   Vendor?              @relation(fields: [preferredVendorId], references: [id])
+  requiredBy        DateTime?
+  purpose           String?
+  status            PurchaseRequestStatus @default(DRAFT)
+  items             PurchaseRequestItem[]
+  purchaseOrders    PurchaseOrder[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+}
+
+model PurchaseRequestItem {
+  id               Int            @id @default(autoincrement())
+  purchaseRequestId Int
+  purchaseRequest   PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  materialId        Int
+  material          Material       @relation(fields: [materialId], references: [id])
+  requestedQty      Decimal        @db.Decimal(12, 3)
+  estimatedUnitCost Decimal?       @db.Decimal(14, 2)
+  notes             String?
+}
+
+model PurchaseOrder {
+  id                Int                 @id @default(autoincrement())
+  number            String              @unique @db.VarChar(50)
+  vendorId          Int
+  vendor            Vendor              @relation(fields: [vendorId], references: [id])
+  projectId         Int?
+  project           Project?            @relation(fields: [projectId], references: [id])
+  jobId             Int?
+  job               Job?                @relation(fields: [jobId], references: [id])
+  purchaseRequestId Int?
+  purchaseRequest   PurchaseRequest?    @relation(fields: [purchaseRequestId], references: [id])
+  orderDate         DateTime
+  expectedDate      DateTime?
+  subtotal          Decimal             @db.Decimal(14, 2)
+  discount          Decimal             @default(0) @db.Decimal(14, 2)
+  tax               Decimal             @db.Decimal(14, 2)
+  total             Decimal             @db.Decimal(14, 2)
+  status            PurchaseOrderStatus @default(DRAFT)
+  notes             String?
+  items             PurchaseOrderItem[]
+  goodsReceipts     GoodsReceipt[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model PurchaseOrderItem {
+  id                Int             @id @default(autoincrement())
+  purchaseOrderId   Int
+  purchaseOrder     PurchaseOrder   @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  materialId        Int
+  material          Material        @relation(fields: [materialId], references: [id])
+  description       String
+  quantity          Decimal         @db.Decimal(12, 3)
+  unit              String           @db.VarChar(30)
+  unitCost          Decimal         @db.Decimal(14, 2)
+  total             Decimal         @db.Decimal(14, 2)
+  receivedQty       Decimal         @default(0) @db.Decimal(12, 3)
+  goodsReceiptItems GoodsReceiptItem[]
+}
+
+model GoodsReceipt {
+  id               Int               @id @default(autoincrement())
+  number           String            @unique @db.VarChar(50)
+  purchaseOrderId  Int
+  purchaseOrder    PurchaseOrder     @relation(fields: [purchaseOrderId], references: [id])
+  warehouseId      Int
+  warehouse        Warehouse         @relation(fields: [warehouseId], references: [id])
+  receivedDate     DateTime
+  status           GoodsReceiptStatus @default(DRAFT)
+  supplierReference String?
+  notes            String?
+  items            GoodsReceiptItem[]
+  createdAt        DateTime          @default(now())
+}
+
+model GoodsReceiptItem {
+  id                Int             @id @default(autoincrement())
+  goodsReceiptId    Int
+  goodsReceipt      GoodsReceipt    @relation(fields: [goodsReceiptId], references: [id], onDelete: Cascade)
+  purchaseOrderItemId Int
+  purchaseOrderItem  PurchaseOrderItem @relation(fields: [purchaseOrderItemId], references: [id])
+  materialId        Int
+  material          Material        @relation(fields: [materialId], references: [id])
+  receivedQty       Decimal         @db.Decimal(12, 3)
+  unitCost          Decimal         @db.Decimal(14, 2)
+}
+
+model ExpenseCategory {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique @db.VarChar(150)
+  expenses Expense[]
+}
+
+model Expense {
+  id           Int             @id @default(autoincrement())
+  number       String          @unique @db.VarChar(50)
+  categoryId   Int
+  category     ExpenseCategory @relation(fields: [categoryId], references: [id])
+  projectId    Int?
+  project      Project?        @relation(fields: [projectId], references: [id])
+  jobId        Int?
+  job          Job?            @relation(fields: [jobId], references: [id])
+  employeeId   Int?
+  employee     Employee?       @relation(fields: [employeeId], references: [id])
+  amount       Decimal         @db.Decimal(14, 2)
+  expenseDate  DateTime
+  paymentMethod String?
+  receiptUrl   String?
+  direct       Boolean         @default(false)
+  status       ExpenseStatus   @default(DRAFT)
+  notes        String?
+  createdAt    DateTime        @default(now())
+}
+
+model Installation {
+  id             Int       @id @default(autoincrement())
+  number         String    @unique @db.VarChar(50)
+  projectId      Int
+  project        Project   @relation(fields: [projectId], references: [id])
+  jobId          Int?
+  job            Job?      @relation(fields: [jobId], references: [id])
+  siteAddress    String
+  siteContact    String?
+  scheduledAt    DateTime?
+  team           String?
+  vehicle        String?
+  status         String    @default("SCHEDULED")
+  requirements   String?
+  beforePhotoUrl String?
+  afterPhotoUrl  String?
+  notes          String?
+  completedAt    DateTime?
+}
+
+model Invoice {
+  id          Int           @id @default(autoincrement())
+  number      String        @unique @db.VarChar(50)
+  clientId    Int
+  client      Client        @relation(fields: [clientId], references: [id])
+  projectId   Int?
+  project     Project?      @relation(fields: [projectId], references: [id])
+  invoiceDate DateTime
+  dueDate     DateTime
+  subtotal    Decimal       @db.Decimal(14, 2)
+  discount    Decimal       @default(0) @db.Decimal(14, 2)
+  tax         Decimal       @db.Decimal(14, 2)
+  total       Decimal       @db.Decimal(14, 2)
+  amountPaid  Decimal       @default(0) @db.Decimal(14, 2)
+  balance     Decimal       @db.Decimal(14, 2)
+  status      InvoiceStatus @default(DRAFT)
+  items       InvoiceItem[]
+  payments    Payment[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model InvoiceItem {
+  id          Int      @id @default(autoincrement())
+  invoiceId   Int
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Decimal  @db.Decimal(12, 3)
+  unit        String
+  rate        Decimal  @db.Decimal(14, 2)
+  total       Decimal  @db.Decimal(14, 2)
+}
+
+model Payment {
+  id         Int       @id @default(autoincrement())
+  invoiceId  Int
+  invoice    Invoice   @relation(fields: [invoiceId], references: [id])
+  amount     Decimal   @db.Decimal(14, 2)
+  paidAt     DateTime
+  method     String
+  reference  String?
+  notes      String?
+}
+
+model Attachment {
+  id           Int      @id @default(autoincrement())
+  entityType   String   @db.VarChar(50)
+  entityId     Int
+  name         String   @db.VarChar(255)
+  description  String?
+  mimeType     String?  @db.VarChar(120)
+  sizeBytes    Int?
+  storageKey   String?  @db.VarChar(500)
+  url          String?  @db.VarChar(1000)
+  uploadedById Int?
+  uploadedBy   User?    @relation("AttachmentUploader", fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([uploadedById])
+}
+
+model AuditLog {
+  id        BigInt   @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String   @db.VarChar(100)
+  entity    String   @db.VarChar(100)
+  entityId  String   @db.VarChar(100)
+  beforeJson Json?
+  afterJson  Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+}
