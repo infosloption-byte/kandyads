@@ -31,6 +31,25 @@ export async function vendorsRoutes(app: FastifyInstance) {
     return { data };
   });
 
+  app.get('/api/v1/vendors/:id', async (request, reply) => {
+    const id = z.coerce.number().int().positive().parse((request.params as any).id);
+    const vendor = await prisma.vendor.findUnique({
+      where: { id },
+      include: {
+        _count: { select: { assignments: true, outsourceOrders: true } },
+        assignments: { include: { job: true }, orderBy: { id: 'desc' }, take: 50 },
+        outsourceOrders: { include: { job: true }, orderBy: { createdAt: 'desc' }, take: 50 },
+      },
+    });
+    if (!vendor) return reply.notFound('Vendor not found');
+    const attachments = await prisma.attachment.findMany({
+      where: { entityType: 'VENDOR', entityId: id },
+      include: { uploadedBy: { select: { id: true, name: true, email: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { data: { ...vendor, attachments } };
+  });
+
   app.post('/api/v1/vendors', async (request, reply) => {
     const input = vendorSchema.parse(request.body);
     const data = await prisma.vendor.create({ data: input });
