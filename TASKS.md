@@ -15,7 +15,7 @@ This is the single project task file for the repository. The public website live
 - [x] Environment validation foundation.
 - [x] Development Prisma migration and local database setup.
 - [x] Authentication login/session foundation.
-- [ ] Password reset/change workflow.
+- [x] Password reset/change workflow.
 - [ ] Roles and permissions enforcement.
 - [x] API validation, base error format, request logging and request IDs.
 - [ ] Audit logging implementation.
@@ -270,6 +270,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Attachment creation already performs the attachment insert and `ATTACHMENT_ADDED` audit entry in one transaction, with the created attachment ID recorded in `afterJson`; the audit failure was a consequence of the missing attachment table preventing the transaction from completing.
 - 2026-09-02: Updated CI test-database provisioning to use the complete Prisma schema before seeding, avoiding a fresh-database failure caused by the repository not yet containing a complete historical migration chain.
 - 2026-09-02: The latest recorded backend integration run was 49/51 passing; the two failures were both in `attachment-workflows.test.ts` and were caused by the missing `attachment` table and the resulting absence of its audit record.
+- 2026-09-02: Implemented authenticated password-change workflow with current-password verification, new-password validation, transactional credential update and `PASSWORD_CHANGED` audit entry; added `auth-password.test.ts` covering authentication boundary, validation failure, successful credential replacement and audit side effect.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
