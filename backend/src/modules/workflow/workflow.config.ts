@@ -14,7 +14,7 @@ export const workflowStatuses: Record<WorkflowEntity, readonly string[]> = {
   TASK: ['PENDING', 'READY', 'IN_PROGRESS', 'BLOCKED', 'REVIEW', 'COMPLETED', 'CANCELLED'],
 };
 
-function mapFor(entity: WorkflowEntity) {
+function mapFor(entity: WorkflowEntity): Record<string, string[]> {
   switch (entity) {
     case 'QUOTE': return quoteTransitions;
     case 'ENQUIRY': return enquiryTransitions;
@@ -26,7 +26,9 @@ function mapFor(entity: WorkflowEntity) {
 
 export function workflowRows(entity: WorkflowEntity) {
   const map = mapFor(entity);
-  return workflowStatuses[entity].flatMap((from) => map[from as keyof typeof map].map((to) => ({ fromStatus: from, toStatus: String(to), active: true })));
+  return workflowStatuses[entity].flatMap((from) =>
+    (map[from] ?? []).map((to) => ({ fromStatus: from, toStatus: String(to), active: true }))
+  );
 }
 
 export async function loadWorkflowConfiguration(client: Pick<PrismaClient, '$queryRaw'> = prisma) {
@@ -43,7 +45,7 @@ export async function loadWorkflowConfiguration(client: Pick<PrismaClient, '$que
     grouped.set(row.entity, list);
   }
   for (const entity of workflowEntities) {
-    const map = mapFor(entity) as Record<string, string[]>;
+    const map = mapFor(entity);
     for (const status of workflowStatuses[entity]) map[status] = [];
     for (const row of grouped.get(entity) ?? []) (map[row.fromStatus] ??= []).push(row.toStatus);
   }
