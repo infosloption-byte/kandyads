@@ -13,11 +13,23 @@ const installationSchema = z.object({
   vehicle: z.string().max(100).optional().nullable(),
   status: z.string().max(50).optional().default('SCHEDULED'),
   requirements: z.string().max(5000).optional().nullable(),
-  beforePhotoUrl: z.string().max(500).optional().nullable(),
-  afterPhotoUrl: z.string().max(500).optional().nullable(),
+  beforePhotoUrl: z.string().url().max(1000).optional().nullable(),
+  afterPhotoUrl: z.string().url().max(1000).optional().nullable(),
   notes: z.string().max(5000).optional().nullable(),
   completedAt: z.coerce.date().optional().nullable(),
 });
+
+const statusSchema = z.object({
+  status: z.string().min(2).max(50),
+  completedAt: z.coerce.date().optional().nullable(),
+  beforePhotoUrl: z.string().url().max(1000).optional().nullable(),
+  afterPhotoUrl: z.string().url().max(1000).optional().nullable(),
+  notes: z.string().max(5000).optional().nullable(),
+});
+
+function includeRelations() {
+  return { project: { include: { client: true } }, job: true } as const;
+}
 
 export async function installationsRoutes(app: FastifyInstance) {
   app.get('/api/v1/installations', async (request) => {
@@ -28,10 +40,22 @@ export async function installationsRoutes(app: FastifyInstance) {
         projectId: query.projectId,
         ...(query.q ? { OR: [{ number: { contains: query.q } }, { siteAddress: { contains: query.q } }, { team: { contains: query.q } }] } : {}),
       },
-      include: { project: { include: { client: true } }, job: true },
+      include: includeRelations(),
       orderBy: [{ scheduledAt: 'asc' }, { id: 'desc' }],
     });
     return { data };
+  });
+
+  app.get('/api/v1/installations/:id', async (request, reply) => {
+    const id = z.coerce.number().int().positive().parse((request.params as any).id);
+    const installation = await prisma.installation.findUnique({ where: { id }, include: includeRelations() });
+    if (!installation) return reply.notFound('Installation not found');
+    const attachments = await prisma.attachment.findMany({
+      where: { entityType: 'INSTALLATION', entityId: id },
+      include: { uploadedBy: { select: { id: true, name: true, email: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    return { data: { ...installation, attachments } };
   });
 
   app.post('/api/v1/installations', async (request, reply) => {
@@ -42,23 +66,35 @@ export async function installationsRoutes(app: FastifyInstance) {
       const job = await prisma.job.findUnique({ where: { id: input.jobId } });
       if (!job || job.projectId !== input.projectId) return reply.badRequest('Job does not belong to selected project');
     }
-    const data = await prisma.installation.create({ data: input, include: { project: { include: { client: true } }, job: true } });
+    if (input.status === 'COMPLETED' && (!input.beforePhotoUrl || !input.afterPhotoUrl)) {
+      return reply.badRequest('Completed installations require both before and after photo URLs');
+    }
+    const data = await prisma.installation.create({ data: input, include: includeRelations() });
     return reply.code(201).send({ data });
   });
 
   app.patch('/api/v1/installations/:id/status', async (request, reply) => {
     const id = z.coerce.number().int().positive().parse((request.params as any).id);
-    const input = z.object({ status: z.string().min(2).max(50), completedAt: z.coerce.date().optional().nullable(), afterPhotoUrl: z.string().max(500).optional().nullable() }).parse(request.body);
+    const input = statusSchema.parse(request.body);
     const existing = await prisma.installation.findUnique({ where: { id } });
     if (!existing) return reply.notFound('Installation not found');
+
+    const beforePhotoUrl = input.beforePhotoUrl ?? existing.beforePhotoUrl;
+    const afterPhotoUrl = input.afterPhotoUrl ?? existing.afterPhotoUrl;
+    if (input.status === 'COMPLETED' && (!beforePhotoUrl || !afterPhotoUrl)) {
+      return reply.badRequest('Completed installations require both before and after photo URLs');
+    }
+
     const data = await prisma.installation.update({
       where: { id },
       data: {
         status: input.status,
         completedAt: input.completedAt ?? (input.status === 'COMPLETED' ? new Date() : existing.completedAt),
-        afterPhotoUrl: input.afterPhotoUrl ?? existing.afterPhotoUrl,
+        beforePhotoUrl,
+        afterPhotoUrl,
+        notes: input.notes ?? existing.notes,
       },
-      include: { project: { include: { client: true } }, job: true },
+      include: includeRelations(),
     });
     return { data };
   });
