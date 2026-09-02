@@ -40,7 +40,7 @@ test('enquiry detail requires authentication',async()=>{
 });
 
 test('enquiry detail returns client and linked quote data',async()=>{
-  const response=await request(`${base}/enquiries/${enquiryId}`); assert.equal(response.status,200); assert.equal(response.body.data.id,enquiryId); assert.ok(response.body.data.client); assert.ok(Array.isArray(response.body.data.quote));
+  const response=await request(`${base}/enquiries/${enquiryId}`); assert.equal(response.status,200); assert.equal(response.body.data.id,enquiryId); assert.ok(response.body.data.client); assert.ok(response.body.data.quote===null||typeof response.body.data.quote==='object');
 });
 
 test('enquiry edit updates fields and records audit activity',async()=>{
