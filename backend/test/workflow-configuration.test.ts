@@ -8,6 +8,7 @@ const base='/api/v1';
 let app: Awaited<ReturnType<typeof buildApp>>;
 let token='';
 let quoteId=0;
+let originalQuoteTransitions:Array<{fromStatus:string;toStatus:string;active:boolean}> = [];
 
 async function request(path:string, options:RequestInit={}){
   const headers=new Headers(options.headers);
@@ -27,6 +28,9 @@ before(async()=>{
   const login=await app.inject({method:'POST',url:`${base}/auth/login`,headers:{'content-type':'application/json'},payload:JSON.stringify({email:'admin@kandyads.lk',password:'ChangeMe!123'})});
   assert.equal(login.statusCode,200);
   token=JSON.parse(login.body).data.token;
+  const current=await request(`${base}/settings/workflows/QUOTE`);
+  assert.equal(current.status,200);
+  originalQuoteTransitions=current.body.data.transitions.map((row:any)=>({fromStatus:row.fromStatus,toStatus:row.toStatus,active:Boolean(row.active)}));
 });
 
 after(async()=>{
@@ -34,7 +38,9 @@ after(async()=>{
     await prisma.quoteItem.deleteMany({where:{quoteId}}).catch(()=>undefined);
     await prisma.quote.delete({where:{id:quoteId}}).catch(()=>undefined);
   }
-  await prisma.$executeRaw`DELETE FROM WorkflowTransition` .catch(()=>undefined);
+  if(originalQuoteTransitions.length){
+    await request(`${base}/settings/workflows/QUOTE`,{method:'PUT',body:JSON.stringify({transitions:originalQuoteTransitions})}).catch(()=>undefined);
+  }
   await prisma.$disconnect();
   await app.close();
 });
@@ -57,7 +63,7 @@ test('workflow configuration validates transitions and updates the runtime rule 
 
   const current=await request(`${base}/settings/workflows/QUOTE`);
   assert.equal(current.status,200);
-  const disabled=current.body.data.transitions.filter((row:any)=>!(row.fromStatus==='DRAFT'&&row.toStatus==='SENT')).map((row:any)=>({fromStatus:row.fromStatus,toStatus:row.toStatus,active:row.active}));
+  const disabled=current.body.data.transitions.filter((row:any)=>!(row.fromStatus==='DRAFT'&&row.toStatus==='SENT')).map((row:any)=>({fromStatus:row.fromStatus,toStatus:row.toStatus,active:Boolean(row.active)}));
   const saved=await request(`${base}/settings/workflows/QUOTE`,{method:'PUT',body:JSON.stringify({transitions:disabled})});
   assert.equal(saved.status,200);
   assert.equal(saved.body.data.transitions.some((row:any)=>row.fromStatus==='DRAFT'&&row.toStatus==='SENT'),false);
@@ -65,7 +71,7 @@ test('workflow configuration validates transitions and updates the runtime rule 
 });
 
 test('disabled workflow transition is enforced by existing quote status endpoint',async()=>{
-  const client=(await prisma.client.findFirst({orderBy:{id:'asc'}}));
+  const client=await prisma.client.findFirst({orderBy:{id:'asc'}});
   assert.ok(client);
   const quote=await prisma.quote.create({data:{number:`WF-${Date.now()}`,clientId:client.id,subtotal:100,discount:0,tax:0,total:100,expectedMaterial:0,expectedLabour:0,expectedOutsource:0,expectedExpense:0,expectedMargin:100,items:{create:[{description:'Workflow test',quantity:1,unit:'nos',rate:100,total:100}]}}});
   quoteId=quote.id;
