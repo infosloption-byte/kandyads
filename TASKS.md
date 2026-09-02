@@ -104,7 +104,7 @@ This is the single project task file for the repository. The public website live
 - [x] Job linkage and employee assignment fields in API.
 - [x] Priority, dates, planned hours and status fields.
 - [x] Task edit/detail workflow.
-- [ ] Dependencies, checklists and subtasks.
+- [x] Dependencies, checklists and subtasks.
 - [ ] Notes, attachments and completion timestamp.
 - [ ] Employee workload view.
 
@@ -278,6 +278,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Fixed the final enquiry workflow test failure by aligning its detail assertion with the Prisma relation shape: `quote` is a single nullable related record, not an array.
 - 2026-09-02: Added centralized audit querying with `audit.read` authorization, transaction-bound inventory `STOCK_MOVEMENT_CREATED` history, financial `INVOICE_CREATED` and `PAYMENT_POSTED` before/after snapshots, plus `audit-workflows.test.ts` covering authorization, filtering, happy paths, invalid related records and transaction side effects.
 - 2026-09-02: Added job audit/activity history for job creation, status changes and production transactions, plus an explicit job completion approval endpoint that requires REVIEW status and blocks approval while tasks remain open; added `job-activity-approval.test.ts` coverage and exposed the workflow through the Admin API client.
+- 2026-09-02: Added task dependencies, circular-dependency protection, required checklists and subtasks with same-job validation and completion blockers. The implementation uses the dedicated task-structure tables while preserving the stable Prisma schema/client path.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
