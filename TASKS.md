@@ -128,7 +128,7 @@ This is the single project task file for the repository. The public website live
 - [x] Outsource requests/order foundation.
 - [x] Vendor selection, scope, quantity/specification and due date.
 - [x] Agreed cost and status workflow fields.
-- [ ] Vendor deliverables/invoices.
+- [x] Vendor deliverables/invoices.
 - [x] Push actual outsourcing cost to job/project profitability.
 
 ## 7. Materials / Inventory
@@ -268,6 +268,7 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Added vendor deliverable and supplier invoice integration-test coverage, including authentication, missing/invalid records, outsource-order ownership validation, persistence, duplicate supplier-invoice protection, vendor detail exposure and audit side effects.
 - 2026-09-02: Added vendor detail and document management using the existing generic attachment system, including Vendor document registration/list/detail exposure and isolated authentication, missing-record and validation tests.
 - 2026-09-02: Added configurable status/workflow management for quotes, enquiries, projects, jobs and tasks. Workflow transitions are stored in a version-controlled raw-SQL table, exposed through authorized Admin settings APIs/UI, audited transactionally, loaded into the existing runtime transition rules at startup, and covered by isolated integration tests without removing shared seeded configuration.
 - 2026-09-02: Added tax configuration, payment-method cataloguing, units of measure and expense-category management with validation, duplicate protection, Admin controls, and isolated integration tests. New raw-SQL-backed tables are explicitly provisioned in CI.
@@ -292,8 +293,3 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
 - 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
 - 2026-09-02: Added enquiry attachment support to the detail API/Admin UI using the existing generic attachment system, with isolated integration coverage for empty/detail state, URL-backed registration, listing, missing related records and authorization boundaries.
-- 2026-09-02: Added the public quote estimator with server-side indicative pricing ranges, a public `/quote` flow that collects customer/service details, and a transactional path that creates or reuses a client plus enquiry and draft quote; added integration coverage for unauthenticated access, validation, pricing calculation and transaction side effects.
-- 2026-09-02: Added job attachment exposure in the Job detail API plus a dedicated Admin Job Attachments view using the existing generic attachment system; integration tests use an isolated Job fixture and cover missing-job and authentication boundaries.
-
-## Suggested implementation phases
-1. Foundation +... (truncated)
