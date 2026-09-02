@@ -46,10 +46,10 @@ This is the single project task file for the repository. The public website live
 - [x] Organized Clients feature module.
 - [x] Client create workflow with reusable modal/form.
 - [x] Client create API integration.
-- [ ] Client edit/detail workflow.
+- [x] Client edit/detail workflow.
 - [x] Contacts, phone, WhatsApp, email and address fields.
 - [x] Industry, payment terms, credit limit and status fields.
-- [ ] Client notes/documents.
+- [x] Client notes/documents.
 - [x] Client project/quote/invoice history detail view.
 
 ### Enquiries
@@ -254,7 +254,7 @@ This is the single project task file for the repository. The public website live
 - [x] Module-specific positive/negative business-rule tests for every create/update/status process in completed modules.
 - [x] Admin UI workflow/component tests for completed navigation/detail workflows.
 - [ ] Costing unit tests.
-- [x] Stock movement rule and inventory availability tests.
+- [ ] Stock movement rule tests.
 - [ ] Finance/payment rule tests.
 - [ ] Purchasing/receiving rule tests.
 - [ ] Production build checks for frontend/backend/admin on every release.
