@@ -7,7 +7,7 @@ const RESOURCE_ALIASES: Record<string, string> = {
   services:'settings', settings:'settings', approvals:'settings', jobs:'jobs', tasks:'tasks', employees:'employees', time:'time', materials:'materials', 'material-categories':'materials',
   inventory:'inventory', warehouses:'inventory', 'stock-movements':'inventory', vendors:'outsourcing', outsourcing:'outsourcing', expenses:'expenses',
   'expense-categories':'expenses', 'purchase-requests':'purchasing', 'purchase-orders':'purchasing', 'goods-receipts':'purchasing',
-  installations:'installations', invoices:'invoices', payments:'payments', profitability:'reports', attachments:'documents',
+  installations:'installations', invoices:'invoices', payments:'payments', profitability:'reports',
 };
 
 function permissionFor(request: FastifyRequest) {
