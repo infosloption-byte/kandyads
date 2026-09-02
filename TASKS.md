@@ -51,7 +51,7 @@ This is the single project task file for the repository. The public website live
 - [x] Contacts, phone, WhatsApp, email and address fields.
 - [x] Industry, payment terms, credit limit and status fields.
 - [x] Client notes.
-- [ ] Client documents.
+- [x] Client documents.
 - [x] Client project/quote/invoice history detail view.
 
 ### Enquiries
@@ -179,7 +179,7 @@ This is the single project task file for the repository. The public website live
 - [ ] Forecast/variance reporting.
 
 ## 12. Documents
-- [ ] Generic attachment model.
+- [x] Generic attachment model.
 - [ ] Secure uploads and access rules.
 - [ ] Documents across clients, enquiries, quotes, projects, jobs, purchasing, expenses, vendors, invoices and installations.
 
