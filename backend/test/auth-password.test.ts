@@ -52,7 +52,7 @@ test('password change rejects an incorrect current password',async()=>{
 test('password change validates a different new password',async()=>{
   const response=await request(`${base}/auth/change-password`,{method:'POST',body:JSON.stringify({currentPassword:'Original!123',newPassword:'Original!123'})});
   assert.equal(response.status,400);
-  assert.match(response.body.error.message,/New password must differ/i);
+  assert.ok(response.body.error.details?.some((item:any)=>item.message==='New password must differ from current password'));
 });
 
 test('password change updates credentials and writes an audit record atomically',async()=>{
