@@ -40,6 +40,10 @@ before(async () => {
 });
 
 after(async () => {
+  if (taskId) {
+    await prisma.auditLog.deleteMany({ where: { entity: 'Task', entityId: String(taskId) } }).catch(() => undefined);
+    await prisma.task.delete({ where: { id: taskId } }).catch(() => undefined);
+  }
   if (conversionProjectId) {
     await prisma.project.delete({ where: { id: conversionProjectId } }).catch(() => undefined);
   }
@@ -217,8 +221,17 @@ test('delivery and team modules expose seeded data', async () => {
   employeeId = employees.body.data[0]?.id ?? 0;
   projectId = projects.body.data[0]?.id ?? 0;
   jobId = jobs.body.data[0]?.id ?? 0;
-  taskId = tasks.body.data.find((t: any) => t.jobId === jobId)?.id ?? tasks.body.data[0]?.id ?? 0;
-  assert.ok(employeeId && projectId && jobId && taskId);
+  assert.ok(employeeId && projectId && jobId);
+  const fixture = await prisma.task.create({
+    data: {
+      jobId,
+      title: `Automated task workflow ${Date.now()}`,
+      status: 'PENDING',
+      employeeId: employeeId || undefined,
+    },
+  });
+  taskId = fixture.id;
+  assert.ok(taskId);
 });
 
 test('task workflow validation and completion process', async () => {
