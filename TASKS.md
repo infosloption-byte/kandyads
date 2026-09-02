@@ -41,7 +41,6 @@ This is the single project task file for the repository. The public website live
 - [x] Notes and activity timeline foundation.
 - [x] Lead detail/edit workflow.
 - [x] Convert lead to client/enquiry.
-
 ### Clients
 - [x] API-backed client list/search.
 - [x] Organized Clients feature module.
@@ -53,7 +52,6 @@ This is the single project task file for the repository. The public website live
 - [x] Client notes.
 - [x] Client documents.
 - [x] Client project/quote/invoice history detail view.
-
 ### Enquiries
 - [x] Enquiry list/search API and admin screen foundation.
 - [x] Enquiry create modal + client selection + validation + API create.
@@ -61,7 +59,6 @@ This is the single project task file for the repository. The public website live
 - [x] Enquiry edit/detail workflow.
 - [x] Attachments.
 - [x] Convert enquiry to quotation.
-
 ### Quotations / Estimates
 - [x] Quote list/search API and admin screen foundation.
 - [x] Quote cost/margin calculation API foundation.
@@ -84,7 +81,6 @@ This is the single project task file for the repository. The public website live
 - [x] Status management rules.
 - [x] Related jobs, expenses, purchasing, installations, invoices and profitability visibility.
 - [x] Activity history.
-
 ### Jobs — Core Production Model
 - [x] Job list/search API and admin screen foundation.
 - [x] Job detail API and Admin detail screen.
@@ -97,7 +93,6 @@ This is the single project task file for the repository. The public website live
 - [x] Attachments.
 - [x] Activity audit endpoint.
 - [x] Completion approval workflow.
-
 ### Tasks / Work Breakdown
 - [x] Task list/search API and admin screen foundation.
 - [x] Task creation inside Job detail.
@@ -178,7 +173,7 @@ This is the single project task file for the repository. The public website live
 - [x] Outstanding balance calculation.
 - [x] Job/project profitability.
 - [x] Estimate vs actual reporting.
-- [ ] Forecast/variance reporting.
+- [x] Forecast/variance reporting.
 
 ## 12. Documents
 - [x] Generic attachment model.
@@ -269,7 +264,7 @@ Every new module must be delivered with its implementation **and** automated tes
 
 ## Recent implementation notes
 - 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
-- 2026-09-02: Completed estimate-versus-actual cost reporting. Profitability now exposes job-level material, labour, outsourcing and expense estimate/actual amounts with signed variance amounts and percentages, optional job/project filters, aggregate totals and an Admin variance report with drill-down tooltips; isolated integration coverage validates authorization, variance arithmetic and filters.
+- 2026-09-02: Completed estimate-versus-actual and forecast/variance reporting. Profitability now exposes job-level estimate/actual variances plus projected final cost, remaining estimate, forecast variance, projected profit and margin; completed/cancelled jobs use actual final cost, while active jobs use actual-to-date plus remaining estimate. Admin exposes the forecast alongside estimate-vs-actual reporting, with isolated authentication, validation and arithmetic tests.
 - 2026-09-02: Completed installation before/after photo and completion-proof workflow. Installation completion now requires both proof photo URLs, detail responses expose installation attachments, Admin supports before/after proof capture and completion, and isolated integration tests cover validation, successful completion, detail exposure and authentication.
 - 2026-09-02: Completed supplier invoice linkage for Purchasing. Vendor invoices can now link to purchase orders and goods receipts, validate vendor ownership and PO/GR consistency, infer the PO from a selected goods receipt, expose purchasing-linked supplier invoices through a list endpoint and Admin Purchasing tab/form, persist the links transactionally with audit metadata, and run isolated integration coverage. CI explicitly provisions the new raw-SQL-backed columns.
 - 2026-09-02: Added vendor deliverable and supplier invoice integration-test coverage, including authentication, missing/invalid records, outsource-order ownership validation, persistence, duplicate supplier-invoice protection, vendor detail exposure and audit side effects.
