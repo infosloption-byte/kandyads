@@ -41,6 +41,7 @@ export const api={
  listInvoices:p=>list('invoices',p),createInvoice:i=>create('invoices',i),getInvoice:id=>request(`/invoices/${id}`),
  listPayments:p=>list('payments',p),createPayment:i=>create('payments',i),
  listProfitabilityProjects:p=>list('profitability/projects',p),listProfitabilityJobs:p=>list('profitability/jobs',p),getProfitabilitySummary:()=>request('/profitability/summary'),getJobProfitability:id=>request(`/profitability/jobs/${id}`),
+ getCompanySettings:()=>request('/settings/company'),updateCompanySettings:i=>request('/settings/company',{method:'PUT',body:JSON.stringify(i)}),
  listSettingsUsers:p=>list('settings/users',p),createSettingsUser:i=>create('settings/users',i),updateSettingsUser:(id,i)=>patch('settings/users',id,i),
  listSettingsRoles:()=>request('/settings/roles'),createSettingsRole:i=>create('settings/roles',i),
  listSettingsPermissions:()=>request('/settings/permissions'),updateSettingsRolePermissions:(id,i)=>request(`/settings/roles/${id}/permissions`,{method:'PUT',body:JSON.stringify(i)}),
