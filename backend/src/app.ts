@@ -16,6 +16,7 @@ import { quotesRoutes } from './modules/quotes/quotes.routes.js';
 import { projectsRoutes } from './modules/projects/projects.routes.js';
 import { servicesRoutes } from './modules/services/services.routes.js';
 import { jobsRoutes } from './modules/jobs/jobs.routes.js';
+import { jobApprovalsRoutes } from './modules/job-approvals/job-approvals.routes.js';
 import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { employeesRoutes } from './modules/employees/employees.routes.js';
 import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
@@ -50,6 +51,7 @@ export function buildApp(){
   app.register(projectsRoutes);
   app.register(servicesRoutes);
   app.register(jobsRoutes);
+  app.register(jobApprovalsRoutes);
   app.register(tasksRoutes);
   app.register(employeesRoutes);
   app.register(timeTrackingRoutes);
