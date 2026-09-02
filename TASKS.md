@@ -30,7 +30,7 @@ This is the single project task file for the repository. The public website live
 - [x] Service catalogue API foundation.
 - [x] Material categories API foundation.
 - [x] Expense categories.
-- [ ] Status/workflow configuration.
+- [x] Status/workflow configuration.
 
 ## 3. Sales / CRM
 ### Leads
@@ -268,6 +268,7 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Added configurable status/workflow management for quotes, enquiries, projects, jobs and tasks. Workflow transitions are stored in a version-controlled raw-SQL table, exposed through authorized Admin settings APIs/UI, audited transactionally, loaded into the existing runtime transition rules at startup, and covered by isolated integration tests without removing shared seeded configuration.
 - 2026-09-02: Added tax configuration, payment-method cataloguing, units of measure and expense-category management with validation, duplicate protection, Admin controls, and isolated integration tests. New raw-SQL-backed tables are explicitly provisioned in CI.
 - 2026-09-02: Added company profile settings plus branch/location management and transactional number sequences, including version-controlled raw-SQL migrations, Admin controls, authorization/validation coverage and audit side effects for number allocation.
 - 2026-09-02: Added a single-row Company Settings profile with validated API read/update, transactional audit logging, Admin Settings UI and version-controlled database migration. CI explicitly provisions the raw-SQL-backed settings table.
@@ -294,10 +295,4 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added job attachment exposure in the Job detail API plus a dedicated Admin Job Attachments view using the existing generic attachment system; integration tests use an isolated Job fixture and cover missing-job and authentication boundaries.
 
 ## Suggested implementation phases
-1. Foundation + auth + database.
-2. CRM + enquiries + quotations.
-3. Projects + jobs + tasks + employees + time.
-4. Materials + inventory + purchasing + outsourcing + expenses.
-5. Installations + finance + profitability.
-6. Reports + notifications + website integration.
-7. Phase 2: vehicles, advanced accounting, client portal and mobile field tools.
+1. Foundation +... (truncated)
