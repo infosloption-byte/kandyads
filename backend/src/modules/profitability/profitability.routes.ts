@@ -54,6 +54,11 @@ async function calculateJob(jobId: number) {
   };
 }
 
+function variance(estimated: number, actual: number) {
+  const amount = money(actual - estimated);
+  return { estimated: money(estimated), actual: money(actual), variance: amount, variancePercent: estimated > 0 ? money((amount / estimated) * 100) : null };
+}
+
 export async function profitabilityRoutes(app: FastifyInstance) {
   app.get('/api/v1/profitability/jobs', async () => {
     const jobs = await prisma.job.findMany({ where: { project: { is: {} } }, select: { id: true }, orderBy: { createdAt: 'desc' } });
@@ -88,6 +93,30 @@ export async function profitabilityRoutes(app: FastifyInstance) {
       results.push({ id: project.id, number: project.number, name: project.name, clientName: project.client.companyName, status: project.status, revenue: money(revenue), estimatedCost: money(estimatedCost), actualCost: money(actualCost), grossProfit: money(grossProfit), marginPercent: revenue > 0 ? money((grossProfit / revenue) * 100) : null, jobs: jobs.length });
     }
     return { data: results };
+  });
+
+  app.get('/api/v1/profitability/estimate-vs-actual', async (request) => {
+    const query = z.object({ projectId: z.coerce.number().int().positive().optional(), jobId: z.coerce.number().int().positive().optional() }).parse(request.query);
+    const where = { project: { is: {} }, ...(query.projectId ? { projectId: query.projectId } : {}), ...(query.jobId ? { id: query.jobId } : {}) };
+    const jobs = await prisma.job.findMany({ where, select: { id: true }, orderBy: { createdAt: 'desc' } });
+    const details = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
+    const rows = details.map((detail) => ({
+      job: detail.job,
+      revenue: detail.revenue,
+      material: variance(detail.estimated.material, detail.actual.material),
+      labour: variance(detail.estimated.labour, detail.actual.labour),
+      outsource: variance(detail.estimated.outsource, detail.actual.outsource),
+      expense: variance(detail.estimated.expense, detail.actual.expense),
+      total: variance(detail.estimated.total, detail.actual.total),
+    }));
+    const totals = rows.reduce((sum, row) => ({
+      material: { estimated: sum.material.estimated + row.material.estimated, actual: sum.material.actual + row.material.actual },
+      labour: { estimated: sum.labour.estimated + row.labour.estimated, actual: sum.labour.actual + row.labour.actual },
+      outsource: { estimated: sum.outsource.estimated + row.outsource.estimated, actual: sum.outsource.actual + row.outsource.actual },
+      expense: { estimated: sum.expense.estimated + row.expense.estimated, actual: sum.expense.actual + row.expense.actual },
+      total: { estimated: sum.total.estimated + row.total.estimated, actual: sum.total.actual + row.total.actual },
+    }), { material: { estimated: 0, actual: 0 }, labour: { estimated: 0, actual: 0 }, outsource: { estimated: 0, actual: 0 }, expense: { estimated: 0, actual: 0 }, total: { estimated: 0, actual: 0 } });
+    return { data: { rows, totals: { material: variance(totals.material.estimated, totals.material.actual), labour: variance(totals.labour.estimated, totals.labour.actual), outsource: variance(totals.outsource.estimated, totals.outsource.actual), expense: variance(totals.expense.estimated, totals.expense.actual), total: variance(totals.total.estimated, totals.total.actual) } } };
   });
 
   app.get('/api/v1/profitability/summary', async () => {
