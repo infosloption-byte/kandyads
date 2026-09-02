@@ -32,7 +32,9 @@ const companySettingsSchema = z.object({
   taxNumber: z.string().max(100).optional().nullable(),
 });
 
-async function getCompanySettings(client: typeof prisma) {
+type RawDbClient = Pick<typeof prisma, '$queryRaw' | '$executeRaw'>;
+
+async function getCompanySettings(client: RawDbClient) {
   const rows = await client.$queryRaw<Array<{
     id: number;
     companyName: string;
