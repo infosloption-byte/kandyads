@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
-import { z } from 'zod';
+import { Prisma, z } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 import { actorId, writeAudit } from '../audit/audit.service.js';
-import { loadWorkflowConfiguration, replaceWorkflowConfiguration, workflowEntities, workflowRows, workflowStatuses, type WorkflowEntity } from './workflow.config.js';
+import { loadWorkflowConfiguration, workflowEntities, workflowRows, workflowStatuses, type WorkflowEntity } from './workflow.config.js';
 
 const transitionSchema = z.object({
   fromStatus: z.string().min(1).max(50),
@@ -38,7 +38,7 @@ export async function workflowConfigRoutes(app: FastifyInstance) {
       WHERE entity = ${entity}
       ORDER BY fromStatus ASC, toStatus ASC
     `;
-    return { data: { entity, statuses: workflowStatuses[entity], transitions: rows.map((row) => ({ id: Number(row.id), fromStatus: row.fromStatus, toStatus: row.toStatus, active: Boolean(row.active), updatedAt: row.updatedAt })) } };
+    return { data: { entity, statuses: workflowStatuses[entity], transitions: rows.map((row) => ({ id: Number(row.id), entity: row.entity, fromStatus: row.fromStatus, toStatus: row.toStatus, active: Boolean(row.active), updatedAt: row.updatedAt })) } };
   });
 
   app.put('/api/v1/settings/workflows/:entity', async (request, reply) => {
@@ -53,21 +53,34 @@ export async function workflowConfigRoutes(app: FastifyInstance) {
       if (seen.has(key)) return reply.conflict(`Duplicate workflow transition: ${key}`);
       seen.add(key);
     }
+
     const before = await prisma.$queryRaw<Array<any>>`
       SELECT id, entity, fromStatus, toStatus, active, updatedAt
       FROM WorkflowTransition
       WHERE entity = ${entity}
       ORDER BY fromStatus ASC, toStatus ASC
     `;
-    await replaceWorkflowConfiguration(entity as WorkflowEntity, input.transitions);
-    await writeAudit(prisma, {
-      userId: actorId(request),
-      action: 'WORKFLOW_CONFIGURATION_UPDATED',
-      entity: 'WorkflowTransition',
-      entityId: entity,
-      beforeJson: before,
-      afterJson: input.transitions,
+    const userId = actorId(request);
+
+    await prisma.$transaction(async (tx) => {
+      await tx.$executeRaw(Prisma.sql`DELETE FROM WorkflowTransition WHERE entity = ${entity}`);
+      for (const transition of input.transitions) {
+        if (!transition.active) continue;
+        await tx.$executeRaw(Prisma.sql`
+          INSERT INTO WorkflowTransition (entity, fromStatus, toStatus, active)
+          VALUES (${entity}, ${transition.fromStatus}, ${transition.toStatus}, true)
+        `);
+      }
+      await writeAudit(tx, {
+        userId,
+        action: 'WORKFLOW_CONFIGURATION_UPDATED',
+        entity: 'WorkflowTransition',
+        entityId: entity,
+        beforeJson: before,
+        afterJson: input.transitions,
+      });
     });
+
     await loadWorkflowConfiguration();
     return { data: { entity, statuses: workflowStatuses[entity], transitions: workflowRows(entity) } };
   });
