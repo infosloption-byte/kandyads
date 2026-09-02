@@ -124,7 +124,7 @@ This is the single project task file for the repository. The public website live
 - [x] Vendor/supplier master foundation.
 - [x] Contacts, category, capabilities and payment terms fields.
 - [x] Bank/payment details field.
-- [ ] Vendor documents.
+- [x] Vendor documents.
 - [x] Outsource requests/order foundation.
 - [x] Vendor selection, scope, quantity/specification and due date.
 - [x] Agreed cost and status workflow fields.
@@ -268,6 +268,7 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-02: Added vendor detail and document management using the existing generic attachment system, including Vendor document registration/list/detail exposure and isolated authentication, missing-record and validation tests.
 - 2026-09-02: Added configurable status/workflow management for quotes, enquiries, projects, jobs and tasks. Workflow transitions are stored in a version-controlled raw-SQL table, exposed through authorized Admin settings APIs/UI, audited transactionally, loaded into the existing runtime transition rules at startup, and covered by isolated integration tests without removing shared seeded configuration.
 - 2026-09-02: Added tax configuration, payment-method cataloguing, units of measure and expense-category management with validation, duplicate protection, Admin controls, and isolated integration tests. New raw-SQL-backed tables are explicitly provisioned in CI.
 - 2026-09-02: Added company profile settings plus branch/location management and transactional number sequences, including version-controlled raw-SQL migrations, Admin controls, authorization/validation coverage and audit side effects for number allocation.
