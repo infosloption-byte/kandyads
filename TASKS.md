@@ -49,7 +49,8 @@ This is the single project task file for the repository. The public website live
 - [x] Client edit/detail workflow.
 - [x] Contacts, phone, WhatsApp, email and address fields.
 - [x] Industry, payment terms, credit limit and status fields.
-- [x] Client notes/documents.
+- [x] Client notes.
+- [ ] Client documents.
 - [x] Client project/quote/invoice history detail view.
 
 ### Enquiries
