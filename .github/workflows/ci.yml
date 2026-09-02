@@ -51,6 +51,10 @@ jobs:
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/kandyads_test
           JWT_SECRET: ci-test-secret-key-at-least-16
+      - run: npx prisma db execute --file prisma/migrations/20260902163000_branches_number_sequences/migration.sql
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/kandyads_test
+          JWT_SECRET: ci-test-secret-key-at-least-16
       - run: npm run prisma:seed
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/kandyads_test
