@@ -51,7 +51,7 @@ export async function vendorsRoutes(app:FastifyInstance) {
       prisma.$queryRaw<Array<any>>(Prisma.sql`SELECT id,vendorId,outsourceOrderId,type,reference,description,deliveredAt,accepted,notes,createdAt,updatedAt FROM VendorDeliverable WHERE vendorId=${id} ORDER BY createdAt DESC`),
       prisma.$queryRaw<Array<any>>(Prisma.sql`SELECT id,vendorId,outsourceOrderId,invoiceNumber,invoiceDate,dueDate,amount,status,notes,createdAt,updatedAt FROM VendorInvoice WHERE vendorId=${id} ORDER BY invoiceDate DESC, id DESC`),
     ]);
-    return { data: { ...vendor, attachments, deliverables:deliverables.map(row=>({...row,id:Number(row.id),vendorId:Number(row.vendorId),outsourceOrderId:row.outsourceOrderId==null?null:Number(row.outsourceOrderId),accepted:Boolean(row.accepted),amount:row.amount==null?undefined:Number(row.amount)})), invoices:invoices.map(row=>({...row,id:Number(row.id),vendorId:Number(row.vendorId),outsourceOrderId:row.outsourceOrderId==null?null:Number(row.outsourceOrderId),amount:Number(row.amount)})) } };
+    return { data: { ...vendor, attachments, deliverables:deliverables.map(row=>({...row,id:Number(row.id),vendorId:Number(row.vendorId),outsourceOrderId:row.outsourceOrderId==null?null:Number(row.outsourceOrderId),accepted:Boolean(row.accepted)})), invoices:invoices.map(row=>({...row,id:Number(row.id),vendorId:Number(row.vendorId),outsourceOrderId:row.outsourceOrderId==null?null:Number(row.outsourceOrderId),amount:Number(row.amount)})) } };
   });
 
   app.post('/api/v1/vendors', async (request, reply) => {
@@ -65,7 +65,13 @@ export async function vendorsRoutes(app:FastifyInstance) {
     const input=deliverableSchema.parse(request.body);
     const vendor=await prisma.vendor.findUnique({where:{id:vendorId},select:{id:true}});if(!vendor)return reply.notFound('Vendor not found');
     if(input.outsourceOrderId){const order=await prisma.outsourceOrder.findFirst({where:{id:input.outsourceOrderId,vendorId},select:{id:true}});if(!order)return reply.badRequest('Outsource order not found for this vendor');}
-    const data=await prisma.$transaction(async tx=>{const rows=await tx.$queryRaw<Array<any>>(Prisma.sql`INSERT INTO VendorDeliverable (vendorId,outsourceOrderId,type,reference,description,deliveredAt,accepted,notes) VALUES (${vendorId},${input.outsourceOrderId??null},${input.type},${input.reference??null},${input.description},${input.deliveredAt??null},${input.accepted},${input.notes??null})`);const inserted=await tx.$queryRaw<Array<any>>(Prisma.sql`SELECT * FROM VendorDeliverable WHERE vendorId=${vendorId} ORDER BY id DESC LIMIT 1`);const item=inserted[0];await tx.auditLog.create({data:{userId:actorId(request),action:'VENDOR_DELIVERABLE_ADDED',entity:'Vendor',entityId:String(vendorId),afterJson:{deliverableId:Number(item.id),outsourceOrderId:item.outsourceOrderId==null?null:Number(item.outsourceOrderId),type:item.type,accepted:Boolean(item.accepted)}}});return item;});
+    const data=await prisma.$transaction(async tx=>{
+      await tx.$executeRaw(Prisma.sql`INSERT INTO VendorDeliverable (vendorId,outsourceOrderId,type,reference,description,deliveredAt,accepted,notes) VALUES (${vendorId},${input.outsourceOrderId??null},${input.type},${input.reference??null},${input.description},${input.deliveredAt??null},${input.accepted},${input.notes??null})`);
+      const inserted=await tx.$queryRaw<Array<any>>(Prisma.sql`SELECT * FROM VendorDeliverable WHERE vendorId=${vendorId} ORDER BY id DESC LIMIT 1`);
+      const item=inserted[0];
+      await tx.auditLog.create({data:{userId:actorId(request),action:'VENDOR_DELIVERABLE_ADDED',entity:'Vendor',entityId:String(vendorId),afterJson:{deliverableId:Number(item.id),outsourceOrderId:item.outsourceOrderId==null?null:Number(item.outsourceOrderId),type:item.type,accepted:Boolean(item.accepted)}}});
+      return item;
+    });
     return reply.code(201).send({data:{...data,id:Number(data.id),vendorId:Number(data.vendorId),outsourceOrderId:data.outsourceOrderId==null?null:Number(data.outsourceOrderId),accepted:Boolean(data.accepted)}});
   });
 
@@ -75,7 +81,13 @@ export async function vendorsRoutes(app:FastifyInstance) {
     const vendor=await prisma.vendor.findUnique({where:{id:vendorId},select:{id:true}});if(!vendor)return reply.notFound('Vendor not found');
     if(input.outsourceOrderId){const order=await prisma.outsourceOrder.findFirst({where:{id:input.outsourceOrderId,vendorId},select:{id:true}});if(!order)return reply.badRequest('Outsource order not found for this vendor');}
     const duplicate=await prisma.$queryRaw<Array<{id:number}>>(Prisma.sql`SELECT id FROM VendorInvoice WHERE vendorId=${vendorId} AND invoiceNumber=${input.invoiceNumber} LIMIT 1`);if(duplicate.length)return reply.conflict('Supplier invoice number already exists for this vendor');
-    const data=await prisma.$transaction(async tx=>{await tx.$executeRaw(Prisma.sql`INSERT INTO VendorInvoice (vendorId,outsourceOrderId,invoiceNumber,invoiceDate,dueDate,amount,status,notes) VALUES (${vendorId},${input.outsourceOrderId??null},${input.invoiceNumber},${input.invoiceDate},${input.dueDate??null},${input.amount},${input.status},${input.notes??null})`);const inserted=await tx.$queryRaw<Array<any>>(Prisma.sql`SELECT * FROM VendorInvoice WHERE vendorId=${vendorId} AND invoiceNumber=${input.invoiceNumber} LIMIT 1`);const item=inserted[0];await tx.auditLog.create({data:{userId:actorId(request),action:'VENDOR_INVOICE_ADDED',entity:'Vendor',entityId:String(vendorId),afterJson:{invoiceId:Number(item.id),invoiceNumber:item.invoiceNumber,amount:Number(item.amount),status:item.status}}});return item;});
+    const data=await prisma.$transaction(async tx=>{
+      await tx.$executeRaw(Prisma.sql`INSERT INTO VendorInvoice (vendorId,outsourceOrderId,invoiceNumber,invoiceDate,dueDate,amount,status,notes) VALUES (${vendorId},${input.outsourceOrderId??null},${input.invoiceNumber},${input.invoiceDate},${input.dueDate??null},${input.amount},${input.status},${input.notes??null})`);
+      const inserted=await tx.$queryRaw<Array<any>>(Prisma.sql`SELECT * FROM VendorInvoice WHERE vendorId=${vendorId} AND invoiceNumber=${input.invoiceNumber} LIMIT 1`);
+      const item=inserted[0];
+      await tx.auditLog.create({data:{userId:actorId(request),action:'VENDOR_INVOICE_ADDED',entity:'Vendor',entityId:String(vendorId),afterJson:{invoiceId:Number(item.id),invoiceNumber:item.invoiceNumber,amount:Number(item.amount),status:item.status}}});
+      return item;
+    });
     return reply.code(201).send({data:{...data,id:Number(data.id),vendorId:Number(data.vendorId),outsourceOrderId:data.outsourceOrderId==null?null:Number(data.outsourceOrderId),amount:Number(data.amount)}});
   });
 }
