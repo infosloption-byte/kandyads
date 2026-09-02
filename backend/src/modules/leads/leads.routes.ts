@@ -16,114 +16,23 @@ const leadSchema = z.object({
   followUpAt: z.coerce.date().optional().nullable(),
 });
 const noteSchema = z.object({note:z.string().trim().min(1).max(5000)});
-
 function actorId(request:FastifyRequest){const id=Number((request.user as {sub?:string}).sub);return Number.isInteger(id)&&id>0?id:null;}
 async function audit(request:FastifyRequest,action:string,leadId:number,before:unknown,after:unknown){await prisma.auditLog.create({data:{userId:actorId(request),action,entity:'Lead',entityId:String(leadId),beforeJson:before as any,afterJson:after as any}});}
 function serializeAudit(entry:any){return {...entry,id:typeof entry.id==='bigint'?entry.id.toString():entry.id};}
 
-export async function leadsRoutes(app: FastifyInstance) {
+export async function leadsRoutes(app:FastifyInstance) {
   app.get('/api/v1/leads', async (request) => {
-    const q = z.object({
-      search: z.string().optional(),
-      status: z.enum(['NEW','CONTACTED','QUALIFIED','PROPOSAL','NEGOTIATION','WON','LOST']).optional(),
-      assignedToId: z.coerce.number().int().positive().optional(),
-      followUp: z.enum(['due','upcoming']).optional(),
-      page: z.coerce.number().int().positive().default(1),
-      pageSize: z.coerce.number().int().min(1).max(100).default(20),
-    }).parse(request.query);
+    const q = z.object({search:z.string().optional(),status:z.enum(['NEW','CONTACTED','QUALIFIED','PROPOSAL','NEGOTIATION','WON','LOST']).optional(),assignedToId:z.coerce.number().int().positive().optional(),followUp:z.enum(['due','upcoming']).optional(),page:z.coerce.number().int().positive().default(1),pageSize:z.coerce.number().int().min(1).max(100).default(20)}).parse(request.query);
     const now=new Date();
-    const where = {
-      ...(q.status ? { status: q.status } : {}),
-      ...(q.assignedToId ? { assignedToId: q.assignedToId } : {}),
-      ...(q.followUp==='due' ? { followUpAt:{not:null,lte:now}, status:{notIn:['WON','LOST'] as any} } : {}),
-      ...(q.followUp==='upcoming' ? { followUpAt:{not:null,gt:now}, status:{notIn:['WON','LOST'] as any} } : {}),
-      ...(q.search ? { OR: [
-        { name: { contains: q.search } },
-        { company: { contains: q.search } },
-        { email: { contains: q.search } },
-        { phone: { contains: q.search } },
-      ] } : {}),
-    };
-    const [items, total] = await Promise.all([
-      prisma.lead.findMany({
-        where,
-        include: { assignedTo: true, client: true },
-        orderBy: q.followUp ? { followUpAt: 'asc' } : { createdAt: 'desc' },
-        skip: (q.page - 1) * q.pageSize,
-        take: q.pageSize,
-      }),
-      prisma.lead.count({ where }),
-    ]);
-    return { data: items, meta: { page: q.page, pageSize: q.pageSize, total } };
+    const where={...(q.status?{status:q.status}:{}),...(q.assignedToId?{assignedToId:q.assignedToId}:{}),...(q.followUp==='due'?{followUpAt:{not:null,lte:now},status:{notIn:['WON','LOST'] as any}}:{}),...(q.followUp==='upcoming'?{followUpAt:{not:null,gt:now},status:{notIn:['WON','LOST'] as any}}:{}),...(q.search?{OR:[{name:{contains:q.search}},{company:{contains:q.search}},{email:{contains:q.search}},{phone:{contains:q.search}}]}:{})};
+    const [items,total]=await Promise.all([prisma.lead.findMany({where,include:{assignedTo:true,client:true},orderBy:q.followUp?{followUpAt:'asc'}:{createdAt:'desc'},skip:(q.page-1)*q.pageSize,take:q.pageSize}),prisma.lead.count({where})]);
+    return {data:items,meta:{page:q.page,pageSize:q.pageSize,total}};
   });
 
-  app.get('/api/v1/leads/:id', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as { id: string }).id);
-    const data = await prisma.lead.findUnique({ where: { id }, include: { assignedTo: true, client: true } });
-    if (!data) return reply.notFound('Lead not found');
-    const activity=await prisma.auditLog.findMany({where:{entity:'Lead',entityId:String(id)},include:{user:{select:{id:true,name:true,email:true}}},orderBy:{createdAt:'desc'},take:200});
-    return { data, activity:activity.map(serializeAudit) };
-  });
-
-  app.get('/api/v1/leads/:id/activity', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as { id: string }).id);
-    const lead=await prisma.lead.findUnique({where:{id},select:{id:true}});
-    if(!lead) return reply.notFound('Lead not found');
-    const data=await prisma.auditLog.findMany({where:{entity:'Lead',entityId:String(id)},include:{user:{select:{id:true,name:true,email:true}}},orderBy:{createdAt:'desc'},take:200});
-    return {data:data.map(serializeAudit)};
-  });
-
-  app.post('/api/v1/leads', async (request, reply) => {
-    const input = leadSchema.parse(request.body);
-    if(input.assignedToId){const employee=await prisma.employee.findUnique({where:{id:input.assignedToId}});if(!employee)return reply.badRequest('Assigned employee not found');}
-    if(input.clientId){const client=await prisma.client.findUnique({where:{id:input.clientId}});if(!client)return reply.badRequest('Client not found');}
-    const data = await prisma.lead.create({ data: input });
-    await audit(request,'CREATE',data.id,null,{name:data.name,company:data.company,status:data.status,assignedToId:data.assignedToId,followUpAt:data.followUpAt});
-    return reply.code(201).send({ data });
-  });
-
-  app.patch('/api/v1/leads/:id', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as { id: string }).id);
-    const input = leadSchema.partial().parse(request.body);
-    const existing=await prisma.lead.findUnique({where:{id}}); if(!existing)return reply.notFound('Lead not found');
-    if(input.assignedToId){const employee=await prisma.employee.findUnique({where:{id:input.assignedToId}});if(!employee)return reply.badRequest('Assigned employee not found');}
-    if(input.clientId){const client=await prisma.client.findUnique({where:{id:input.clientId}});if(!client)return reply.badRequest('Client not found');}
-    const data = await prisma.lead.update({ where: { id }, data: input });
-    await audit(request,'UPDATE',id,{name:existing.name,company:existing.company,status:existing.status,assignedToId:existing.assignedToId,clientId:existing.clientId,followUpAt:existing.followUpAt},{name:data.name,company:data.company,status:data.status,assignedToId:data.assignedToId,clientId:data.clientId,followUpAt:data.followUpAt});
-    return { data };
-  });
-
-  app.post('/api/v1/leads/:id/notes', async (request, reply) => {
-    const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);
-    const input=noteSchema.parse(request.body);
-    const lead=await prisma.lead.findUnique({where:{id},select:{id:true}});if(!lead)return reply.notFound('Lead not found');
-    const entry=await prisma.auditLog.create({data:{userId:actorId(request),action:'NOTE_ADDED',entity:'Lead',entityId:String(id),beforeJson:null,afterJson:{note:input.note}}});
-    return reply.code(201).send({data:serializeAudit(entry)});
-  });
-
-  app.post('/api/v1/leads/:id/convert', async (request, reply) => {
-    const id = z.coerce.number().int().positive().parse((request.params as { id: string }).id);
-    const lead = await prisma.lead.findUnique({ where: { id } });
-    if (!lead) return reply.notFound('Lead not found');
-    if (lead.status === 'LOST') return reply.badRequest('A lost lead cannot be converted.');
-    const input = z.object({ clientId: z.coerce.number().int().positive().optional(), requirement: z.string().max(5000).optional() }).parse(request.body ?? {});
-    let clientId = input.clientId ?? lead.clientId ?? null;
-    if (!clientId && lead.company) {
-      const code = `LEAD-${lead.id}`;
-      const client = await prisma.client.create({ data: { code, companyName: lead.company, contactName: lead.name, phone: lead.phone, email: lead.email } });
-      clientId = client.id;
-    }
-    if (!clientId) return reply.badRequest('A client is required to convert this lead.');
-    const existing = await prisma.enquiry.findFirst({ where: { clientId, requirement: input.requirement ?? lead.requirement ?? lead.name } });
-    const enquiry = existing ?? await prisma.enquiry.create({ data: {
-      number: `ENQ-${new Date().getFullYear()}-${String(lead.id).padStart(4, '0')}`,
-      clientId,
-      source: lead.source,
-      requirement: input.requirement ?? lead.requirement ?? lead.name,
-      status: 'OPEN',
-    } });
-    const updatedLead = await prisma.lead.update({ where: { id }, data: { clientId, status: 'WON' } });
-    await audit(request,'CONVERT',id,{status:lead.status,clientId:lead.clientId},{status:updatedLead.status,clientId:updatedLead.clientId,enquiryId:enquiry.id});
-    return reply.code(existing ? 200 : 201).send({ data: { lead: updatedLead, enquiry } });
-  });
+  app.get('/api/v1/leads/:id',async(request,reply)=>{const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);const data=await prisma.lead.findUnique({where:{id},include:{assignedTo:true,client:true}});if(!data)return reply.notFound('Lead not found');const activity=await prisma.auditLog.findMany({where:{entity:'Lead',entityId:String(id)},include:{user:{select:{id:true,name:true,email:true}}},orderBy:{createdAt:'desc'},take:200});return {data,activity:activity.map(serializeAudit)};});
+  app.get('/api/v1/leads/:id/activity',async(request,reply)=>{const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);const lead=await prisma.lead.findUnique({where:{id},select:{id:true}});if(!lead)return reply.notFound('Lead not found');const data=await prisma.auditLog.findMany({where:{entity:'Lead',entityId:String(id)},include:{user:{select:{id:true,name:true,email:true}}},orderBy:{createdAt:'desc'},take:200});return {data:data.map(serializeAudit)};});
+  app.post('/api/v1/leads',async(request,reply)=>{const input=leadSchema.parse(request.body);if(input.assignedToId){const employee=await prisma.employee.findUnique({where:{id:input.assignedToId}});if(!employee)return reply.badRequest('Assigned employee not found');}if(input.clientId){const client=await prisma.client.findUnique({where:{id:input.clientId}});if(!client)return reply.badRequest('Client not found');}const data=await prisma.lead.create({data:input});await audit(request,'CREATE',data.id,null,{name:data.name,company:data.company,status:data.status,assignedToId:data.assignedToId,followUpAt:data.followUpAt});return reply.code(201).send({data});});
+  app.patch('/api/v1/leads/:id',async(request,reply)=>{const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);const input=leadSchema.partial().parse(request.body);const existing=await prisma.lead.findUnique({where:{id}});if(!existing)return reply.notFound('Lead not found');if(input.assignedToId){const employee=await prisma.employee.findUnique({where:{id:input.assignedToId}});if(!employee)return reply.badRequest('Assigned employee not found');}if(input.clientId){const client=await prisma.client.findUnique({where:{id:input.clientId}});if(!client)return reply.badRequest('Client not found');}const data=await prisma.lead.update({where:{id},data:input});await audit(request,'UPDATE',id,{name:existing.name,company:existing.company,status:existing.status,assignedToId:existing.assignedToId,clientId:existing.clientId,followUpAt:existing.followUpAt},{name:data.name,company:data.company,status:data.status,assignedToId:data.assignedToId,clientId:data.clientId,followUpAt:data.followUpAt});return {data};});
+  app.post('/api/v1/leads/:id/notes',async(request,reply)=>{const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);const input=noteSchema.parse(request.body);const lead=await prisma.lead.findUnique({where:{id},select:{id:true}});if(!lead)return reply.notFound('Lead not found');const entry=await prisma.auditLog.create({data:{userId:actorId(request),action:'NOTE_ADDED',entity:'Lead',entityId:String(id),afterJson:{note:input.note}}});return reply.code(201).send({data:serializeAudit(entry)});});
+  app.post('/api/v1/leads/:id/convert',async(request,reply)=>{const id=z.coerce.number().int().positive().parse((request.params as {id:string}).id);const lead=await prisma.lead.findUnique({where:{id}});if(!lead)return reply.notFound('Lead not found');if(lead.status==='LOST')return reply.badRequest('A lost lead cannot be converted.');const input=z.object({clientId:z.coerce.number().int().positive().optional(),requirement:z.string().max(5000).optional()}).parse(request.body??{});let clientId=input.clientId??lead.clientId??null;if(clientId){const client=await prisma.client.findUnique({where:{id:clientId}});if(!client)return reply.badRequest('Client not found');}if(!clientId&&lead.company){const code=`LEAD-${lead.id}`;const client=await prisma.client.create({data:{code,companyName:lead.company,contactName:lead.name,phone:lead.phone,email:lead.email}});clientId=client.id;}if(!clientId)return reply.badRequest('A client is required to convert this lead.');const existing=await prisma.enquiry.findFirst({where:{clientId,requirement:input.requirement??lead.requirement??lead.name}});const enquiry=existing??await prisma.enquiry.create({data:{number:`ENQ-${new Date().getFullYear()}-${String(lead.id).padStart(4,'0')}`,clientId,source:lead.source,requirement:input.requirement??lead.requirement??lead.name,status:'OPEN'}});const updatedLead=await prisma.lead.update({where:{id},data:{clientId,status:'WON'}});await audit(request,'CONVERT',id,{status:lead.status,clientId:lead.clientId},{status:updatedLead.status,clientId:updatedLead.clientId,enquiryId:enquiry.id});return reply.code(existing?200:201).send({data:{lead:updatedLead,enquiry}});});
 }
