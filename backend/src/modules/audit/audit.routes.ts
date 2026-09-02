@@ -13,6 +13,10 @@ const querySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(200).default(50),
 });
 
+function serializeBigInts<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value, (_key, item) => (typeof item === 'bigint' ? item.toString() : item))) as T;
+}
+
 export async function auditRoutes(app: FastifyInstance) {
   app.get('/api/v1/audit-logs', async (request) => {
     const query = querySchema.parse(request.query);
@@ -36,7 +40,7 @@ export async function auditRoutes(app: FastifyInstance) {
       prisma.auditLog.count({ where }),
     ]);
     return {
-      data: items.map((item) => ({ ...item, id: item.id.toString() })),
+      data: serializeBigInts(items),
       meta: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.ceil(total / query.pageSize) },
     };
   });
