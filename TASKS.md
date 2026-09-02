@@ -4,8 +4,8 @@ This is the single project task file for the repository. The public website live
 
 ## 0. Workspace
 - [x] Repository separated into `frontend/`, `admin/`, `backend/`.
-- [x] Master task document is at repository root.
 - [ ] Add shared development conventions and environment documentation.
+- [x] Master task document is at repository root.
 - [x] Add CI checks for backend integration tests and Admin production build.
 - [ ] Add production deployment documentation.
 
@@ -264,6 +264,11 @@ This is the single project task file for the repository. The public website live
 
 ## Testing rule for all future modules
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
+
+## Recent implementation notes
+- 2026-09-02: Added a version-controlled Prisma migration for the generic `Attachment` table so client-document registration/listing works against a database created from the repository schema.
+- 2026-09-02: Attachment creation already performs the attachment insert and `ATTACHMENT_ADDED` audit entry in one transaction, with the created attachment ID recorded in `afterJson`; the audit failure was a consequence of the missing attachment table preventing the transaction from completing.
+- 2026-09-02: The latest recorded backend integration run was 49/51 passing; the two failures were both in `attachment-workflows.test.ts` and were caused by the missing `attachment` table and the resulting absence of its audit record.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
