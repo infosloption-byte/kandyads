@@ -40,15 +40,11 @@ async function calculateJob(jobId: number) {
     job: { id: job.id, number: job.number, title: job.title, status: job.status, projectId: job.projectId, projectName: job.project.name, clientName: job.project.client.companyName, service: job.service?.name ?? null },
     revenue: money(revenue),
     estimated: {
-      material: money(Number(job.estimatedMaterial)),
-      labour: money(Number(job.estimatedLabour)),
-      outsource: money(Number(job.estimatedOutsource)),
-      expense: money(Number(job.estimatedExpense)),
+      material: money(Number(job.estimatedMaterial)), labour: money(Number(job.estimatedLabour)), outsource: money(Number(job.estimatedOutsource)), expense: money(Number(job.estimatedExpense)),
       total: money(Number(job.estimatedMaterial) + Number(job.estimatedLabour) + Number(job.estimatedOutsource) + Number(job.estimatedExpense)),
     },
     actual: { material: money(materialCost), labour: money(labourCost), outsource: money(outsourceCost), expense: money(directExpense), total: money(actualCost) },
-    grossProfit: money(grossProfit),
-    marginPercent: margin === null ? null : money(margin),
+    grossProfit: money(grossProfit), marginPercent: margin === null ? null : money(margin),
     hours: money(timeEntries.reduce((sum, entry) => sum + Number(entry.hours), 0)),
     counts: { timeEntries: timeEntries.length, stockMovements: stockMovements.length, outsourceOrders: outsourceOrders.length, expenses: expenses.length },
   };
@@ -100,33 +96,37 @@ export async function profitabilityRoutes(app: FastifyInstance) {
     const where = { project: { is: {} }, ...(query.projectId ? { projectId: query.projectId } : {}), ...(query.jobId ? { id: query.jobId } : {}) };
     const jobs = await prisma.job.findMany({ where, select: { id: true }, orderBy: { createdAt: 'desc' } });
     const details = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
-    const rows = details.map((detail) => ({
-      job: detail.job,
-      revenue: detail.revenue,
-      material: variance(detail.estimated.material, detail.actual.material),
-      labour: variance(detail.estimated.labour, detail.actual.labour),
-      outsource: variance(detail.estimated.outsource, detail.actual.outsource),
-      expense: variance(detail.estimated.expense, detail.actual.expense),
-      total: variance(detail.estimated.total, detail.actual.total),
-    }));
+    const rows = details.map((detail) => ({ job: detail.job, revenue: detail.revenue, material: variance(detail.estimated.material, detail.actual.material), labour: variance(detail.estimated.labour, detail.actual.labour), outsource: variance(detail.estimated.outsource, detail.actual.outsource), expense: variance(detail.estimated.expense, detail.actual.expense), total: variance(detail.estimated.total, detail.actual.total) }));
     const totals = rows.reduce((sum, row) => ({
-      material: { estimated: sum.material.estimated + row.material.estimated, actual: sum.material.actual + row.material.actual },
-      labour: { estimated: sum.labour.estimated + row.labour.estimated, actual: sum.labour.actual + row.labour.actual },
-      outsource: { estimated: sum.outsource.estimated + row.outsource.estimated, actual: sum.outsource.actual + row.outsource.actual },
-      expense: { estimated: sum.expense.estimated + row.expense.estimated, actual: sum.expense.actual + row.expense.actual },
-      total: { estimated: sum.total.estimated + row.total.estimated, actual: sum.total.actual + row.total.actual },
+      material: { estimated: sum.material.estimated + row.material.estimated, actual: sum.material.actual + row.material.actual }, labour: { estimated: sum.labour.estimated + row.labour.estimated, actual: sum.labour.actual + row.labour.actual }, outsource: { estimated: sum.outsource.estimated + row.outsource.estimated, actual: sum.outsource.actual + row.outsource.actual }, expense: { estimated: sum.expense.estimated + row.expense.estimated, actual: sum.expense.actual + row.expense.actual }, total: { estimated: sum.total.estimated + row.total.estimated, actual: sum.total.actual + row.total.actual },
     }), { material: { estimated: 0, actual: 0 }, labour: { estimated: 0, actual: 0 }, outsource: { estimated: 0, actual: 0 }, expense: { estimated: 0, actual: 0 }, total: { estimated: 0, actual: 0 } });
     return { data: { rows, totals: { material: variance(totals.material.estimated, totals.material.actual), labour: variance(totals.labour.estimated, totals.labour.actual), outsource: variance(totals.outsource.estimated, totals.outsource.actual), expense: variance(totals.expense.estimated, totals.expense.actual), total: variance(totals.total.estimated, totals.total.actual) } } };
+  });
+
+  app.get('/api/v1/profitability/forecast', async (request) => {
+    const query = z.object({ projectId: z.coerce.number().int().positive().optional(), jobId: z.coerce.number().int().positive().optional() }).parse(request.query);
+    const where = { project: { is: {} }, ...(query.projectId ? { projectId: query.projectId } : {}), ...(query.jobId ? { id: query.jobId } : {}) };
+    const jobs = await prisma.job.findMany({ where, select: { id: true }, orderBy: { createdAt: 'desc' } });
+    const details = (await Promise.all(jobs.map((job) => calculateJob(job.id)))).filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
+    const rows = details.map((detail) => {
+      const estimated = detail.estimated.total;
+      const actual = detail.actual.total;
+      const remainingEstimate = Math.max(estimated - actual, 0);
+      const forecastCost = ['COMPLETED', 'CANCELLED'].includes(detail.job.status) ? actual : actual + remainingEstimate;
+      const forecastVariance = money(forecastCost - estimated);
+      const forecastProfit = money(detail.revenue - forecastCost);
+      return { job: detail.job, revenue: detail.revenue, estimatedCost: money(estimated), actualCost: money(actual), remainingEstimate: money(remainingEstimate), forecastCost: money(forecastCost), forecastVariance, forecastVariancePercent: estimated > 0 ? money((forecastVariance / estimated) * 100) : null, forecastProfit, forecastMarginPercent: detail.revenue > 0 ? money((forecastProfit / detail.revenue) * 100) : null };
+    });
+    const totals = rows.reduce((sum, row) => ({ revenue: sum.revenue + row.revenue, estimatedCost: sum.estimatedCost + row.estimatedCost, actualCost: sum.actualCost + row.actualCost, remainingEstimate: sum.remainingEstimate + row.remainingEstimate, forecastCost: sum.forecastCost + row.forecastCost }), { revenue: 0, estimatedCost: 0, actualCost: 0, remainingEstimate: 0, forecastCost: 0 });
+    const forecastVariance = money(totals.forecastCost - totals.estimatedCost);
+    const forecastProfit = money(totals.revenue - totals.forecastCost);
+    return { data: { rows, totals: { revenue: money(totals.revenue), estimatedCost: money(totals.estimatedCost), actualCost: money(totals.actualCost), remainingEstimate: money(totals.remainingEstimate), forecastCost: money(totals.forecastCost), forecastVariance, forecastVariancePercent: totals.estimatedCost > 0 ? money((forecastVariance / totals.estimatedCost) * 100) : null, forecastProfit, forecastMarginPercent: totals.revenue > 0 ? money((forecastProfit / totals.revenue) * 100) : null } } };
   });
 
   app.get('/api/v1/profitability/summary', async () => {
     const projectRows = await prisma.project.findMany({ select: { id: true, value: true } });
     const jobRows = await prisma.job.findMany({ where: { project: { is: {} } }, select: { id: true } });
-    const [projects, jobs, details] = await Promise.all([
-      prisma.project.count(),
-      prisma.job.count({ where: { project: { is: {} } } }),
-      Promise.all(jobRows.map((job) => calculateJob(job.id))),
-    ]);
+    const [projects, jobs, details] = await Promise.all([prisma.project.count(), prisma.job.count({ where: { project: { is: {} } } }), Promise.all(jobRows.map((job) => calculateJob(job.id))) ]);
     const validDetails = details.filter(Boolean) as NonNullable<Awaited<ReturnType<typeof calculateJob>>>[];
     const revenue = validDetails.length ? validDetails.reduce((sum, item) => sum + item.revenue, 0) : projectRows.reduce((sum, item) => sum + Number(item.value), 0);
     const actualCost = validDetails.reduce((sum, item) => sum + item.actual.total, 0);
