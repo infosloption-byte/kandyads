@@ -1,4 +1,4 @@
-import type { JobStatus, ProjectStatus, QuoteStatus, TaskStatus } from '@prisma/client';
+import type { EnquiryStatus, JobStatus, ProjectStatus, QuoteStatus, TaskStatus } from '@prisma/client';
 
 export const quoteTransitions: Record<QuoteStatus, QuoteStatus[]> = {
   DRAFT: ['SENT', 'CANCELLED'],
@@ -8,6 +8,13 @@ export const quoteTransitions: Record<QuoteStatus, QuoteStatus[]> = {
   REJECTED: [],
   EXPIRED: [],
   CANCELLED: [],
+};
+
+export const enquiryTransitions: Record<EnquiryStatus, EnquiryStatus[]> = {
+  OPEN: ['QUOTING', 'CLOSED'],
+  QUOTING: ['CLOSED', 'CONVERTED'],
+  CONVERTED: [],
+  CLOSED: [],
 };
 
 export const projectTransitions: Record<ProjectStatus, ProjectStatus[]> = {
