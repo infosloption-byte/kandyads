@@ -71,7 +71,7 @@ This is the single project task file for the repository. The public website live
 - [x] PDF generation and sharing.
 - [x] Client approval/rejection tracking.
 - [x] Convert accepted quote into project action.
-- [ ] Integrate public quote estimator.
+- [x] Integrate public quote estimator.
 
 ## 4. Delivery / Project Management
 ### Projects
@@ -216,7 +216,7 @@ This is the single project task file for the repository. The public website live
 
 ## 16. Public Website Integration
 - [ ] Website contact form → API lead/enquiry.
-- [ ] Website quote estimator → enquiry/quote draft.
+- [x] Website quote estimator → enquiry/quote draft.
 - [ ] UTM/source capture.
 - [ ] Spam/rate limiting.
 - [ ] Admin notifications.
@@ -284,6 +284,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
 - 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
 - 2026-09-02: Added enquiry attachment support to the detail API/Admin UI using the existing generic attachment system, with isolated integration coverage for empty/detail state, URL-backed registration, listing, missing related records and authorization boundaries.
+- 2026-09-02: Added the public quote estimator with server-side indicative pricing ranges, a public `/quote` flow that collects customer/service details, and a transactional path that creates or reuses a client plus enquiry and draft quote; added integration coverage for unauthenticated access, validation, pricing calculation and transaction side effects.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
