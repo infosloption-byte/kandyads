@@ -37,8 +37,9 @@ This is the single project task file for the repository. The public website live
 - [x] Lead CRUD, search/filter foundation.
 - [x] Lead source and pipeline.
 - [x] Assign sales owner.
-- [ ] Follow-up reminders.
-- [ ] Notes, activity timeline and attachments.
+- [x] Follow-up reminders and due/upcoming filtering.
+- [x] Notes and activity timeline foundation.
+- [x] Lead detail/edit workflow.
 - [x] Convert lead to client/enquiry.
 
 ### Clients
