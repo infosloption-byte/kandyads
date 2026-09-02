@@ -173,7 +173,17 @@ export async function inventoryRoutes(app: FastifyInstance) {
         entity: 'StockMovement',
         entityId: movement.id,
         beforeJson: null,
-        afterJson: movement,
+        afterJson: {
+          id: movement.id,
+          materialId: movement.materialId,
+          warehouseId: movement.warehouseId,
+          type: movement.type,
+          quantity: movement.quantity.toString(),
+          unitCost: movement.unitCost?.toString() ?? null,
+          projectId: movement.projectId,
+          jobId: movement.jobId,
+          reference: movement.reference,
+        },
       });
       return movement;
     });
