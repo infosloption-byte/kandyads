@@ -20,6 +20,7 @@ import { jobApprovalsRoutes } from './modules/job-approvals/job-approvals.routes
 import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { employeesRoutes } from './modules/employees/employees.routes.js';
 import { employeeCapabilitiesRoutes } from './modules/employee-capabilities/employee-capabilities.routes.js';
+import { hoursReportRoutes } from './modules/reports/hours-report.routes.js';
 import { timeTrackingRoutes } from './modules/time-tracking/time.routes.js';
 import { materialsRoutes } from './modules/materials/materials.routes.js';
 import { inventoryRoutes } from './modules/inventory/inventory.routes.js';
@@ -56,6 +57,7 @@ export function buildApp(){
   app.register(tasksRoutes);
   app.register(employeesRoutes);
   app.register(employeeCapabilitiesRoutes);
+  app.register(hoursReportRoutes);
   app.register(timeTrackingRoutes);
   app.register(materialsRoutes);
   app.register(inventoryRoutes);
