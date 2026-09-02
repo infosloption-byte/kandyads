@@ -6,7 +6,7 @@ const emptyUser={name:'',email:'',password:'',roleId:'',status:'ACTIVE'};
 const emptyCompany={companyName:'',legalName:'',phone:'',email:'',address:'',website:'',taxNumber:''};
 
 export default function SettingsPage(){
-  const [tab,setTab]=useState('company');
+  const [tab,setTab]=React.useState('company');
   const [users,setUsers]=React.useState([]);
   const [roles,setRoles]=React.useState([]);
   const [permissions,setPermissions]=React.useState([]);
@@ -66,5 +66,3 @@ export default function SettingsPage(){
     </div>}
   </div>;
 }
-
-function useState(initial){ return React.useState(initial); }
