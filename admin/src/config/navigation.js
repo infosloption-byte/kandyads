@@ -49,6 +49,7 @@ export const navigationGroups = [
     items: [
       ['Reports', '/reports', 'reports.read'],
       ['Settings', '/settings', 'settings.write'],
+      ['Workflows', '/settings/workflows', 'settings.write'],
     ],
   },
 ];
