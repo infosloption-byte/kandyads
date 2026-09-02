@@ -251,7 +251,7 @@ This is the single project task file for the repository. The public website live
 
 ## 20. Testing / Release
 - [x] Automated backend integration smoke suite covering all current API modules and core detail endpoints.
-- [x] Automated CI database migration + seed + backend test execution.
+- [x] Automated CI database schema provisioning + seed + backend test execution.
 - [x] Automated Admin production build check in CI.
 - [x] Module-specific positive/negative business-rule tests for every create/update/status process in completed modules.
 - [x] Admin UI workflow/component tests for completed navigation/detail workflows.
@@ -268,6 +268,7 @@ Every new module must be delivered with its implementation **and** automated tes
 ## Recent implementation notes
 - 2026-09-02: Added a version-controlled Prisma migration for the generic `Attachment` table so client-document registration/listing works against a database created from the repository schema.
 - 2026-09-02: Attachment creation already performs the attachment insert and `ATTACHMENT_ADDED` audit entry in one transaction, with the created attachment ID recorded in `afterJson`; the audit failure was a consequence of the missing attachment table preventing the transaction from completing.
+- 2026-09-02: Updated CI test-database provisioning to use the complete Prisma schema before seeding, avoiding a fresh-database failure caused by the repository not yet containing a complete historical migration chain.
 - 2026-09-02: The latest recorded backend integration run was 49/51 passing; the two failures were both in `attachment-workflows.test.ts` and were caused by the missing `attachment` table and the resulting absence of its audit record.
 
 ## Suggested implementation phases
