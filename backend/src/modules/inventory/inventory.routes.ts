@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
+import { actorId, writeAudit } from '../audit/audit.service.js';
 
 const movementTypes = ['PURCHASE_RECEIPT', 'ISSUE', 'RETURN', 'TRANSFER', 'ADJUSTMENT', 'WASTE'] as const;
 const warehouseSchema = z.object({ name: z.string().min(1).max(150), address: z.string().optional().nullable() });
@@ -149,6 +150,7 @@ export async function inventoryRoutes(app: FastifyInstance) {
 
   app.post('/api/v1/stock-movements', async (request, reply) => {
     const input = movementSchema.parse(request.body);
+    const userId = actorId(request);
     const data = await prisma.$transaction(async (tx) => {
       const [material, warehouse] = await Promise.all([
         tx.material.findUnique({ where: { id: input.materialId } }),
@@ -164,7 +166,16 @@ export async function inventoryRoutes(app: FastifyInstance) {
         const job = await tx.job.findUnique({ where: { id: input.jobId } });
         if (!job) throw app.httpErrors.badRequest('Job not found');
       }
-      return tx.stockMovement.create({ data: input });
+      const movement = await tx.stockMovement.create({ data: input });
+      await writeAudit(tx, {
+        userId,
+        action: 'STOCK_MOVEMENT_CREATED',
+        entity: 'StockMovement',
+        entityId: movement.id,
+        beforeJson: null,
+        afterJson: movement,
+      });
+      return movement;
     });
     return reply.code(201).send({ data });
   });
