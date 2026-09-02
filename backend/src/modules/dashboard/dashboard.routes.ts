@@ -12,19 +12,19 @@ export async function dashboardRoutes(app:FastifyInstance){
     const now=new Date(); const horizon=new Date(now.getTime()+q.days*86400000);
     const [jobs, reorderAlerts, purchaseOrders, installations, employees, invoices, expenses, timeEntries, movements, outsourceOrders]=await Promise.all([
       prisma.job.findMany({where:{status:{notIn:['COMPLETED','CANCELLED']},dueDate:{not:null}},include:{project:{select:{number:true,name:true}}},orderBy:{dueDate:'asc'},take:50}),
-      prisma.material.findMany({where:{active:true},include:{category:true,preferredVendor:true,movements:{select:{type:true,quantity:true}}},orderBy:{name:'asc'}}),
+      prisma.material.findMany({where:{active:true},select:{id:true,sku:true,name:true,unit:true,reorderLevel:true,minimumStock:true,category:true,preferredVendor:true,movements:{select:{type:true,quantity:true}}},orderBy:{name:'asc'}}),
       prisma.purchaseOrder.findMany({where:{status:{notIn:['RECEIVED','CANCELLED']},expectedDate:{not:null}},include:{vendor:true,project:{select:{number:true,name:true}}},orderBy:{expectedDate:'asc'},take:50}),
       prisma.installation.findMany({where:{scheduledAt:{gte:now,lte:horizon}},include:{project:{select:{number:true,name:true,client:{select:{companyName:true}}}},job:{select:{number:true,title:true}}},orderBy:{scheduledAt:'asc'},take:50}),
       prisma.employee.findMany({where:{status:'ACTIVE'},select:{id:true,code:true,name:true,department:true,tasks:{where:{status:{notIn:['COMPLETED','CANCELLED'] as any}},select:{estimatedHours:true,actualHours:true,dueDate:true}}},orderBy:{name:'asc'}}),
       prisma.invoice.findMany({where:{status:{not:'CANCELLED'}},select:{total:true,balance:true,status:true,dueDate:true}}),
       prisma.expense.findMany({where:{status:{in:['APPROVED','PAID']}},select:{amount:true}}),
-      prisma.timeEntry.findMany({include:{employee:{select:{hourlyCost:true}},job:{select:{revenue:true}}}}),
-      prisma.stockMovement.findMany({where:{jobId:{not:null}},include:{material:{select:{standardCost:true}}},select:{type:true,quantity:true,unitCost:true,material:{select:{standardCost:true}}}}),
+      prisma.timeEntry.findMany({include:{employee:{select:{hourlyCost:true}}}}),
+      prisma.stockMovement.findMany({where:{jobId:{not:null}},select:{type:true,quantity:true,unitCost:true,material:{select:{standardCost:true}}}}),
       prisma.outsourceOrder.findMany({where:{status:'RECEIVED'},select:{agreedCost:true}}),
     ]);
 
     const dueJobs=jobs.filter(j=>j.dueDate && j.dueDate<now); const upcomingJobs=jobs.filter(j=>j.dueDate && j.dueDate>=now && j.dueDate<=horizon);
-    const liveAlerts=reorderAlerts.map(m=>{const onHand=m.movements.reduce((sum,row)=>{const n=Number(row.quantity);return sum+(row.type==='ISSUE'||row.type==='WASTE'?-n:row.type==='TRANSFER'?0:n)},0);return {...m,movements:undefined,stockOnHand:money(onHand),availableQty:money(onHand),reorderAlert:Number(m.reorderLevel)>0&&onHand<=Number(m.reorderLevel)}}).filter(m=>m.reorderAlert);
+    const liveAlerts=reorderAlerts.map(m=>{const onHand=m.movements.reduce((sum,row)=>{const n=Number(row.quantity);return sum+(row.type==='ISSUE'||row.type==='WASTE'?-n:row.type==='TRANSFER'?0:n)},0);return {id:m.id,sku:m.sku,name:m.name,unit:m.unit,stockOnHand:money(onHand),availableQty:money(onHand),reorderLevel:Number(m.reorderLevel),minimumStock:Number(m.minimumStock),category:m.category,preferredVendor:m.preferredVendor,reorderAlert:Number(m.reorderLevel)>0&&onHand<=Number(m.reorderLevel)}}).filter(m=>m.reorderAlert);
     const duePurchases=purchaseOrders.filter(po=>po.expectedDate&&po.expectedDate<=horizon).map(po=>({id:po.id,number:po.number,vendor:po.vendor.companyName,expectedDate:po.expectedDate,status:po.status,total:money(Number(po.total)),project:po.project?{number:po.project.number,name:po.project.name}:null,overdue:po.expectedDate<now}));
     const revenue=invoices.reduce((sum,i)=>sum+Number(i.total),0); const receivables=invoices.reduce((sum,i)=>sum+Number(i.balance),0); const overdueReceivables=invoices.filter(i=>i.dueDate<now&&Number(i.balance)>0).reduce((sum,i)=>sum+Number(i.balance),0);
     const labour=timeEntries.reduce((sum,e)=>sum+Number(e.hours)*Number(e.employee.hourlyCost),0); const material=movements.reduce((sum,m)=>{const cost=Number(m.quantity)*Number(m.unitCost??m.material.standardCost);return m.type==='RETURN'?sum-cost:(m.type==='ISSUE'||m.type==='WASTE')?sum+cost:sum},0); const outsource=outsourceOrders.reduce((sum,o)=>sum+Number(o.agreedCost),0); const expenseTotal=expenses.reduce((sum,e)=>sum+Number(e.amount),0); const profit=revenue-labour-material-outsource-expenseTotal;
