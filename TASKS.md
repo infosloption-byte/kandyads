@@ -94,7 +94,7 @@ This is the single project task file for the repository. The public website live
 - [x] Revenue and estimated material/labour/outsourcing/expense cost fields.
 - [x] Actual cost calculation from production transactions.
 - [x] Gross profit/margin dashboard.
-- [ ] Attachments.
+- [x] Attachments.
 - [x] Activity audit endpoint.
 - [x] Completion approval workflow.
 
@@ -285,6 +285,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
 - 2026-09-02: Added enquiry attachment support to the detail API/Admin UI using the existing generic attachment system, with isolated integration coverage for empty/detail state, URL-backed registration, listing, missing related records and authorization boundaries.
 - 2026-09-02: Added the public quote estimator with server-side indicative pricing ranges, a public `/quote` flow that collects customer/service details, and a transactional path that creates or reuses a client plus enquiry and draft quote; added integration coverage for unauthenticated access, validation, pricing calculation and transaction side effects.
+- 2026-09-02: Added job attachment exposure in the Job detail API plus a dedicated Admin Job Attachments view using the existing generic attachment system; integration tests use an isolated Job fixture and cover missing-job and authentication boundaries.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
