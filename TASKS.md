@@ -18,7 +18,7 @@ This is the single project task file for the repository. The public website live
 - [x] Password reset/change workflow.
 - [x] Roles and permissions enforcement.
 - [x] API validation, base error format, request logging and request IDs.
-- [ ] Audit logging implementation.
+- [x] Audit logging implementation.
 - [x] Admin protected application shell, navigation and responsive layout.
 
 ## 2. Master Data / Settings
@@ -197,8 +197,8 @@ This is the single project task file for the repository. The public website live
 - [x] Basic login/session handling.
 - [x] Users, roles and permissions.
 - [x] Action-level authorization.
-- [ ] Activity/audit log.
-- [ ] Financial/inventory change history.
+- [x] Activity/audit log.
+- [x] Financial/inventory change history.
 
 ## 15. Notifications
 - [ ] Job assignment.
@@ -274,6 +274,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added `rbac-workflows.test.ts` covering user/role/permission administration boundaries, role permission replacement validation/transaction behavior, and separate read-versus-write authorization enforcement.
 - 2026-09-02: Fixed five integration failures (53/58): enquiry workflow tests now use isolated records rather than shared seeded enquiries, password validation tests assert structured validation details, and RBAC action-level tests use a dedicated read-only role so concurrent tests cannot mutate authorization state.
 - 2026-09-02: Fixed the final enquiry workflow test failure by aligning its detail assertion with the Prisma relation shape: `quote` is a single nullable related record, not an array.
+- 2026-09-02: Added centralized audit querying with `audit.read` authorization, transaction-bound inventory `STOCK_MOVEMENT_CREATED` history, financial `INVOICE_CREATED` and `PAYMENT_POSTED` before/after snapshots, plus `audit-workflows.test.ts` covering authorization, filtering, happy paths, invalid related records and transaction side effects.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
