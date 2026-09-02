@@ -59,7 +59,7 @@ This is the single project task file for the repository. The public website live
 - [x] Enquiry create modal + client selection + validation + API create.
 - [x] Source, requirement, site/location, target date and priority fields.
 - [x] Enquiry edit/detail workflow.
-- [ ] Attachments.
+- [x] Attachments.
 - [x] Convert enquiry to quotation.
 
 ### Quotations / Estimates
@@ -283,6 +283,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added the Employee workload API and Admin view. Workload groups active employee-assigned tasks with planned/actual/remaining hours, overdue counts, optional date-window filtering and employee filtering; actual hours are derived from logged task time entries when present, and the integration tests use isolated employee/job fixtures to avoid cross-suite mutation races.
 - 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
 - 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
+- 2026-09-02: Added enquiry attachment support to the detail API/Admin UI using the existing generic attachment system, with isolated integration coverage for empty/detail state, URL-backed registration, listing, missing related records and authorization boundaries.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
