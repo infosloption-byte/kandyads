@@ -33,6 +33,8 @@ import { profitabilityRoutes } from './modules/profitability/profitability.route
 import { installationsRoutes } from './modules/installations/installations.routes.js';
 import { financeRoutes } from './modules/finance/finance.routes.js';
 import { settingsRoutes } from './modules/settings/settings.routes.js';
+import { workflowConfigRoutes } from './modules/workflow/workflow-config.routes.js';
+import { loadWorkflowConfiguration } from './modules/workflow/workflow.config.js';
 import { approvalsRoutes } from './modules/approvals/approvals.routes.js';
 import { attachmentsRoutes } from './modules/attachments/attachments.routes.js';
 
@@ -71,8 +73,10 @@ export function buildApp(){
   app.register(installationsRoutes);
   app.register(financeRoutes);
   app.register(settingsRoutes);
+  app.register(workflowConfigRoutes);
   app.register(approvalsRoutes);
   app.register(attachmentsRoutes);
+  app.addHook('onReady', async () => { await loadWorkflowConfiguration(); });
   app.setErrorHandler((error,request,reply)=>{
     if (error instanceof z.ZodError) {
       request.log.warn({ error }, 'Request validation failed');
