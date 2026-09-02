@@ -1,7 +1,10 @@
 import type { FastifyRequest } from 'fastify';
-import { prisma } from '../../lib/prisma.js';
 
-export type AuditClient = Pick<typeof prisma, 'auditLog'>;
+export type AuditClient = {
+  auditLog: {
+    create: (args: any) => Promise<any>;
+  };
+};
 
 export function actorId(request: FastifyRequest) {
   const id = Number((request.user as { sub?: string }).sub);
