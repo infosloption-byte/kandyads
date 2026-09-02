@@ -7,7 +7,7 @@ const base='/api/v1';
 let app:Awaited<ReturnType<typeof buildApp>>;
 let token='';
 let enquiryId=0;
-let original:any;
+let clientId=0;
 
 async function request(path:string,options:RequestInit={}){
   const headers=new Headers(options.headers);
@@ -25,11 +25,12 @@ before(async()=>{
   app=buildApp(); await app.ready();
   const login=await app.inject({method:'POST',url:`${base}/auth/login`,headers:{'content-type':'application/json'},payload:JSON.stringify({email:'admin@kandyads.lk',password:'ChangeMe!123'})});
   assert.equal(login.statusCode,200); token=JSON.parse(login.body).data.token;
-  const enquiry=await prisma.enquiry.findFirst({where:{status:{in:['OPEN','QUOTING']}},orderBy:{id:'desc'}}); assert.ok(enquiry); enquiryId=enquiry.id;
-  original={source:enquiry.source,requirement:enquiry.requirement,siteLocation:enquiry.siteLocation,targetDate:enquiry.targetDate,priority:enquiry.priority,clientId:enquiry.clientId,status:enquiry.status};
+  const client=await prisma.client.findFirst({orderBy:{id:'asc'}}); assert.ok(client); clientId=client.id;
+  const enquiry=await prisma.enquiry.create({data:{number:`TEST-WF-ENQ-${Date.now()}-${Math.floor(Math.random()*10000)}`,clientId,requirement:'Dedicated enquiry workflow test',status:'OPEN',source:'Automated Test',siteLocation:'Test Site',priority:'MEDIUM'}});
+  enquiryId=enquiry.id;
 });
 
-after(async()=>{if(enquiryId){await prisma.enquiry.update({where:{id:enquiryId},data:original}).catch(()=>undefined);await prisma.auditLog.deleteMany({where:{entity:'Enquiry',entityId:String(enquiryId)}}).catch(()=>undefined);}await app.close();await prisma.$disconnect();});
+after(async()=>{if(enquiryId){await prisma.auditLog.deleteMany({where:{entity:'Enquiry',entityId:String(enquiryId)}}).catch(()=>undefined);await prisma.quote.deleteMany({where:{enquiryId}}).catch(()=>undefined);await prisma.enquiry.delete({where:{id:enquiryId}}).catch(()=>undefined);}await app.close();await prisma.$disconnect();});
 
 test('enquiry detail requires authentication',async()=>{
   const saved=token; token='';
@@ -39,7 +40,7 @@ test('enquiry detail requires authentication',async()=>{
 });
 
 test('enquiry detail returns client and linked quote data',async()=>{
-  const response=await request(`${base}/enquiries/${enquiryId}`); assert.equal(response.status,200); assert.equal(response.body.data.id,enquiryId); assert.ok(response.body.data.client);
+  const response=await request(`${base}/enquiries/${enquiryId}`); assert.equal(response.status,200); assert.equal(response.body.data.id,enquiryId); assert.ok(response.body.data.client); assert.ok(Array.isArray(response.body.data.quote));
 });
 
 test('enquiry edit updates fields and records audit activity',async()=>{
@@ -55,10 +56,7 @@ test('enquiry edit validates missing related client and invalid input',async()=>
 });
 
 test('enquiry status transition enforces workflow rules',async()=>{
-  const current=original.status;
-  const invalidTarget=current==='OPEN'?'CONVERTED':'OPEN';
-  const invalid=await request(`${base}/enquiries/${enquiryId}/status`,{method:'PATCH',body:JSON.stringify({status:invalidTarget})}); assert.equal(invalid.status,400);
-  const validTarget=current==='OPEN'?'QUOTING':'CLOSED';
-  const valid=await request(`${base}/enquiries/${enquiryId}/status`,{method:'PATCH',body:JSON.stringify({status:validTarget})}); assert.equal(valid.status,200); assert.equal(valid.body.data.status,validTarget);
+  const invalid=await request(`${base}/enquiries/${enquiryId}/status`,{method:'PATCH',body:JSON.stringify({status:'CONVERTED'})}); assert.equal(invalid.status,400);
+  const valid=await request(`${base}/enquiries/${enquiryId}/status`,{method:'PATCH',body:JSON.stringify({status:'QUOTING'})}); assert.equal(valid.status,200); assert.equal(valid.body.data.status,'QUOTING');
   const history=await request(`${base}/enquiries/${enquiryId}/activity`); assert.ok(history.body.data.some((row:any)=>row.action==='STATUS_CHANGE'));
 });
