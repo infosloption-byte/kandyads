@@ -57,7 +57,7 @@ This is the single project task file for the repository. The public website live
 - [x] Enquiry list/search API and admin screen foundation.
 - [x] Enquiry create modal + client selection + validation + API create.
 - [x] Source, requirement, site/location, target date and priority fields.
-- [ ] Enquiry edit/detail workflow.
+- [x] Enquiry edit/detail workflow.
 - [ ] Attachments.
 - [x] Convert enquiry to quotation.
 
