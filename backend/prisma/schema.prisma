@@ -206,7 +206,7 @@ model Client {
   paymentTerms String?
   creditLimit  Decimal?   @db.Decimal(14, 2)
   notes        String?
-  active       Boolean    @default(true)
+  active        Boolean    @default(true)
   leads        Lead[]
   enquiries    Enquiry[]
   quotes       Quote[]
@@ -245,7 +245,7 @@ model Enquiry {
   siteLocation String?
   targetDate   DateTime?
   priority     String?
-  status       EnquiryStatus @default(OPEN)
+  status        EnquiryStatus @default(OPEN)
   quote        Quote?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -276,8 +276,8 @@ model Quote {
   total            Decimal     @db.Decimal(14, 2)
   expectedMaterial Decimal     @default(0) @db.Decimal(14, 2)
   expectedLabour   Decimal     @default(0) @db.Decimal(14, 2)
-  expectedOutsource Decimal    @default(0) @db.Decimal(14, 2)
-  expectedExpense  Decimal     @default(0) @db.Decimal(14, 2)
+  expectedOutsource Decimal    @db.Decimal(14, 2)
+  expectedExpense  Decimal     @db.Decimal(14, 2)
   expectedMargin   Decimal?    @db.Decimal(14, 2)
   items            QuoteItem[]
   project          Project?
@@ -381,7 +381,13 @@ model Task {
   description    String?
   employeeId     Int?
   employee       Employee?   @relation(fields: [employeeId], references: [id])
+  parentTaskId   Int?
+  parentTask     Task?       @relation("TaskSubtasks", fields: [parentTaskId], references: [id], onDelete: Cascade)
+  subtasks       Task[]      @relation("TaskSubtasks")
   timeEntries    TimeEntry[]
+  dependencies   TaskDependency[] @relation("TaskDependencies")
+  dependents     TaskDependency[] @relation("TaskDependents")
+  checklistItems TaskChecklistItem[]
   priority       String?
   startDate      DateTime?
   dueDate        DateTime?
@@ -391,6 +397,35 @@ model Task {
   completedAt    DateTime?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+
+  @@index([jobId, parentTaskId])
+}
+
+model TaskDependency {
+  id             Int      @id @default(autoincrement())
+  taskId         Int
+  task           Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOnTaskId Int
+  dependsOnTask  Task     @relation("TaskDependents", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+
+  @@unique([taskId, dependsOnTaskId])
+  @@index([dependsOnTaskId])
+}
+
+model TaskChecklistItem {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title       String   @db.VarChar(255)
+  required    Boolean  @default(true)
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([taskId, sortOrder])
 }
 
 model TimeEntry {
@@ -416,7 +451,7 @@ model Vendor {
   code             String           @unique @db.VarChar(50)
   companyName      String           @db.VarChar(200)
   contactName      String?
-  phone             String?
+  phone            String?
   whatsapp         String?
   email            String?
   address          String?
@@ -671,7 +706,7 @@ model Invoice {
   dueDate     DateTime
   subtotal    Decimal       @db.Decimal(14, 2)
   discount    Decimal       @default(0) @db.Decimal(14, 2)
-  tax         Decimal       @default(0) @db.Decimal(14, 2)
+  tax         Decimal       @db.Decimal(14, 2)
   total       Decimal       @db.Decimal(14, 2)
   amountPaid  Decimal       @default(0) @db.Decimal(14, 2)
   balance     Decimal       @db.Decimal(14, 2)

@@ -6,6 +6,7 @@ const list=(resource,params={})=>{const clean=Object.fromEntries(Object.entries(
 const create=(resource,input)=>request(`/${resource}`,{method:'POST',body:JSON.stringify(input)});
 const patch=(resource,id,input)=>request(`/${resource}/${id}`,{method:'PATCH',body:JSON.stringify(input)});
 const postNested=(resource,id,action,input)=>request(`/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
+const deleteNested=(resource,id,action,childId)=>request(`/${resource}/${id}/${action}/${childId}`,{method:'DELETE'});
 const approval=(resource,id,action,input={})=>request(`/approvals/${resource}/${id}/${action}`,{method:'POST',body:JSON.stringify(input)});
 async function quotePdfBlob(id){const token=getToken();const response=await fetch(`${API_BASE}/quotes/${id}/pdf`,{headers:token?{Authorization:`Bearer ${token}`}:{}});if(!response.ok)throw new Error(`Unable to generate quote PDF (${response.status})`);return response.blob()}
 export const api={
@@ -20,7 +21,7 @@ export const api={
  listProjects:p=>list('projects',p),getProject:id=>request(`/projects/${id}`),createProject:i=>create('projects',i),updateProject:(id,i)=>patch('projects',id,i),updateProjectStatus:(id,i)=>request(`/projects/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),getProjectActivity:id=>request(`/projects/${id}/activity`),
  listServices:p=>list('services',p),createService:i=>create('services',i),
  listJobs:p=>list('jobs',p),getJob:id=>request(`/jobs/${id}`),getJobActivity:id=>request(`/jobs/${id}/activity`),createJob:i=>create('jobs',i),updateJobStatus:(id,i)=>request(`/jobs/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),approveJobCompletion:(id)=>approval('jobs',id,'complete'),createJobAssignment:(id,i)=>postNested('jobs',id,'assignments',i),createJobMaterialRequirement:(id,i)=>postNested('jobs',id,'material-requirements',i),createJobStockMovement:(id,i)=>postNested('jobs',id,'stock-movements',i),createJobTimeEntry:(id,i)=>postNested('jobs',id,'time-entries',i),
- listTasks:p=>list('tasks',p),getTask:id=>request(`/tasks/${id}`),createTask:i=>create('tasks',i),updateTask:(id,i)=>patch('tasks',id,i),updateTaskStatus:(id,i)=>request(`/tasks/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),
+ listTasks:p=>list('tasks',p),getTask:id=>request(`/tasks/${id}`),createTask:i=>create('tasks',i),updateTask:(id,i)=>patch('tasks',id,i),updateTaskStatus:(id,i)=>request(`/tasks/${id}/status`,{method:'PATCH',body:JSON.stringify(i)}),createTaskSubtask:(id,i)=>create('tasks',{...i,parentTaskId:id}),addTaskDependency:(id,i)=>postNested('tasks',id,'dependencies',i),removeTaskDependency:(id,dependencyId)=>deleteNested('tasks',id,'dependencies',dependencyId),addTaskChecklistItem:(id,i)=>postNested('tasks',id,'checklist',i),updateTaskChecklistItem:(id,itemId,i)=>patch(`/tasks/${id}/checklist`,itemId,i),removeTaskChecklistItem:(id,itemId)=>request(`/tasks/${id}/checklist/${itemId}`,{method:'DELETE'}),
  listEmployees:p=>list('employees',p),getEmployee:id=>request(`/employees/${id}`),createEmployee:i=>create('employees',i),updateEmployee:(id,i)=>patch('employees',id,i),
  listTime:p=>list('time',p),createTime:i=>create('time',i),updateTime:(id,i)=>patch('time',id,i),
  listMaterialCategories:p=>list('material-categories',p),createMaterialCategory:i=>create('material-categories',i),
