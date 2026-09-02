@@ -106,7 +106,7 @@ This is the single project task file for the repository. The public website live
 - [x] Task edit/detail workflow.
 - [x] Dependencies, checklists and subtasks.
 - [x] Notes, attachments and completion timestamp.
-- [ ] Employee workload view.
+- [x] Employee workload view.
 
 ## 5. Team / Labour
 - [x] Employee list/search API and admin screen foundation.
@@ -280,6 +280,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Added job audit/activity history for job creation, status changes and production transactions, plus an explicit job completion approval endpoint that requires REVIEW status and blocks approval while tasks remain open; added `job-activity-approval.test.ts` coverage and exposed the workflow through the Admin API client.
 - 2026-09-02: Added task dependencies, circular-dependency protection, required checklists and subtasks with same-job validation and completion blockers. The implementation uses the dedicated task-structure tables while preserving the stable Prisma schema/client path.
 - 2026-09-02: Completed task notes, task attachment visibility/registration and completion timestamp coverage. Task notes are stored in a dedicated nullable `Task.notes` column; task detail/list responses expose notes and attachments, and the Admin task form/detail UI supports editing notes and registering URL-backed attachments.
+- 2026-09-02: Added the Employee workload API and Admin view. Workload groups active employee-assigned tasks with planned/actual/remaining hours, overdue counts, optional date-window filtering and employee filtering; actual hours are derived from logged task time entries when present, and the integration tests use isolated employee/job fixtures to avoid cross-suite mutation races.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
