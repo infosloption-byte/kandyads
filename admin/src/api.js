@@ -42,6 +42,8 @@ export const api={
  listPayments:p=>list('payments',p),createPayment:i=>create('payments',i),
  listProfitabilityProjects:p=>list('profitability/projects',p),listProfitabilityJobs:p=>list('profitability/jobs',p),getProfitabilitySummary:()=>request('/profitability/summary'),getJobProfitability:id=>request(`/profitability/jobs/${id}`),
  getCompanySettings:()=>request('/settings/company'),updateCompanySettings:i=>request('/settings/company',{method:'PUT',body:JSON.stringify(i)}),
+ listSettingsBranches:()=>request('/settings/branches'),createSettingsBranch:i=>create('settings/branches',i),updateSettingsBranch:(id,i)=>patch('settings/branches',id,i),
+ listNumberSequences:()=>request('/settings/number-sequences'),createNumberSequence:i=>create('settings/number-sequences',i),updateNumberSequence:(id,i)=>patch('settings/number-sequences',id,i),nextNumberSequence:id=>request(`/settings/number-sequences/${id}/next`,{method:'POST',body:'{}'}),
  listSettingsUsers:p=>list('settings/users',p),createSettingsUser:i=>create('settings/users',i),updateSettingsUser:(id,i)=>patch('settings/users',id,i),
  listSettingsRoles:()=>request('/settings/roles'),createSettingsRole:i=>create('settings/roles',i),
  listSettingsPermissions:()=>request('/settings/permissions'),updateSettingsRolePermissions:(id,i)=>request(`/settings/roles/${id}/permissions`,{method:'PUT',body:JSON.stringify(i)}),
