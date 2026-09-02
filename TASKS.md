@@ -94,7 +94,9 @@ This is the single project task file for the repository. The public website live
 - [x] Revenue and estimated material/labour/outsourcing/expense cost fields.
 - [x] Actual cost calculation from production transactions.
 - [x] Gross profit/margin dashboard.
-- [ ] Attachments, activity and completion approval.
+- [ ] Attachments.
+- [x] Activity audit endpoint.
+- [x] Completion approval workflow.
 
 ### Tasks / Work Breakdown
 - [x] Task list/search API and admin screen foundation.
@@ -275,6 +277,7 @@ Every new module must be delivered with its implementation **and** automated tes
 - 2026-09-02: Fixed five integration failures (53/58): enquiry workflow tests now use isolated records rather than shared seeded enquiries, password validation tests assert structured validation details, and RBAC action-level tests use a dedicated read-only role so concurrent tests cannot mutate authorization state.
 - 2026-09-02: Fixed the final enquiry workflow test failure by aligning its detail assertion with the Prisma relation shape: `quote` is a single nullable related record, not an array.
 - 2026-09-02: Added centralized audit querying with `audit.read` authorization, transaction-bound inventory `STOCK_MOVEMENT_CREATED` history, financial `INVOICE_CREATED` and `PAYMENT_POSTED` before/after snapshots, plus `audit-workflows.test.ts` covering authorization, filtering, happy paths, invalid related records and transaction side effects.
+- 2026-09-02: Added job audit/activity history for job creation, status changes and production transactions, plus an explicit job completion approval endpoint that requires REVIEW status and blocks approval while tasks remain open; added `job-activity-approval.test.ts` coverage and exposed the workflow through the Admin API client.
 
 ## Suggested implementation phases
 1. Foundation + auth + database.
