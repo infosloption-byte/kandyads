@@ -34,10 +34,13 @@ For a production database, use reviewed, version-controlled migrations. Do not u
 
 Before applying migrations:
 
-1. Confirm the target database and backup/restore path.
-2. Review the migration SQL for destructive operations and compatibility with the production MySQL version.
-3. Apply the migration during the planned release window.
-4. Confirm the backend can start and the health endpoint returns HTTP 200.
+- [ ] Confirm the target database and backup/restore path.
+- [ ] Take a verified database backup and confirm it is readable.
+- [ ] Review migration SQL for destructive operations and production MySQL compatibility.
+- [ ] Record the application commit and migration state.
+- [ ] Apply Prisma migrations with `npm run prisma:migrate:deploy` from `backend/`.
+- [ ] Apply any explicitly documented raw-SQL migrations when they are not represented in Prisma migration history.
+- [ ] Confirm the backend starts and `/health` returns HTTP 200.
 
 The CI database currently uses MySQL 5.7 for compatibility coverage. Production may use a newer supported MySQL release only after validating Prisma behavior and migration compatibility.
 
@@ -74,25 +77,28 @@ From `admin/`:
 ```powershell
 npm ci
 npm run build
-npm run test
 ```
 
 Publish the generated `dist/` directory and configure SPA rewrites. Set `VITE_API_URL` to the production API base URL.
 
-## Release verification
+## Release checklist
 
-After deployment, verify:
-
-- `GET /health` returns `200`.
-- The public site loads and `/quote` is reachable directly.
-- Admin login succeeds and protected API calls use the production API.
-- CORS allows the public and Admin origins and rejects unapproved browser origins.
-- A read-only Admin screen loads from the API.
-- A representative authenticated write operation succeeds and creates the expected audit record.
-- Database-backed reports and inventory summaries load without errors.
+- [ ] Backend integration tests pass against a dedicated non-production database.
+- [ ] Backend production build passes.
+- [ ] Admin production build passes.
+- [ ] Public frontend production build passes.
+- [ ] Production environment variables are configured.
+- [ ] Database backup is verified before migration.
+- [ ] Health check returns `200`.
+- [ ] Admin login and protected API calls work.
+- [ ] Public `/quote` and `/contact` workflows work.
+- [ ] Notifications and audit records work.
+- [ ] Representative reports, inventory summaries, PDF downloads and CSV exports work.
+- [ ] Backend logs and database health are monitored after release.
+- [ ] Deployed commit SHA and migration state are recorded.
 
 ## Rollback
 
-Application rollback should restore the previous known-good frontend/Admin build and backend release. Database rollback must follow the migration's reviewed rollback procedure or restore from a verified backup; do not improvise destructive SQL in production.
+Application rollback should restore the previous known-good frontend/Admin build and backend release. Do not blindly reverse production database migrations. Use a reviewed forward-fix migration or restore from a verified backup when database rollback is required.
 
 Keep the previous application version available until post-release verification is complete.
