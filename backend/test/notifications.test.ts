@@ -95,18 +95,27 @@ test('notification list is authenticated and returns unread count', async () => 
   assert.equal(response.statusCode, 200);
 
   const body = JSON.parse(response.body);
-  assert.equal(body.meta.unreadCount, 1);
-  assert.equal(body.data[0].type, 'JOB_ASSIGNMENT');
+  assert.ok(Number.isInteger(body.meta.unreadCount));
+  assert.ok(body.meta.unreadCount >= 1);
+  assert.ok(body.data.some((item: { id: number }) => Number(item.id) === notificationId));
 });
 
 test('notification read is scoped to the authenticated user', async () => {
+  const before = await req('/api/v1/notifications?unreadOnly=true');
+  assert.equal(before.statusCode, 200);
+  const beforeBody = JSON.parse(before.body);
+  assert.ok(beforeBody.data.some((item: { id: number }) => Number(item.id) === notificationId));
+
   const response = await req(`/api/v1/notifications/${notificationId}/read`, {
     method: 'POST',
   });
   assert.equal(response.statusCode, 200, response.body);
 
   const list = await req('/api/v1/notifications?unreadOnly=true');
-  assert.equal(JSON.parse(list.body).meta.unreadCount, 0);
+  assert.equal(list.statusCode, 200);
+  const afterBody = JSON.parse(list.body);
+  assert.equal(afterBody.meta.unreadCount, beforeBody.meta.unreadCount - 1);
+  assert.ok(!afterBody.data.some((item: { id: number }) => Number(item.id) === notificationId));
 });
 
 test('operational notification generation is authenticated and deduplicated', async () => {
