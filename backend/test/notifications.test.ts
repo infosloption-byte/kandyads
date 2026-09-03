@@ -44,6 +44,7 @@ before(async () => {
   const body = JSON.parse(login.body);
   token = body.data.token;
   userId = Number(body.data.user.id);
+  assert.ok(Number.isSafeInteger(userId) && userId > 0);
 
   await prisma.$executeRaw`
     DELETE FROM Notification
@@ -61,7 +62,14 @@ before(async () => {
     )
   `;
 
-  const rows = await prisma.$queryRaw<{ id: number }[]>`
+  const [{ id }] = await prisma.$queryRaw<{ id: bigint }[]>`
+    SELECT LAST_INSERT_ID() AS id
+  `;
+
+  notificationId = Number(id);
+  assert.ok(Number.isSafeInteger(notificationId) && notificationId > 0);
+
+  const rows = await prisma.$queryRaw<{ id: bigint }[]>`
     SELECT id
     FROM Notification
     WHERE userId = ${userId}
@@ -69,7 +77,7 @@ before(async () => {
   `;
 
   assert.equal(rows.length, 1);
-  notificationId = Number(rows[0].id);
+  assert.equal(Number(rows[0].id), notificationId);
 });
 
 after(async () => {
