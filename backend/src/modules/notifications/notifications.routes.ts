@@ -40,7 +40,7 @@ export async function notificationsRoutes(app:FastifyInstance){
       created+=Number(await prisma.$executeRaw`INSERT IGNORE INTO Notification (userId,type,title,message,entityType,entityId,dedupeKey) VALUES (${user.id},'JOB_ASSIGNMENT','Job assigned',${`You have been assigned to ${assignment.job.number} · ${assignment.job.title}.`},'JOB',${assignment.jobId},${key})`);
     }
 
-    const tasks=await prisma.task.findMany({where:{employeeId:user.employee.id,status:{notIn:['COMPLETED','CANCELLED']},dueDate:{not:null}},select:{id,title,dueDate,jobId,job:{select:{number:true}}}});
+    const tasks=await prisma.task.findMany({where:{employeeId:user.employee.id,status:{notIn:['COMPLETED','CANCELLED']},dueDate:{not:null}},select:{id:true,title:true,dueDate:true,jobId:true,job:{select:{number:true}}}});
     for(const task of tasks){
       if(task.dueDate===null)continue;
       const overdue=task.dueDate<new Date();
