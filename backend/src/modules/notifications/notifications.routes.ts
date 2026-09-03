@@ -63,7 +63,7 @@ export async function notificationsRoutes(app:FastifyInstance){
 
     const now=new Date();
     const reminderUntil=new Date(now.getTime()+7*24*60*60*1000);
-    const purchaseOrders=await prisma.purchaseOrder.findMany({where:{status:{in:['SENT','PARTIALLY_RECEIVED']},expectedDate:{not:null,lte:reminderUntil}},select:{id:numberType(),number:true,expectedDate:true,vendor:{select:{companyName:true}}}});
+    const purchaseOrders=await prisma.purchaseOrder.findMany({where:{status:{in:['SENT','PARTIALLY_RECEIVED']},expectedDate:{not:null,lte:reminderUntil}},select:{id:true,number:true,expectedDate:true,vendor:{select:{companyName:true}}}});
     for(const order of purchaseOrders){
       if(!order.expectedDate)continue;
       const overdue=order.expectedDate<now;
@@ -89,12 +89,11 @@ export async function notificationsRoutes(app:FastifyInstance){
       created+=await insertNotification(user.id,'INVOICE_OVERDUE','Invoice overdue',`Invoice ${invoice.number} for ${invoice.client.companyName} is overdue with an outstanding balance of ${invoice.balance}.`,'INVOICE',invoice.id,`INVOICE_OVERDUE:${user.id}:${invoice.id}`);
     }
 
-    const [purchaseRequests,purchaseOrdersPending,expenses,outsourcing,timeEntries]=await Promise.all([
+    const [purchaseRequests,purchaseOrdersPending,expenses,outsourcing]=await Promise.all([
       prisma.purchaseRequest.count({where:{status:'SUBMITTED'}}),
       prisma.purchaseOrder.count({where:{status:'DRAFT'}}),
       prisma.expense.count({where:{status:'SUBMITTED'}}),
       prisma.outsourceOrder.count({where:{status:'REQUESTED'}}),
-      prisma.timeEntry.count(),
     ]);
     const pendingTotal=purchaseRequests+purchaseOrdersPending+expenses+outsourcing;
     if(pendingTotal>0){
@@ -104,5 +103,3 @@ export async function notificationsRoutes(app:FastifyInstance){
     return {data:{created}};
   });
 }
-
-function numberType(){return true as const;}
