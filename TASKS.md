@@ -47,7 +47,7 @@
 - [x] Invoice overdue.
 - [x] Approval notifications.
 - [x] In-app notification center.
-- [ ] Email/WhatsApp integrations later.
+- [x] Email/WhatsApp integrations later.
 
 ## 16. Public Website Integration
 - [x] Website contact form → API lead/enquiry.
@@ -103,6 +103,7 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Completed external notification delivery integration. Notification generation now resolves the authenticated user's email and employee phone, sends newly-created notifications through enabled Resend email and WhatsApp Cloud API adapters, preserves in-app creation when external delivery fails, and keeps providers disabled by default until credentials are configured. Added provider failure coverage and removed temporary test helpers.
 - 2026-09-03: Completed the remaining four Testing / Release rule-test categories: costing unit tests, stock movement rule tests, finance/invoice rule tests, and purchasing/receiving rule tests. Added reusable costing and financial calculation helpers where appropriate.
 - 2026-09-03: CI validation is currently failing immediately across backend, Admin and frontend jobs on the latest pushes, before useful step logs are exposed by the GitHub Actions connector; the rule-test work is committed, but release-level CI verification remains to be rechecked once the runner issue is available.
 - 2026-09-03: Marked Database Integrity complete after auditing archive/soft-delete semantics and transaction boundaries for inventory, purchasing/receiving, invoicing and payment mutations.
