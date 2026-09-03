@@ -10,7 +10,7 @@ let notificationId = 0;
 
 async function req(url: string, init: RequestInit = {}) {
   const headers = new Headers(init.headers);
-  headers.set('content-type', 'application/json');
+  if (init.body !== undefined) headers.set('content-type', 'application/json');
   if (token) headers.set('authorization', `Bearer ${token}`);
 
   return app.inject({
