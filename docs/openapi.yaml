@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: Kandy Ads Operations API
+  version: 1.0.0
+  description: Authenticated REST API for CRM, delivery, inventory, purchasing, finance, reporting and administration.
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local development
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Dashboard
+  - name: Notifications
+  - name: CRM
+  - name: Projects
+  - name: Operations
+  - name: Inventory
+  - name: Purchasing
+  - name: Finance
+  - name: Public
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Authenticate a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Authenticated }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get the authenticated user
+      responses:
+        '200': { description: Current user }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List notifications for the authenticated user
+      parameters:
+        - { name: unreadOnly, in: query, schema: { type: boolean, default: false } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 50 } }
+      responses:
+        '200': { description: Notification list and unread count }
+  /notifications/{id}/read:
+    post:
+      tags: [Notifications]
+      summary: Mark one owned notification as read
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: Notification marked read }
+        '404': { description: Notification not found }
+  /notifications/read-all:
+    post:
+      tags: [Notifications]
+      summary: Mark all owned notifications as read
+      responses:
+        '200': { description: Updated count }
+  /notifications/generate:
+    post:
+      tags: [Notifications]
+      summary: Generate operational notifications for the authenticated user
+      responses:
+        '200': { description: Number of newly created notifications }
+  /dashboard/summary:
+    get:
+      tags: [Dashboard]
+      summary: Get dashboard summary metrics
+      responses:
+        '200': { description: Dashboard summary }
+  /dashboard/operational:
+    get:
+      tags: [Dashboard]
+      summary: Get operational reporting data
+      parameters:
+        - { name: days, in: query, schema: { type: integer, minimum: 7, maximum: 90, default: 14 } }
+      responses:
+        '200': { description: Operational report }
+  /dashboard/export:
+    get:
+      tags: [Dashboard]
+      summary: Export an operational report as CSV
+      parameters:
+        - { name: report, in: query, required: true, schema: { type: string } }
+        - { name: days, in: query, schema: { type: integer, minimum: 7, maximum: 90, default: 14 } }
+      responses:
+        '200': { description: CSV file }
+  /leads:
+    get:
+      tags: [CRM]
+      summary: List leads
+      responses:
+        '200': { description: Paginated lead list }
+    post:
+      tags: [CRM]
+      summary: Create a lead
+      responses:
+        '201': { description: Lead created }
+  /enquiries:
+    get:
+      tags: [CRM]
+      summary: List enquiries
+      responses:
+        '200': { description: Paginated enquiry list }
+    post:
+      tags: [CRM]
+      summary: Create an enquiry
+      responses:
+        '201': { description: Enquiry created }
+  /quotes:
+    get:
+      tags: [CRM]
+      summary: List quotes
+      responses:
+        '200': { description: Paginated quote list }
+    post:
+      tags: [CRM]
+      summary: Create a quote
+      responses:
+        '201': { description: Quote created }
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      responses:
+        '200': { description: Paginated project list }
+    post:
+      tags: [Projects]
+      summary: Create a project
+      responses:
+        '201': { description: Project created }
+  /jobs:
+    get:
+      tags: [Operations]
+      summary: List jobs
+      responses:
+        '200': { description: Paginated job list }
+    post:
+      tags: [Operations]
+      summary: Create a job
+      responses:
+        '201': { description: Job created }
+  /tasks:
+    get:
+      tags: [Operations]
+      summary: List tasks
+      responses:
+        '200': { description: Paginated task list }
+    post:
+      tags: [Operations]
+      summary: Create a task
+      responses:
+        '201': { description: Task created }
+  /materials:
+    get:
+      tags: [Inventory]
+      summary: List materials
+      responses:
+        '200': { description: Paginated material list }
+  /inventory/stock-summary:
+    get:
+      tags: [Inventory]
+      summary: Get inventory stock summary
+      responses:
+        '200': { description: Inventory summary }
+  /stock-movements:
+    get:
+      tags: [Inventory]
+      summary: List stock movements
+      responses:
+        '200': { description: Paginated stock movement list }
+    post:
+      tags: [Inventory]
+      summary: Create a stock movement
+      responses:
+        '201': { description: Stock movement created }
+  /purchase-requests:
+    get:
+      tags: [Purchasing]
+      summary: List purchase requests
+      responses:
+        '200': { description: Paginated purchase request list }
+    post:
+      tags: [Purchasing]
+      summary: Create a purchase request
+      responses:
+        '201': { description: Purchase request created }
+  /purchase-orders:
+    get:
+      tags: [Purchasing]
+      summary: List purchase orders
+      responses:
+        '200': { description: Paginated purchase order list }
+    post:
+      tags: [Purchasing]
+      summary: Create a purchase order
+      responses:
+        '201': { description: Purchase order created }
+  /goods-receipts:
+    get:
+      tags: [Purchasing]
+      summary: List goods receipts
+      responses:
+        '200': { description: Paginated goods receipt list }
+    post:
+      tags: [Purchasing]
+      summary: Create a goods receipt
+      responses:
+        '201': { description: Goods receipt created }
+  /vendor-invoices:
+    get:
+      tags: [Purchasing]
+      summary: List supplier invoices and purchasing links
+      responses:
+        '200': { description: Supplier invoice list }
+  /invoices:
+    get:
+      tags: [Finance]
+      summary: List customer invoices
+      responses:
+        '200': { description: Paginated invoice list }
+    post:
+      tags: [Finance]
+      summary: Create a customer invoice
+      responses:
+        '201': { description: Invoice created }
+  /payments:
+    get:
+      tags: [Finance]
+      summary: List payments
+      responses:
+        '200': { description: Paginated payment list }
+    post:
+      tags: [Finance]
+      summary: Create a payment
+      responses:
+        '201': { description: Payment created }
+  /profitability/summary:
+    get:
+      tags: [Finance]
+      summary: Get profitability summary
+      responses:
+        '200': { description: Profitability summary }
+  /public/quote-estimator:
+    get:
+      tags: [Public]
+      security: []
+      summary: Get public estimator service ranges
+      responses:
+        '200': { description: Estimator configuration }
+    post:
+      tags: [Public]
+      security: []
+      summary: Create a public enquiry and draft quote from estimator input
+      responses:
+        '201': { description: Enquiry and draft quote created }
+  /public/contact:
+    post:
+      tags: [Public]
+      security: []
+      summary: Submit a public website contact enquiry
+      description: Creates a lead, records attribution metadata, applies honeypot and IP burst protection, and notifies active dashboard users.
+      responses:
+        '201': { description: Lead created }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { description: Rate limit exceeded }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BadRequest:
+      description: Validation error
+    Unauthorized:
+      description: Authentication required
