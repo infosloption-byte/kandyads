@@ -109,6 +109,20 @@ test('notification read is scoped to the authenticated user', async () => {
   assert.equal(JSON.parse(list.body).meta.unreadCount, 0);
 });
 
+test('operational notification generation is authenticated and deduplicated', async () => {
+  const first = await req('/api/v1/notifications/generate', { method: 'POST' });
+  assert.equal(first.statusCode, 200, first.body);
+  const firstBody = JSON.parse(first.body);
+  assert.ok(Number.isInteger(firstBody.data.created));
+  assert.ok(firstBody.data.created >= 0);
+
+  const second = await req('/api/v1/notifications/generate', { method: 'POST' });
+  assert.equal(second.statusCode, 200, second.body);
+  const secondBody = JSON.parse(second.body);
+  assert.ok(Number.isInteger(secondBody.data.created));
+  assert.equal(secondBody.data.created, 0);
+});
+
 test('invalid notification id is rejected', async () => {
   const response = await req('/api/v1/notifications/not-an-id/read', {
     method: 'POST',
