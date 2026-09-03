@@ -9,6 +9,7 @@ import { registerAuthGuard } from './modules/auth/auth.guard.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { auditRoutes } from './modules/audit/audit.routes.js';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
+import { notificationsRoutes } from './modules/notifications/notifications.routes.js';
 import { leadsRoutes } from './modules/leads/leads.routes.js';
 import { clientsRoutes } from './modules/clients/clients.routes.js';
 import { enquiriesRoutes } from './modules/enquiries/enquiries.routes.js';
@@ -40,52 +41,9 @@ import { attachmentsRoutes } from './modules/attachments/attachments.routes.js';
 
 export function buildApp(){
   const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
-  app.register(cors,{origin:corsOrigins,credentials:true});
-  app.register(sensible);
-  app.register(jwt,{secret:env.JWT_SECRET});
+  app.register(cors,{origin:corsOrigins,credentials:true});app.register(sensible);app.register(jwt,{secret:env.JWT_SECRET});
   app.get('/health',async()=>({status:'ok',service:'kandy-ads-backend',environment:env.NODE_ENV,timestamp:new Date().toISOString()}));
   app.get('/api/v1',async()=>({name:'Kandy Ads Operations API',version:'v1'}));
-  registerAuthGuard(app);
-  app.register(authRoutes);
-  app.register(auditRoutes);
-  app.register(dashboardRoutes);
-  app.register(leadsRoutes);
-  app.register(clientsRoutes);
-  app.register(enquiriesRoutes);
-  app.register(quotesRoutes);
-  app.register(projectsRoutes);
-  app.register(servicesRoutes);
-  app.register(jobsRoutes);
-  app.register(jobApprovalsRoutes);
-  app.register(tasksRoutes);
-  app.register(employeesRoutes);
-  app.register(employeeCapabilitiesRoutes);
-  app.register(hoursReportRoutes);
-  app.register(publicQuoteEstimatorRoutes);
-  app.register(timeTrackingRoutes);
-  app.register(materialsRoutes);
-  app.register(inventoryRoutes);
-  app.register(vendorsRoutes);
-  app.register(outsourcingRoutes);
-  app.register(expensesRoutes);
-  app.register(purchasingRoutes);
-  app.register(profitabilityRoutes);
-  app.register(installationsRoutes);
-  app.register(financeRoutes);
-  app.register(settingsRoutes);
-  app.register(workflowConfigRoutes);
-  app.register(approvalsRoutes);
-  app.register(attachmentsRoutes);
-  app.addHook('onReady', async () => { await loadWorkflowConfiguration(); });
-  app.setErrorHandler((error,request,reply)=>{
-    if (error instanceof z.ZodError) {
-      request.log.warn({ error }, 'Request validation failed');
-      return reply.status(400).send({error:{code:'VALIDATION_ERROR',message:'Request validation failed',details:error.issues,requestId:request.id}});
-    }
-    const fastifyError=error as FastifyError;
-    request.log.error(fastifyError);
-    const status=fastifyError.statusCode&&fastifyError.statusCode>=400?fastifyError.statusCode:500;
-    return reply.status(status).send({error:{code:fastifyError.code??'INTERNAL_ERROR',message:fastifyError.message??'Unexpected server error',requestId:request.id}});
-  });
-  return app;
+  registerAuthGuard(app);app.register(authRoutes);app.register(auditRoutes);app.register(dashboardRoutes);app.register(notificationsRoutes);app.register(leadsRoutes);app.register(clientsRoutes);app.register(enquiriesRoutes);app.register(quotesRoutes);app.register(projectsRoutes);app.register(servicesRoutes);app.register(jobsRoutes);app.register(jobApprovalsRoutes);app.register(tasksRoutes);app.register(employeesRoutes);app.register(employeeCapabilitiesRoutes);app.register(hoursReportRoutes);app.register(publicQuoteEstimatorRoutes);app.register(timeTrackingRoutes);app.register(materialsRoutes);app.register(inventoryRoutes);app.register(vendorsRoutes);app.register(outsourcingRoutes);app.register(expensesRoutes);app.register(purchasingRoutes);app.register(profitabilityRoutes);app.register(installationsRoutes);app.register(financeRoutes);app.register(settingsRoutes);app.register(workflowConfigRoutes);app.register(approvalsRoutes);app.register(attachmentsRoutes);app.addHook('onReady',async()=>{await loadWorkflowConfiguration();});
+  app.setErrorHandler((error,request,reply)=>{if(error instanceof z.ZodError){request.log.warn({error},'Request validation failed');return reply.status(400).send({error:{code:'VALIDATION_ERROR',message:'Request validation failed',details:error.issues,requestId:request.id}});}const fastifyError=error as FastifyError;request.log.error(fastifyError);const status=fastifyError.statusCode&&fastifyError.statusCode>=400?fastifyError.statusCode:500;return reply.status(status).send({error:{code:fastifyError.code??'INTERNAL_ERROR',message:fastifyError.message??'Unexpected server error',requestId:request.id}});});return app;
 }
