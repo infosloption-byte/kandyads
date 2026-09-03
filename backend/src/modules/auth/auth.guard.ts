@@ -7,7 +7,7 @@ const RESOURCE_ALIASES: Record<string, string> = {
   services:'settings', settings:'settings', approvals:'settings', jobs:'jobs', tasks:'tasks', employees:'employees', time:'time', materials:'materials', 'material-categories':'materials',
   inventory:'inventory', warehouses:'inventory', 'stock-movements':'inventory', vendors:'outsourcing', outsourcing:'outsourcing', expenses:'expenses',
   'expense-categories':'expenses', 'purchase-requests':'purchasing', 'purchase-orders':'purchasing', 'goods-receipts':'purchasing',
-  installations:'installations', invoices:'invoices', payments:'payments', profitability:'reports', 'audit-logs':'audit',
+  installations:'installations', invoices:'invoices', payments:'payments', profitability:'reports', 'audit-logs':'audit', notifications:'dashboard',
 };
 
 function permissionFor(request: FastifyRequest) {
@@ -15,7 +15,7 @@ function permissionFor(request: FastifyRequest) {
   const parts = request.url.split('?')[0].split('/').filter(Boolean);
   const resource = RESOURCE_ALIASES[parts[2] ?? ''];
   if (!resource) return null;
-  if (resource === 'dashboard') return 'dashboard.view';
+  if (resource === 'dashboard' || parts[2] === 'notifications') return 'dashboard.view';
   if (resource === 'settings') return 'settings.write';
   return request.method === 'GET' || request.method === 'HEAD' ? `${resource}.read` : `${resource}.write`;
 }
