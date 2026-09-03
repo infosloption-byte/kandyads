@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 
-const PUBLIC_PATHS = new Set(['/health', '/api/v1', '/api/v1/auth/login', '/api/v1/public/quote-estimator']);
+const PUBLIC_PATHS = new Set(['/health', '/api/v1', '/api/v1/auth/login', '/api/v1/public/quote-estimator', '/api/v1/public/contact']);
 
 const RESOURCE_ALIASES: Record<string, string> = {
   dashboard:'dashboard', leads:'leads', clients:'clients', enquiries:'enquiries', quotes:'quotes', projects:'projects',
