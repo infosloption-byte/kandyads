@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../../lib/prisma.js';
 
-const currentUserId=(request:unknown)=>Number((request as {user?:{id?:number}}).user?.id);
+const currentUserId=(request:unknown)=>Number((request as {user?:{sub?:string}}).user?.sub);
 
 export async function notificationsRoutes(app:FastifyInstance){
   app.get('/api/v1/notifications',async(request)=>{
