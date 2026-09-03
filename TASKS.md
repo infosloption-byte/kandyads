@@ -38,9 +38,9 @@
 - [x] Financial/inventory change history.
 
 ## 15. Notifications
-- [ ] Job assignment.
-- [ ] Task due/overdue.
-- [ ] Low stock.
+- [x] Job assignment.
+- [x] Task due/overdue.
+- [x] Low stock.
 - [ ] Purchase delivery.
 - [ ] Installation reminders.
 - [ ] Quote follow-ups.
@@ -103,6 +103,7 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Added notification foundation for job assignments, task due/overdue alerts and low-stock alerts. Notifications are user-scoped, deduplicated, authenticated, readable/markable as read, and covered by isolated integration tests.
 - 2026-09-03: Completed full operational dashboard reporting and CSV exports. Admin now exposes a selectable 7–90 day operational window and one-click CSV exports for jobs, inventory, purchasing, installations, employee workload and finance; exports are authenticated, validated and covered by isolated integration tests.
 - 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
 - 2026-09-02: Completed estimate-versus-actual and forecast/variance reporting. Profitability now exposes job-level estimate/actual variances plus projected final cost, remaining estimate, forecast variance, projected profit and margin; completed/cancelled jobs use actual final cost, while active jobs use actual-to-date plus remaining estimate. Admin exposes the forecast alongside estimate-vs-actual reporting, with isolated authentication, validation and arithmetic tests.
