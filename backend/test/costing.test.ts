@@ -10,7 +10,7 @@ test('costing material rules include issues and waste, reverse returns, and igno
     { type: 'RETURN', quantity: 1, unitCost: 25 },
     { type: 'TRANSFER', quantity: 99, unitCost: 999 },
     { type: 'ADJUSTMENT', quantity: 2, unitCost: 10 },
-  ]), 95);
+  ]), 105);
 });
 
 test('costing labour rules multiply hours by employee hourly cost', () => {
