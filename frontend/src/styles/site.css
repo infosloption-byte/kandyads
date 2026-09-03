@@ -6,26 +6,14 @@
 @import '../pages.css';
 @import '../hero-mobile-fix.css';
 
-/* Footer — visual treatment matching the supplied desktop/mobile references. */
 .footer-intro{min-width:0}
 .footer-brand{gap:20px;align-items:center}
 .footer-brand img{width:120px;height:120px;flex:0 0 120px}
 .footer-brand>span{font-family:'Space Grotesk';font-size:62px;line-height:1;font-weight:700;letter-spacing:-.055em}
 .footer-intro>p{max-width:450px;margin-top:27px}
-
-/* Contact details are intentionally no longer rendered in the footer. */
 .footer-contact{display:none!important}
 .footer-contact-item,.footer-contact-label,.footer-contact-value{display:none!important}
-
+.form-error{padding:12px 14px;background:#fff0f0;border:1px solid #f1c8cb;color:#c51d29;border-radius:8px;font-size:12px;line-height:1.5}.form-success{padding:12px 14px;background:#edf8f0;border:1px solid #cbe5d1;color:#287343;border-radius:8px;font-size:12px;line-height:1.5}.honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important}
 @media (max-width:900px){
-  .footer-brand{gap:14px}
-  .footer-brand img{width:64px;height:64px;flex-basis:64px}
-  .footer-brand>span{font-size:40px;letter-spacing:-.05em}
-}
-
-@media (max-width:700px){
-  .footer-brand{gap:14px}
-  .footer-brand img{width:64px;height:64px;flex-basis:64px}
-  .footer-brand>span{font-size:40px}
-  .footer-intro>p{margin-top:31px;max-width:390px}
+  .footer-brand img{width:88px;height:88px;flex-basis:88px}.footer-brand>span{font-size:44px}
 }
