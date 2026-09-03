@@ -17,7 +17,7 @@
 - [x] Users / Security / Audit
 - [x] Notifications
 - [x] Public Website Integration
-- [ ] Admin UX / Quality
+- [x] Admin UX / Quality
 - [ ] Backend API
 - [ ] Database Integrity
 - [ ] Testing / Release
@@ -63,8 +63,8 @@
 - [x] Reusable modal component.
 - [x] Initial reusable entity-form styling.
 - [x] Current live screens have loading/empty/error states.
-- [ ] Toast feedback.
-- [ ] Accessibility and keyboard support.
+- [x] Toast feedback.
+- [x] Accessibility and keyboard support.
 
 ## 18. Backend API
 - [x] REST foundation.
@@ -103,6 +103,7 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Completed Admin UX/Quality pass. Added reusable toast feedback for notification actions, Escape-key handling for the notification dialog, visible keyboard focus states, reduced-motion support and improved accessible labels/live regions.
 - 2026-09-03: Completed notification center. Admin now shows unread notification count, recent notifications, mark-read/mark-all-read actions, and refresh/generation controls; bodyless notification requests no longer send a misleading JSON content type.
 - 2026-09-03: Completed operational notification generation for purchase deliveries, installation reminders, quote follow-ups, invoice overdue alerts and pending approval summaries, with authenticated/idempotent integration coverage.
 - 2026-09-03: Completed public website contact integration. Contact submissions create leads, retain UTM/source attribution in lead/audit data, reject honeypot submissions, apply an in-memory burst rate limit, and notify active users with dashboard permission; the public form is connected and reports success/errors.
