@@ -19,7 +19,7 @@
 - [x] Public Website Integration
 - [x] Admin UX / Quality
 - [x] Backend API
-- [ ] Database Integrity
+- [x] Database Integrity
 - [ ] Testing / Release
 
 ## 13. Dashboard / Reports
@@ -81,8 +81,8 @@
 - [x] Decimal-safe money fields.
 - [x] Development migration history established.
 - [x] Production migration deployment command and release procedure.
-- [ ] Archive/soft-delete strategy.
-- [ ] Transaction-safe stock/invoice/payment updates across every mutation.
+- [x] Archive/soft-delete strategy.
+- [x] Transaction-safe stock/invoice/payment updates across every mutation.
 - [x] Seed/demo data.
 - [x] Backup/restore plan.
 
@@ -103,6 +103,7 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Marked Database Integrity complete after auditing archive/soft-delete semantics and transaction boundaries for inventory, purchasing/receiving, invoicing and payment mutations.
 - 2026-09-03: Added OpenAPI reference documentation covering authentication, dashboard, notifications, CRM, operations, inventory, purchasing, finance and public endpoints.
 - 2026-09-03: Added production migration deployment support via `npm run prisma:migrate:deploy`, documented migration safety/rollback, and added a production release checklist.
 - 2026-09-03: CI now builds backend, Admin and public frontend on every main push/PR.
