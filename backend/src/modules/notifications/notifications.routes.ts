@@ -16,10 +16,13 @@ export async function notificationsRoutes(app:FastifyInstance){
   });
 
   app.post('/api/v1/notifications/:id/read',async(request)=>{
-    const params=z.object({id:z.coerce.number().int().positive()}).parse(request.params);
-    const result=await prisma.$executeRaw`UPDATE Notification SET readAt=COALESCE(readAt,CURRENT_TIMESTAMP(3)) WHERE id=${params.id} AND userId=${currentUserId(request)}`;
+    const rawId=(request.params as {id?:unknown})?.id;
+    const notificationId=Number(rawId);
+    if(!Number.isSafeInteger(notificationId)||notificationId<=0)throw app.httpErrors.badRequest('Invalid notification id');
+    const userId=currentUserId(request);
+    const result=await prisma.$executeRaw`UPDATE Notification SET readAt=COALESCE(readAt,CURRENT_TIMESTAMP(3)) WHERE id=${notificationId} AND userId=${userId}`;
     if(!result)return app.httpErrors.notFound('Notification not found');
-    return {data:{id:params.id,read:true}};
+    return {data:{id:notificationId,read:true}};
   });
 
   app.post('/api/v1/notifications/read-all',async(request)=>{
