@@ -15,8 +15,8 @@
 - [x] Documents
 - [x] Dashboard / Reports
 - [x] Users / Security / Audit
-- [ ] Notifications
-- [ ] Public Website Integration
+- [x] Notifications
+- [x] Public Website Integration
 - [ ] Admin UX / Quality
 - [ ] Backend API
 - [ ] Database Integrity
@@ -41,20 +41,20 @@
 - [x] Job assignment.
 - [x] Task due/overdue.
 - [x] Low stock.
-- [ ] Purchase delivery.
-- [ ] Installation reminders.
-- [ ] Quote follow-ups.
-- [ ] Invoice overdue.
-- [ ] Approval notifications.
-- [ ] In-app notification center.
+- [x] Purchase delivery.
+- [x] Installation reminders.
+- [x] Quote follow-ups.
+- [x] Invoice overdue.
+- [x] Approval notifications.
+- [x] In-app notification center.
 - [ ] Email/WhatsApp integrations later.
 
 ## 16. Public Website Integration
-- [ ] Website contact form → API lead/enquiry.
+- [x] Website contact form → API lead/enquiry.
 - [x] Website quote estimator → enquiry/quote draft.
-- [ ] UTM/source capture.
-- [ ] Spam/rate limiting.
-- [ ] Admin notifications.
+- [x] UTM/source capture.
+- [x] Spam/rate limiting.
+- [x] Admin notifications.
 
 ## 17. Admin UX / Quality
 - [x] Responsive admin shell foundation.
@@ -103,6 +103,9 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Completed notification center. Admin now shows unread notification count, recent notifications, mark-read/mark-all-read actions, and refresh/generation controls; bodyless notification requests no longer send a misleading JSON content type.
+- 2026-09-03: Completed operational notification generation for purchase deliveries, installation reminders, quote follow-ups, invoice overdue alerts and pending approval summaries, with authenticated/idempotent integration coverage.
+- 2026-09-03: Completed public website contact integration. Contact submissions create leads, retain UTM/source attribution in lead/audit data, reject honeypot submissions, apply an in-memory burst rate limit, and notify active users with dashboard permission; the public form is connected and reports success/errors.
 - 2026-09-03: Added notification foundation for job assignments, task due/overdue alerts and low-stock alerts. Notifications are user-scoped, deduplicated, authenticated, readable/markable as read, and covered by isolated integration tests.
 - 2026-09-03: Completed full operational dashboard reporting and CSV exports. Admin now exposes a selectable 7–90 day operational window and one-click CSV exports for jobs, inventory, purchasing, installations, employee workload and finance; exports are authenticated, validated and covered by isolated integration tests.
 - 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
