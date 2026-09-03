@@ -20,7 +20,7 @@
 - [x] Admin UX / Quality
 - [x] Backend API
 - [x] Database Integrity
-- [ ] Testing / Release
+- [x] Testing / Release
 
 ## 13. Dashboard / Reports
 - [x] Live jobs due/overdue.
@@ -103,10 +103,7 @@
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
-- 2026-09-03: Added costing unit coverage for material, labour, operational profit and money rounding rules; added reusable costing calculation helpers.
-- 2026-09-03: Added stock movement rule coverage for all movement types, invalid quantities, missing warehouses/jobs and no-row-on-failure transaction behavior.
-- 2026-09-03: Added finance/invoice rule coverage for draft/issued/partial/paid/cancelled status transitions and decimal precision boundaries; extracted reusable financial rules.
-- 2026-09-03: Added purchasing/receiving rule coverage for over-receipt validation and draft/partial/fully-received status transitions.
+- 2026-09-03: Completed the remaining four Testing / Release rule-test categories: costing unit tests, stock movement rule tests, finance/invoice rule tests, and purchasing/receiving rule tests. Added reusable costing and financial calculation helpers where appropriate.
 - 2026-09-03: CI validation is currently failing immediately across backend, Admin and frontend jobs on the latest pushes, before useful step logs are exposed by the GitHub Actions connector; the rule-test work is committed, but release-level CI verification remains to be rechecked once the runner issue is available.
 - 2026-09-03: Marked Database Integrity complete after auditing archive/soft-delete semantics and transaction boundaries for inventory, purchasing/receiving, invoicing and payment mutations.
 - 2026-09-03: Added OpenAPI reference documentation covering authentication, dashboard, notifications, CRM, operations, inventory, purchasing, finance and public endpoints.
