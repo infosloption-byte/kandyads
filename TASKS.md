@@ -18,7 +18,7 @@
 - [x] Notifications
 - [x] Public Website Integration
 - [x] Admin UX / Quality
-- [ ] Backend API
+- [x] Backend API
 - [ ] Database Integrity
 - [ ] Testing / Release
 
@@ -73,18 +73,18 @@
 - [x] Standard error responses.
 - [x] Authorization middleware.
 - [x] Transactions for stock and financial operations where implemented.
-- [ ] OpenAPI documentation.
+- [x] OpenAPI documentation.
 
 ## 19. Database Integrity
 - [x] Normalized Prisma schema foundation.
 - [x] Foreign keys and unique constraints.
 - [x] Decimal-safe money fields.
 - [x] Development migration history established.
-- [ ] Production migrations.
+- [x] Production migration deployment command and release procedure.
 - [ ] Archive/soft-delete strategy.
 - [ ] Transaction-safe stock/invoice/payment updates across every mutation.
 - [x] Seed/demo data.
-- [ ] Backup/restore plan.
+- [x] Backup/restore plan.
 
 ## 20. Testing / Release
 - [x] Automated backend integration smoke suite covering all current API modules and core detail endpoints.
@@ -96,13 +96,16 @@
 - [ ] Stock movement rule tests.
 - [ ] Finance/payment rule tests.
 - [ ] Purchasing/receiving rule tests.
-- [ ] Production build checks for frontend/backend/admin on every release.
-- [ ] Deployment checklist.
+- [x] Production build checks for frontend/backend/admin on every release.
+- [x] Deployment checklist.
 
 ## Testing rule for all future modules
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Added OpenAPI reference documentation covering authentication, dashboard, notifications, CRM, operations, inventory, purchasing, finance and public endpoints.
+- 2026-09-03: Added production migration deployment support via `npm run prisma:migrate:deploy`, documented migration safety/rollback, and added a production release checklist.
+- 2026-09-03: CI now builds backend, Admin and public frontend on every main push/PR.
 - 2026-09-03: Completed Admin UX/Quality pass. Added reusable toast feedback for notification actions, Escape-key handling for the notification dialog, visible keyboard focus states, reduced-motion support and improved accessible labels/live regions.
 - 2026-09-03: Completed notification center. Admin now shows unread notification count, recent notifications, mark-read/mark-all-read actions, and refresh/generation controls; bodyless notification requests no longer send a misleading JSON content type.
 - 2026-09-03: Completed operational notification generation for purchase deliveries, installation reminders, quote follow-ups, invoice overdue alerts and pending approval summaries, with authenticated/idempotent integration coverage.
