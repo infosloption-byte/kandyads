@@ -1,194 +1,34 @@
-# Kandy Ads Operations Platform — Master Task Plan
+# Kandy Ads — Master Task Plan
 
-This is the single project task file for the repository. The public website lives in `frontend/`; the internal operations app lives in `admin/`; the API/database layer lives in `backend/`.
-
-## 0. Workspace
-- [x] Repository separated into `frontend/`, `admin/`, `backend/`.
-- [x] Add shared development conventions and environment documentation.
-- [x] Master task document is at repository root.
-- [x] Add CI checks for backend integration tests and Admin production build.
-- [x] Add production deployment documentation.
-
-## 1. Platform Foundation
-- [x] Backend Node.js + TypeScript + Fastify foundation.
-- [x] MySQL + Prisma schema foundation.
-- [x] Environment validation foundation.
-- [x] Development Prisma migration and local database setup.
-- [x] Authentication login/session foundation.
-- [x] Password reset/change workflow.
-- [x] Roles and permissions enforcement.
-- [x] API validation, base error format, request logging and request IDs.
-- [x] Audit logging implementation.
-- [x] Admin protected application shell, navigation and responsive layout.
-
-## 2. Master Data / Settings
-- [x] Company profile/settings.
-- [x] Branch/location settings.
-- [x] Number sequences.
-- [x] Tax configuration and payment methods.
-- [x] Units of measure.
-- [x] Service catalogue API foundation.
-- [x] Material categories API foundation.
-- [x] Expense categories.
-- [x] Status/workflow configuration.
-
-## 3. Sales / CRM
-### Leads
-- [x] Lead CRUD, search/filter foundation.
-- [x] Lead source and pipeline.
-- [x] Assign sales owner.
-- [x] Follow-up reminders and due/upcoming filtering.
-- [x] Notes and activity timeline foundation.
-- [x] Lead detail/edit workflow.
-- [x] Convert lead to client/enquiry.
-### Clients
-- [x] API-backed client list/search.
-- [x] Organized Clients feature module.
-- [x] Client create workflow with reusable modal/form.
-- [x] Client create API integration.
-- [x] Client edit/detail workflow.
-- [x] Contacts, phone, WhatsApp, email and address fields.
-- [x] Industry, payment terms, credit limit and status fields.
-- [x] Client notes.
-- [x] Client documents.
-- [x] Client project/quote/invoice history detail view.
-### Enquiries
-- [x] Enquiry list/search API and admin screen foundation.
-- [x] Enquiry create modal + client selection + validation + API create.
-- [x] Source, requirement, site/location, target date and priority fields.
-- [x] Enquiry edit/detail workflow.
-- [x] Attachments.
-- [x] Convert enquiry to quotation.
-### Quotations / Estimates
-- [x] Quote list/search API and admin screen foundation.
-- [x] Quote cost/margin calculation API foundation.
-- [x] Quote create modal with client/enquiry selection and dynamic line items.
-- [x] Service catalogue selector for quote lines.
-- [x] Quote edit/detail workflow.
-- [x] PDF generation and sharing.
-- [x] Client approval/rejection tracking.
-- [x] Convert accepted quote into project action.
-- [x] Integrate public quote estimator.
-
-## 4. Delivery / Project Management
-### Projects
-- [x] Project list/search API and admin screen foundation.
-- [x] Project create modal with client/accepted quote selection.
-- [x] Project detail view and related-record drill-down.
-- [x] Project edit/detail workflow.
-- [x] Project owner assignment field.
-- [x] Start/due dates and value fields.
-- [x] Status management rules.
-- [x] Related jobs, expenses, purchasing, installations, invoices and profitability visibility.
-- [x] Activity history.
-### Jobs — Core Production Model
-- [x] Job list/search API and admin screen foundation.
-- [x] Job detail API and Admin detail screen.
-- [x] Job create workflow.
-- [x] Job/project/service linkage in API.
-- [x] Internal / outsourced / mixed assignment field.
-- [x] Revenue and estimated material/labour/outsourcing/expense cost fields.
-- [x] Actual cost calculation from production transactions.
-- [x] Gross profit/margin dashboard.
-- [x] Attachments.
-- [x] Activity audit endpoint.
-- [x] Completion approval workflow.
-### Tasks / Work Breakdown
-- [x] Task list/search API and admin screen foundation.
-- [x] Task creation inside Job detail.
-- [x] Job linkage and employee assignment fields in API.
-- [x] Priority, dates, planned hours and status fields.
-- [x] Task edit/detail workflow.
-- [x] Dependencies, checklists and subtasks.
-- [x] Notes, attachments and completion timestamp.
-- [x] Employee workload view.
-
-## 5. Team / Labour
-- [x] Employee list/search API and admin screen foundation.
-- [x] Employee master CRUD.
-- [x] Department, employment type and internal hourly/daily costing fields.
-- [x] Skills and role management.
-- [x] Employee job assignments.
-- [x] Time entry list/API foundation.
-- [x] Job-level time-entry posting.
-- [x] Time entry edit/approval workflow.
-- [x] Automatic labour cost calculation.
-- [x] Planned vs actual hours reporting.
-
-## 6. Vendors / Outsourcing
-- [x] Vendor/supplier master foundation.
-- [x] Contacts, category, capabilities and payment terms fields.
-- [x] Bank/payment details field.
-- [x] Vendor documents.
-- [x] Outsource requests/order foundation.
-- [x] Vendor selection, scope, quantity/specification and due date.
-- [x] Agreed cost and status workflow fields.
-- [x] Vendor deliverables/invoices.
-- [x] Push actual outsourcing cost to job/project profitability.
-
-## 7. Materials / Inventory
-- [x] Materials master API.
-- [x] Materials admin list/search and create workflow.
-- [x] Material categories API.
-- [x] Warehouses API and admin create workflow.
-- [x] Stock movement API and admin posting workflow.
-- [x] Stock by material/on-hand summary foundation.
-- [x] Reserved/available quantities.
-- [x] Job material requirements workflow foundation.
-- [x] Issue, return and waste transaction endpoints.
-- [x] Issue stock validation.
-- [x] Full stock ledger/reporting.
-- [x] Reorder alerts.
-
-## 8. Purchasing
-- [x] Purchase requests and line items foundation.
-- [x] Purchase request approval workflow.
-- [x] Purchase orders and line items.
-- [x] Vendor linkage.
-- [x] Expected delivery.
-- [x] Goods receipts and partial receipts foundation.
-- [x] Inventory receipt integration.
-- [x] Supplier invoice linkage.
-
-## 9. Expenses
-- [x] Project/job expenses foundation.
-- [x] General business expense model foundation.
-- [x] Categories, approval/status and receipts fields.
-- [x] Direct/general classification.
-- [x] Push approved direct cost into profitability.
-
-## 10. Field Operations
-- [x] Installation orders foundation.
-- [x] Site/contact details.
-- [x] Scheduling/team assignment fields.
-- [x] Vehicle/transport assignment field.
-- [x] Installation workflow/status foundation.
-- [x] Before/after photos and completion proof workflow.
-
-## 11. Finance
-- [x] Invoices foundation.
-- [x] Invoice PDF.
-- [x] Payments foundation.
-- [x] Partial payment calculation.
-- [x] Outstanding balance calculation.
-- [x] Job/project profitability.
-- [x] Estimate vs actual reporting.
-- [x] Forecast/variance reporting.
-
-## 12. Documents
-- [x] Generic attachment model.
-- [ ] Secure uploads and access rules.
-- [ ] Documents across clients, enquiries, quotes, projects, jobs, purchasing, expenses, vendors, invoices and installations.
+- [x] Workspace
+- [x] Platform Foundation
+- [x] Master Data / Settings
+- [x] Sales / CRM
+- [x] Delivery / Project Management
+- [x] Team / Labour
+- [x] Vendors / Outsourcing
+- [x] Materials / Inventory
+- [x] Purchasing
+- [x] Expenses
+- [x] Field Operations
+- [x] Finance
+- [x] Documents
+- [x] Dashboard / Reports
+- [x] Users / Security / Audit
+- [ ] Notifications
+- [ ] Public Website Integration
+- [ ] Admin UX / Quality
+- [ ] Backend API
+- [ ] Database Integrity
+- [ ] Testing / Release
 
 ## 13. Dashboard / Reports
-- [x] Initial dashboard shell.
-- [x] Initial dashboard summary API.
-- [ ] Live jobs due/overdue.
-- [ ] Live low-stock/purchase alerts.
-- [ ] Revenue, expenses, profit and receivables.
-- [ ] Employee workload.
-- [ ] Upcoming installations.
-- [ ] Full operational reports and exports.
+- [x] Live jobs due/overdue.
+- [x] Low-stock and purchase alerts.
+- [x] Revenue / expenses / profit / receivables.
+- [x] Employee workload.
+- [x] Upcoming installations.
+- [x] Full operational reports and exports.
 
 ## 14. Users / Security / Audit
 - [x] Basic login/session handling.
@@ -263,32 +103,8 @@ This is the single project task file for the repository. The public website live
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
 ## Recent implementation notes
+- 2026-09-03: Completed full operational dashboard reporting and CSV exports. Admin now exposes a selectable 7–90 day operational window and one-click CSV exports for jobs, inventory, purchasing, installations, employee workload and finance; exports are authenticated, validated and covered by isolated integration tests.
 - 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
 - 2026-09-02: Completed estimate-versus-actual and forecast/variance reporting. Profitability now exposes job-level estimate/actual variances plus projected final cost, remaining estimate, forecast variance, projected profit and margin; completed/cancelled jobs use actual final cost, while active jobs use actual-to-date plus remaining estimate. Admin exposes the forecast alongside estimate-vs-actual reporting, with isolated authentication, validation and arithmetic tests.
 - 2026-09-02: Completed installation before/after photo and completion-proof workflow. Installation completion now requires both proof photo URLs, detail responses expose installation attachments, Admin supports before/after proof capture and completion, and isolated integration tests cover validation, successful completion, detail exposure and authentication.
 - 2026-09-02: Completed supplier invoice linkage for Purchasing. Vendor invoices can now link to purchase orders and goods receipts, validate vendor ownership and PO/GR consistency, infer the PO from a selected goods receipt, expose purchasing-linked supplier invoices through a list endpoint and Admin Purchasing tab/form, persist the links transactionally with audit metadata, and run isolated integration coverage. CI explicitly provisions the new raw-SQL-backed columns.
-- 2026-09-02: Added vendor deliverable and supplier invoice integration-test coverage, including authentication, missing/invalid records, outsource-order ownership validation, persistence, duplicate supplier-invoice protection, vendor detail exposure and audit side effects.
-- 2026-09-02: Added vendor detail and document management using the existing generic attachment system, including Vendor document registration/list/detail exposure and isolated authentication, missing-record and validation tests.
-- 2026-09-02: Added configurable status/workflow management for quotes, enquiries, projects, jobs and tasks. Workflow transitions are stored in a version-controlled raw-SQL table, exposed through authorized Admin settings APIs/UI, audited transactionally, loaded into the existing runtime transition rules at startup, and covered by isolated integration tests without removing shared seeded configuration.
-- 2026-09-02: Added tax configuration, payment-method cataloguing, units of measure and expense-category management with validation, duplicate protection, Admin controls, and isolated integration tests. New raw-SQL-backed tables are explicitly provisioned in CI.
-- 2026-09-02: Added company profile settings plus branch/location management and transactional number sequences, including version-controlled raw-SQL migrations, Admin controls, authorization/validation coverage and audit side effects for number allocation.
-- 2026-09-02: Added a single-row Company Settings profile with validated API read/update, transactional audit logging, Admin Settings UI and version-controlled database migration. CI explicitly provisions the raw-SQL-backed settings table.
-- 2026-09-02: Added shared development conventions and environment documentation covering repository layout, local setup, environment variables, test isolation, database-change conventions and release commands.
-- 2026-09-02: Added production deployment documentation covering frontend/Admin/backend topology, production environment configuration, migration safety, release verification and rollback guidance.
-- 2026-09-02: Updated the backend test script to disable test-file concurrency because the integration suite shares a database and otherwise permits cross-file fixture races. The inventory workflow passed in isolation while intermittently failing in the full suite before this guard was added.
-- 2026-09-02: Added a version-controlled Prisma migration for the generic `Attachment` table so client-document registration/listing works against a database created from the repository schema.
-- 2026-09-02: Attachment creation already performs the attachment insert and `ATTACHMENT_ADDED` audit entry in one transaction, with the created attachment ID recorded in `afterJson`; the audit failure was a consequence of the missing attachment table preventing the transaction from completing.
-- 2026-09-02: Updated CI test-database provisioning to use the complete Prisma schema before seeding, avoiding a fresh-database failure caused by the repository not yet containing a complete historical migration chain.
-- 2026-09-02: The latest recorded backend integration run was 49/51 passing; the two failures were both in `attachment-workflows.test.ts` and were caused by the missing `attachment` table and the resulting absence of its audit record.
-- 2026-09-02: Implemented authenticated password-change workflow with current-password verification, new-password validation, transactional credential update and `PASSWORD_CHANGED` audit entry; added `auth-password.test.ts` covering authentication boundary, validation failure, successful credential replacement and audit side effect.
-- 2026-09-02: Added `rbac-workflows.test.ts` covering user/role/permission administration boundaries, role permission replacement validation/transaction behavior, and separate read-versus-write authorization enforcement.
-- 2026-09-02: Fixed five integration failures (53/58): enquiry workflow tests now use isolated records rather than shared seeded enquiries, password validation tests assert structured validation details, and RBAC action-level tests use a dedicated read-only role so concurrent tests cannot mutate authorization state.
-- 2026-09-02: Fixed the final enquiry workflow test failure by aligning its detail assertion with the Prisma relation shape: `quote` is a single nullable related record, not an array.
-- 2026-09-02: Added centralized audit querying with `audit.read` authorization, transaction-bound inventory `STOCK_MOVEMENT_CREATED` history, financial `INVOICE_CREATED` and `PAYMENT_POSTED` before/after snapshots, plus `audit-workflows.test.ts` covering authorization, filtering, happy paths, invalid related records and transaction side effects.
-- 2026-09-02: Added job audit/activity history for job creation, status changes and production transactions, plus an explicit job completion approval endpoint that requires REVIEW status and blocks approval while tasks remain open; added `job-activity-approval.test.ts` coverage and exposed the workflow through the Admin API client.
-- 2026-09-02: Added task dependencies, circular-dependency protection, required checklists and subtasks with same-job validation and completion blockers. The implementation uses the dedicated task-structure tables while preserving the stable Prisma schema/client path.
-- 2026-09-02: Completed task notes, task attachment visibility/registration and completion timestamp coverage. Task notes are stored in a dedicated nullable `Task.notes` column; task detail/list responses expose notes and attachments, and the Admin task form/detail UI supports editing notes and registering URL-backed attachments.
-- 2026-09-02: Added the Employee workload API and Admin view. Workload groups active employee-assigned tasks with planned/actual/remaining hours, overdue counts, optional date-window filtering and employee filtering; actual hours are derived from logged task time entries when present, and the integration tests use isolated employee/job fixtures to avoid cross-suite mutation races.
-- 2026-09-02: Added normalized employee role and skill catalogues with employee capability assignment, 1–5 proficiency levels, inactive-related-record validation, transactional replacement and audit history; added the Admin Skills & roles screen and isolated capability integration tests. The raw-SQL-backed tables are also provisioned explicitly in CI because the repository uses `db push` against the stable Prisma schema.
-- 2026-09-02: Added the planned-versus-actual hours API/report page with date and employee filters, completed-task inclusion, logged-time variance calculation, and isolated integration tests covering missing employees, invalid ranges and authorization boundaries.
-- 2026-09-02: Added enquiry attachment support to the detail API/Admin UI using the existing generic attachment system, with isolated integration coverage for empty/detail state, URL-backed registration, listing, missing related records and authorization boundaries.
