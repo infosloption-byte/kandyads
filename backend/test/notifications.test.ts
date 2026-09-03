@@ -46,38 +46,36 @@ before(async () => {
   userId = Number(body.data.user.id);
   assert.ok(Number.isSafeInteger(userId) && userId > 0);
 
-  await prisma.$executeRaw`
-    DELETE FROM Notification
-    WHERE dedupeKey = 'TEST:NOTIFICATION:1'
-  `;
+  const fixtureId = await prisma.$transaction(async tx => {
+    await tx.$executeRaw`
+      DELETE FROM Notification
+      WHERE dedupeKey = 'TEST:NOTIFICATION:1'
+    `;
 
-  await prisma.$executeRaw`
-    INSERT INTO Notification (userId, type, title, message, dedupeKey)
-    VALUES (
-      ${userId},
-      'JOB_ASSIGNMENT',
-      'Test assignment',
-      'You have a test assignment.',
-      'TEST:NOTIFICATION:1'
-    )
-  `;
+    await tx.$executeRaw`
+      INSERT INTO Notification (userId, type, title, message, dedupeKey)
+      VALUES (
+        ${userId},
+        'JOB_ASSIGNMENT',
+        'Test assignment',
+        'You have a test assignment.',
+        'TEST:NOTIFICATION:1'
+      )
+    `;
 
-  const [{ id }] = await prisma.$queryRaw<{ id: bigint }[]>`
-    SELECT LAST_INSERT_ID() AS id
-  `;
+    const rows = await tx.$queryRaw<{ id: bigint }[]>`
+      SELECT id
+      FROM Notification
+      WHERE userId = ${userId}
+        AND dedupeKey = 'TEST:NOTIFICATION:1'
+    `;
 
-  notificationId = Number(id);
-  assert.ok(Number.isSafeInteger(notificationId) && notificationId > 0);
+    assert.equal(rows.length, 1);
+    return Number(rows[0].id);
+  });
 
-  const rows = await prisma.$queryRaw<{ id: bigint }[]>`
-    SELECT id
-    FROM Notification
-    WHERE userId = ${userId}
-      AND dedupeKey = 'TEST:NOTIFICATION:1'
-  `;
-
-  assert.equal(rows.length, 1);
-  assert.equal(Number(rows[0].id), notificationId);
+  assert.ok(Number.isSafeInteger(fixtureId) && fixtureId > 0);
+  notificationId = fixtureId;
 });
 
 after(async () => {
@@ -105,7 +103,7 @@ test('notification read is scoped to the authenticated user', async () => {
   const response = await req(`/api/v1/notifications/${notificationId}/read`, {
     method: 'POST',
   });
-  assert.equal(response.statusCode, 200);
+  assert.equal(response.statusCode, 200, response.body);
 
   const list = await req('/api/v1/notifications?unreadOnly=true');
   assert.equal(JSON.parse(list.body).meta.unreadCount, 0);
