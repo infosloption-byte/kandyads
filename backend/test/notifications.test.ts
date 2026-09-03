@@ -47,7 +47,7 @@ before(async () => {
 
   await prisma.$executeRaw`
     DELETE FROM Notification
-    WHERE userId = ${userId}
+    WHERE dedupeKey = 'TEST:NOTIFICATION:1'
   `;
 
   await prisma.$executeRaw`
@@ -64,7 +64,8 @@ before(async () => {
   const rows = await prisma.$queryRaw<{ id: number }[]>`
     SELECT id
     FROM Notification
-    WHERE dedupeKey = 'TEST:NOTIFICATION:1'
+    WHERE userId = ${userId}
+      AND dedupeKey = 'TEST:NOTIFICATION:1'
   `;
 
   assert.equal(rows.length, 1);
@@ -75,7 +76,7 @@ after(async () => {
   if (userId) {
     await prisma.$executeRaw`
       DELETE FROM Notification
-      WHERE userId = ${userId}
+      WHERE dedupeKey = 'TEST:NOTIFICATION:1'
     `;
   }
 
