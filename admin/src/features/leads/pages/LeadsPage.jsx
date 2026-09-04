@@ -23,7 +23,7 @@ export default function LeadsPage(){
     {key:'estimatedValue',label:'Value',render:r=>r.estimatedValue==null?'—':`LKR ${Number(r.estimatedValue).toLocaleString()}`},
     {key:'status',label:'Status',render:r=><span className="table-status">{r.status}</span>},
     {key:'followUpAt',label:'Follow-up',render:r=>r.followUpAt?new Date(r.followUpAt).toLocaleString():'—'},
-    {key:'actions',label:'Actions',render:r=><div style={{display:'flex',gap:8,flexWrap:'wrap'}}><Link className="secondary" to={`/leads/${r.id}`}><Eye size={14}/> View</Link><button className="secondary" onClick={()=>setEditing(r)}><Edit3 size={14}/> Edit</button>{r.status!=='WON'&&r.status!=='LOST'?<button className="secondary" onClick={()=>convertLead(r)}><ArrowRight size={14}/> Convert</button>:null}</div>},
+    {key:'actions',label:'Actions',render:r=><div className="table-actions"><Link className="secondary table-action" to={`/leads/${r.id}`}><Eye size={14}/> View</Link><button className="secondary table-action" onClick={()=>setEditing(r)}><Edit3 size={14}/> Edit</button>{r.status!=='WON'&&r.status!=='LOST'?<button className="secondary table-action" onClick={()=>convertLead(r)}><ArrowRight size={14}/> Convert</button>:null}</div>},
   ];
   return <div>
     <div className="page-head"><div><p className="eyebrow">SALES & CRM</p><h1>Leads</h1><p>Track prospects, follow-ups and the path from first contact to enquiry.</p></div><button className="primary" onClick={()=>setOpen(true)}><Plus size={16}/> New Lead</button></div>
