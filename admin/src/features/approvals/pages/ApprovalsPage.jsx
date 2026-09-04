@@ -1,25 +1,22 @@
 import React from 'react';
-import { CheckCircle2, Clock3, FileCheck2, PackageCheck, RefreshCw, Truck, WalletCards, XCircle } from 'lucide-react';
+import { CheckCircle2, FileCheck2, PackageCheck, RefreshCw, Truck, WalletCards, XCircle } from 'lucide-react';
 import { api } from '../../../api';
 import './approvals.css';
 
 const money=(v)=>`LKR ${Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 const date=(v)=>v?new Date(v).toLocaleDateString():'—';
-
 function Card({icon:Icon,title,count}){return <div className="approval-card"><div className="approval-card-icon"><Icon size={17}/></div><div><span>{title}</span><strong>{count}</strong></div></div>}
 function Row({children,actions}){return <div className="approval-row"><div className="approval-row-main">{children}</div><div className="approval-actions">{actions}</div></div>}
 
 export default function ApprovalsPage(){
- const [state,setState]=React.useState({loading:true,error:'',data:null});
- const [busy,setBusy]=React.useState('');
+ const [state,setState]=React.useState({loading:true,error:'',data:null});const [busy,setBusy]=React.useState('');
  const load=React.useCallback(async()=>{setState({loading:true,error:'',data:null});try{const [summary,pending]=await Promise.all([api.getApprovalSummary(),api.getPendingApprovals()]);setState({loading:false,error:'',data:{summary:summary.data,pending:pending.data}})}catch(e){setState({loading:false,error:e.message||'Unable to load approvals',data:null})}},[]);
  React.useEffect(()=>{load()},[load]);
  async function run(key,fn){setBusy(key);try{await fn();await load()}catch(e){setState(s=>({...s,error:e.message||'Approval action failed'}))}finally{setBusy('')}}
  if(state.loading)return <div className="detail-state">Loading approvals…</div>;
  if(state.error&&!state.data)return <div className="detail-state error-state">{state.error}</div>;
  const {summary,pending}=state.data;
- return <div className="approvals-page">
-  <div className="page-head"><div><p className="eyebrow">CONTROL DESK</p><h1>Approvals</h1><p>Review operational requests before they become committed transactions.</p></div><button className="secondary" onClick={load}><RefreshCw size={15}/> Refresh</button></div>
+ return <div className="approvals-page"><div className="page-head"><div><p className="eyebrow">CONTROL DESK</p><h1>Approvals</h1><p>Review operational requests before they become committed transactions.</p></div><div className="page-head-actions"><button className="secondary" onClick={load}><RefreshCw size={15}/> Refresh</button></div></div>
   {state.error&&<div className="approval-notice error">{state.error}</div>}
   <div className="approval-cards"><Card icon={PackageCheck} title="Purchase requests" count={summary.purchaseRequests}/><Card icon={FileCheck2} title="Purchase orders" count={summary.purchaseOrders}/><Card icon={WalletCards} title="Expenses" count={summary.expenses}/><Card icon={Truck} title="Outsourcing" count={summary.outsourcing}/></div>
   <div className="approval-section"><div className="approval-section-head"><div><p>PURCHASE REQUESTS</p><span>{pending.purchaseRequests.length} waiting for approval</span></div></div>{pending.purchaseRequests.length?pending.purchaseRequests.map(item=><Row key={item.id} actions={<><button className="danger-outline" disabled={busy===`pr-${item.id}`} onClick={()=>run(`pr-${item.id}`,()=>api.rejectPurchaseRequest(item.id,'Rejected from approval desk'))}><XCircle size={14}/> Reject</button><button className="primary" disabled={busy===`pr-${item.id}`} onClick={()=>run(`pr-${item.id}`,()=>api.approvePurchaseRequest(item.id))}><CheckCircle2 size={14}/> Approve</button></>}><strong>{item.number}</strong><span>{item.purpose||'Material purchase request'} · {item.project?.name||item.job?.title||'General'}</span><small>{item.items?.length||0} items · required {date(item.requiredBy)} · requested by {item.requestedBy?.name||'—'}</small></Row>):<div className="approval-empty">No purchase requests waiting.</div>}</div>
