@@ -63,8 +63,8 @@ function Shell({ user, onLogout }) {
     <main className="admin-main">
       <header>
         <button className="sidebar-toggle desktop-sidebar-toggle" onClick={() => setCollapsed(v => !v)} aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'} aria-expanded={!collapsed}>{collapsed ? <PanelLeftOpen size={18}/> : <PanelLeftClose size={18}/>}</button>
-        <div className="mobile-top-brand"><div className="mobile-top-mark">KA</div><div><strong>KANDY<span>ADS</span></strong><small>OPERATIONS</small></div></div>
         <button className="sidebar-toggle mobile-menu" onClick={() => setMobileOpen(v => !v)} aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen}>{mobileOpen ? <X size={19}/> : <Menu size={19}/>}</button>
+        <div className="mobile-top-brand"><div className="mobile-top-mark">KA</div><div><strong>KANDY<span>ADS</span></strong><small>OPERATIONS</small></div></div>
         <div className="header-actions"><NotificationCenter onToast={showToast} /><button className="user-chip user-button" onClick={() => { onLogout(); navigate('/login'); }}><span>{(user?.name || 'AD').split(' ').map(x => x[0]).slice(0, 2).join('').toUpperCase()}</span><div><b>{user?.name || 'Admin'}</b><small>{user?.role || 'Administrator'} · Sign out</small></div><LogOut size={15} /></button></div>
       </header>
       <div className="page-wrap"><AdminRouter user={user} /></div>
