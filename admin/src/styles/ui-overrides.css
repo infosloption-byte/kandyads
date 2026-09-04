@@ -1,0 +1,77 @@
+/* Second-pass shared UI overrides. Keep module pages and their create/edit/view surfaces on one visual system. */
+
+/* Preserve normal panel spacing while giving table toolbars their own inset area. */
+.panel:not(.table-panel)>.panel-head{padding:0}
+.panel.table-panel>.panel-head{padding:24px 24px 0}
+.panel.table-panel>.panel-head+ .toolbar{margin-top:0}
+
+/* Table row actions are compact icon controls; their accessible button/link text remains in the DOM. */
+.table-actions .table-action{width:34px;min-width:34px;height:34px;min-height:34px;padding:0!important;font-size:0!important;gap:0}
+.table-actions .table-action svg{margin:0;width:15px;height:15px;flex:0 0 auto}
+.table-actions .table-action:focus-visible{outline:3px solid rgba(239,23,35,.35);outline-offset:2px}
+
+/* Consistent modern search controls across every list/table toolbar. */
+.search-box{min-height:42px;height:42px;width:100%;border-radius:10px;background:#fff;border:1px solid #d8d9d5;padding:0 13px;box-shadow:0 1px 2px rgba(16,17,20,.03);transition:border-color .15s,box-shadow .15s,background .15s}
+.search-box:focus-within{border-color:#101114;box-shadow:0 0 0 3px rgba(16,17,20,.06)}
+.search-box input{min-height:40px}
+
+/* Modern native selects without the browser's classic arrow treatment. */
+.table-toolbar>select,.toolbar>select,.toolbar-select select,.entity-form select,.form-grid select{appearance:none;-webkit-appearance:none;background-color:#fff;background-image:linear-gradient(45deg,transparent 50%,#777a82 50%),linear-gradient(135deg,#777a82 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
+.table-toolbar>select,.toolbar>select,.toolbar-select select{min-height:42px;border-radius:10px}
+
+/* Any entity form, including compact forms that do not use .form-grid. */
+.entity-form>label,.entity-form .form-field{display:flex;flex-direction:column;gap:7px}
+.entity-form input,.entity-form textarea,.entity-form select,.form-grid input,.form-grid textarea,.form-grid select{border:1px solid #d8d9d5;border-radius:10px;background:#fff;color:#101114;font:400 13px 'DM Sans';box-shadow:0 1px 2px rgba(16,17,20,.02);transition:border-color .15s,box-shadow .15s,background .15s}
+.entity-form input,.entity-form select,.form-grid input,.form-grid select{min-height:42px;padding:0 12px}
+.entity-form textarea,.form-grid textarea{min-height:112px;padding:11px 12px;line-height:1.55;resize:vertical}
+.entity-form input:focus,.entity-form textarea:focus,.entity-form select:focus,.form-grid input:focus,.form-grid textarea:focus,.form-grid select:focus{border-color:#101114;box-shadow:0 0 0 3px rgba(16,17,20,.06);outline:none}
+.entity-form input:hover,.entity-form textarea:hover,.entity-form select:hover,.form-grid input:hover,.form-grid textarea:hover,.form-grid select:hover{border-color:#bfc1bd}
+.entity-form input::placeholder,.entity-form textarea::placeholder,.form-grid input::placeholder,.form-grid textarea::placeholder{color:#9a9ca2}
+
+/* Consistent inset for filters/pagination that sit directly inside panels. */
+.panel>.toolbar{margin:0;padding:16px 20px;border-top:1px solid #e7e7e2;border-bottom:1px solid #e7e7e2}
+.panel>.page-actions{padding:16px 20px;border-top:1px solid #e7e7e2}
+
+/* Sidebar: desktop collapsed rail and mobile drawer/backdrop. */
+.sidebar-toggle{border:1px solid transparent;background:transparent;color:#55585f;width:38px;height:38px;display:grid;place-items:center;border-radius:8px;cursor:pointer;flex:0 0 auto}
+.sidebar-toggle:hover{background:#f7f7f4;border-color:#dfdfda;color:#101114}
+.desktop-sidebar-toggle{display:grid}
+.admin-shell aside.collapsed{width:78px;flex-basis:78px;padding-inline:10px}
+.admin-shell aside.collapsed .brand{justify-content:center;padding-inline:0}
+.admin-shell aside.collapsed .brand-copy,.admin-shell aside.collapsed .nav-groups p,.admin-shell aside.collapsed .sidebar-foot{display:none}
+.admin-shell aside.collapsed .nav-groups a{justify-content:center;padding-inline:0;gap:0}
+.admin-shell aside.collapsed .nav-groups a .nav-label{display:none}
+.admin-shell.sidebar-collapsed .admin-main header{padding-left:18px}
+.sidebar-backdrop{display:none}
+
+@media(max-width:760px){
+  .desktop-sidebar-toggle{display:none}
+  .mobile-menu{display:grid}
+  .admin-shell aside{width:250px;flex-basis:250px;position:fixed;left:-270px;top:0;bottom:0;height:100vh;z-index:40;box-shadow:18px 0 45px rgba(0,0,0,.18);transition:left .2s ease}
+  .admin-shell aside.open{left:0}
+  .admin-shell aside.collapsed{width:250px;flex-basis:250px;padding:24px 14px}
+  .admin-shell aside.collapsed .brand{justify-content:flex-start;padding-inline:10px}
+  .admin-shell aside.collapsed .brand-copy,.admin-shell aside.collapsed .nav-groups p,.admin-shell aside.collapsed .sidebar-foot{display:block}
+  .admin-shell aside.collapsed .nav-groups a{justify-content:flex-start;padding:10px 11px;gap:10px}
+  .admin-shell aside.collapsed .nav-groups a .nav-label{display:inline}
+  .sidebar-backdrop{display:block;position:fixed;inset:0;border:0;padding:0;background:rgba(13,14,17,.42);z-index:35;cursor:pointer}
+  .admin-main header{position:relative;z-index:45;gap:8px}
+  .page-wrap{padding:20px}
+  .table-toolbar{padding:14px 16px}
+  .panel>.toolbar{padding:14px 16px}
+  .panel>.panel-head{padding:20px 20px 0}
+  .panel:not(.table-panel)>.panel-head{padding:0}
+  .panel>.page-actions{padding:14px 16px}
+}
+
+@media(max-width:480px){
+  .table-toolbar{gap:8px}
+  .table-toolbar>select{flex:1 1 100%}
+  .table-count{width:100%}
+  .entity-form input,.entity-form select,.form-grid input,.form-grid select{min-height:44px}
+  .entity-form textarea,.form-grid textarea{min-height:120px}
+  .modal-actions,.form-actions{flex-wrap:wrap}
+  .modal-actions .primary,.modal-actions .secondary,.form-actions .primary,.form-actions .secondary{flex:1 1 140px}
+  .toolbar-select{width:100%;min-width:0;display:grid;grid-template-columns:minmax(76px,auto) 1fr;align-items:center}
+  .toolbar-select select{width:100%}
+}
