@@ -111,7 +111,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Standardize text fields, selects, textareas, search fields and other controls for height, radius, typography, borders and focus states.
 - [ ] Standardize primary, secondary, icon and destructive button behavior, sizing and states.
 - [ ] Standardize table Action controls so every action shows its matching icon **and** text label; icon-only controls remain reserved for compact/global controls where appropriate.
-- [ ] Standardize page/toolbars, responsive wrapping, alignment and spacing across all Admin views.
+- [x] Standardize page/toolbars, responsive wrapping, alignment and spacing across all Admin views.
 - [ ] Audit and remove unnecessary page-specific visual overrides where shared styles should apply.
 
 ### View-by-view consistency audit
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Added shared Admin button and toolbar conventions. Secondary controls now align icon/text content consistently, support hover/disabled states, toolbar selects share sizing/focus treatment, page action groups wrap responsively, and approval/destructive/table-action groups have shared layout primitives.
 - 2026-09-04: Standardized the Invoices table actions: PDF and Record payment now use the shared icon+label table-action treatment and the column is explicitly named Actions.
 - 2026-09-04: Standardized the Employees table action to the shared icon+label convention and replaced inline page-header layout styling with the shared page-head-actions utility.
 - 2026-09-04: Standardized the Clients table action to the shared icon+label convention: Edit now includes the Edit3 icon and visible text label, with an explicit Actions column.
