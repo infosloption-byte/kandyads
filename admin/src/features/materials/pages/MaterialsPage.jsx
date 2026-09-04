@@ -11,7 +11,7 @@ export default function MaterialsPage(){
   React.useEffect(()=>{load()},[load]);
   const createMaterial=async(input)=>{setSubmitting(true);setError('');try{await api.createMaterial(input);setOpen(false);await load()}catch(e){setError(e.message)}finally{setSubmitting(false)}};
   const columns=[{key:'sku',label:'SKU'},{key:'name',label:'Material'},{key:'category',label:'Category',render:r=>r.category?.name||'—'},{key:'unit',label:'Unit'},{key:'standardCost',label:'Cost',render:r=>`LKR ${Number(r.standardCost).toLocaleString()}`},{key:'stockOnHand',label:'On hand',render:r=>Number(r.stockOnHand||0).toLocaleString()}];
-  return <><div className="page-head"><div><p className="eyebrow">INVENTORY / MATERIALS</p><h1>Materials</h1><p>Maintain production materials, standard costs and current stock.</p></div><button className="primary" onClick={()=>setOpen(true)}><Plus size={16}/> Add material</button></div>
+  return <><div className="page-head"><div><p className="eyebrow">INVENTORY / MATERIALS</p><h1>Materials</h1><p>Maintain production materials, standard costs and current stock.</p></div><div className="page-head-actions"><button className="primary" onClick={()=>setOpen(true)}><Plus size={16}/> Add material</button></div></div>
     <div className="toolbar"><div className="search-box"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search SKU or material name"/></div></div>
     <ResourceTable columns={columns} rows={rows} loading={loading} error={error}/>
     <Modal open={open} title="Create material" description="Add a material to the production catalogue." onClose={()=>setOpen(false)}><MaterialForm categories={categories} onSubmit={createMaterial} submitting={submitting}/></Modal>
