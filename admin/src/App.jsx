@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Bell, BarChart3, BriefcaseBusiness, ClipboardList, DollarSign, FileText, FolderKanban, HardHat, LayoutDashboard, LogOut, Menu, Package, Settings, ShoppingCart, Truck, Users, Wrench, Building2, X, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { api, clearToken, getToken } from './api';
 import LoginPage from './features/auth/pages/LoginPage';
@@ -41,7 +41,7 @@ function Shell({ user, onLogout }) {
   const [collapsed, setCollapsed] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [toast, setToast] = React.useState(null);
-  const loc = useLocation(); const navigate = useNavigate();
+  const navigate = useNavigate();
   const navigation = React.useMemo(() => filterNavigation(navigationGroups, user?.permissions || []), [user?.permissions]);
   const showToast = React.useCallback((message,type='success') => { setToast({message,type}); window.clearTimeout(showToast.timer); showToast.timer=window.setTimeout(()=>setToast(null),3200); }, []);
   React.useEffect(() => {
@@ -62,9 +62,9 @@ function Shell({ user, onLogout }) {
     {mobileOpen && <button className="sidebar-backdrop" aria-label="Close navigation" onClick={closeMobile} />}
     <main className="admin-main">
       <header>
-        <button className="sidebar-toggle desktop-sidebar-toggle" onClick={() => setCollapsed(v => !v)} aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'} aria-expanded={!collapsed}><>{collapsed ? <PanelLeftOpen size={18}/> : <PanelLeftClose size={18}/>}</></button>
-        <button className="sidebar-toggle mobile-menu" onClick={() => setMobileOpen(v => !v)} aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen}><>{mobileOpen ? <X size={19}/> : <Menu size={19}/>}</></button>
-        <div className="crumb">Kandy Ads / {loc.pathname === '/' ? 'Dashboard' : loc.pathname.slice(1).replaceAll('-', ' ')}</div>
+        <button className="sidebar-toggle desktop-sidebar-toggle" onClick={() => setCollapsed(v => !v)} aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'} aria-expanded={!collapsed}>{collapsed ? <PanelLeftOpen size={18}/> : <PanelLeftClose size={18}/>}</button>
+        <div className="mobile-top-brand"><div className="mobile-top-mark">KA</div><div><strong>KANDY<span>ADS</span></strong><small>OPERATIONS</small></div></div>
+        <button className="sidebar-toggle mobile-menu" onClick={() => setMobileOpen(v => !v)} aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen}>{mobileOpen ? <X size={19}/> : <Menu size={19}/>}</button>
         <div className="header-actions"><NotificationCenter onToast={showToast} /><button className="user-chip user-button" onClick={() => { onLogout(); navigate('/login'); }}><span>{(user?.name || 'AD').split(' ').map(x => x[0]).slice(0, 2).join('').toUpperCase()}</span><div><b>{user?.name || 'Admin'}</b><small>{user?.role || 'Administrator'} · Sign out</small></div><LogOut size={15} /></button></div>
       </header>
       <div className="page-wrap"><AdminRouter user={user} /></div>
