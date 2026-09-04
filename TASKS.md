@@ -122,7 +122,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Enquiries
 - [ ] Expenses
 - [x] Installations
-- [ ] Inventory
+- [x] Inventory
 - [x] Invoices
 - [ ] Jobs
 - [x] Leads
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned Inventory with the shared Admin UI system. Inventory summary cards now use the shared stat-grid/stat treatment, stock/reorder/ledger sections use shared panel/table structure, ledger filters use shared toolbar-select controls, and pagination/actions use shared button-group/page-action primitives instead of page-specific filter/pagination styling.
 - 2026-09-04: Standardized the Installations table completion action. The icon-only completion control is now an explicit Actions-column button with a matching CheckCircle2 icon and visible Complete label, using the shared table-action/table-actions conventions and removing the page-specific margin override.
 - 2026-09-04: Reworked `InvoicesPage.jsx` into an explicit, multiline JSX structure after a local Vite/OXC parser failure reported unclosed select/Field/div tags. The invoice form, payment form and Actions cell now have clearly paired JSX elements and readable conditional rendering, reducing parser fragility while preserving behavior.
 - 2026-09-04: Aligned Leads table actions with the shared icon+label treatment and shared table-actions layout; View, Edit and Convert now follow the same spacing and sizing convention.
