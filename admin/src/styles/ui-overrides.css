@@ -12,6 +12,13 @@
 .search-box:focus-within{border-color:#101114;box-shadow:0 0 0 3px rgba(16,17,20,.06)}
 .search-box input{min-height:40px}
 
+/* Search fields are already the outer control. Do not apply the generic
+   toolbar label/input border to the input inside .search-box. */
+.table-toolbar>label.search-box{display:flex;align-items:center;gap:8px;width:100%;min-width:0;padding:0 13px;color:#55585f;text-transform:none;letter-spacing:normal}
+.table-toolbar>label.search-box input{width:100%;min-width:0;min-height:40px;height:40px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;outline:none;font:400 13px 'DM Sans';color:#101114}
+.table-toolbar>label.search-box input:focus{border:0;box-shadow:none;outline:none}
+.table-toolbar>label.search-box input::placeholder{color:#9a9ca2}
+
 .table-toolbar>select,.toolbar>select,.toolbar-select select,.entity-form select,.form-grid select,.settings-table-wrap select{appearance:none;-webkit-appearance:none;background-color:#fff;background-image:linear-gradient(45deg,transparent 50%,#777a82 50%),linear-gradient(135deg,#777a82 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:34px}
 .table-toolbar>select,.toolbar>select,.toolbar-select select,.settings-table-wrap select{min-height:42px;border:1px solid #d8d9d5;border-radius:10px;background-color:#fff;color:#101114;font:600 12px 'DM Sans';outline:none;transition:border-color .15s,box-shadow .15s}
 .table-toolbar>select:focus,.toolbar>select:focus,.toolbar-select select:focus,.settings-table-wrap select:focus{border-color:#101114;box-shadow:0 0 0 3px rgba(16,17,20,.06)}
