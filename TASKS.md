@@ -117,7 +117,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 ### View-by-view consistency audit
 - [x] Approvals
 - [x] Clients
-- [ ] Dashboard / Reports
+- [x] Dashboard / Reports
 - [x] Employees
 - [x] Enquiries
 - [x] Expenses
@@ -129,11 +129,11 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Materials
 - [x] Notifications
 - [x] Outsourcing
-- [ ] Profitability
+- [x] Profitability
 - [x] Projects
 - [ ] Purchasing
 - [x] Quotes
-- [ ] Settings
+- [x] Settings
 - [x] Tasks
 - [ ] Time Tracking
 - [x] Vendors
@@ -146,6 +146,9 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned Dashboard / Reports controls with shared Admin UI primitives. The New Project action now uses the shared page-head-actions wrapper, the reporting window uses shared toolbar-select styling, and report exports use shared button-group/icon-label treatment.
+- 2026-09-04: Aligned Profitability with the shared Admin UI system. Refresh now uses the shared page-head-actions treatment with a matching icon and loading state, and summary metrics use the common stat structure.
+- 2026-09-04: Standardized Settings tabs and table actions. Settings tabs now include consistent icons, user activation controls use icon+visible text secondary actions, and the users table has an explicit Actions column.
 - 2026-09-04: Aligned Enquiries with shared page-head-actions and toolbar/table-panel primitives while preserving its icon+label row actions and compact refresh utility.
 - 2026-09-04: Aligned Expenses with shared page-head-actions and toolbar/table-panel primitives.
 - 2026-09-04: Aligned Jobs with shared page-head-actions and toolbar/table-panel primitives while preserving the compact refresh utility.
