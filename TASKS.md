@@ -132,7 +132,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Profitability
 - [ ] Projects
 - [ ] Purchasing
-- [ ] Quotes
+- [x] Quotes
 - [ ] Settings
 - [ ] Tasks
 - [ ] Time Tracking
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned Quotes with the shared Admin UI system. The page header now uses the shared `page-head-actions` wrapper, and the quote search/refresh/count row now uses the shared `toolbar` layout while retaining the compact icon-only refresh control as an appropriate global utility action.
 - 2026-09-04: Restored the Inventory Reorder alerts summary card that was accidentally omitted during the shared layout migration; the existing five-metric inventory summary is preserved.
 - 2026-09-04: Aligned the Materials page header action with the shared `page-head-actions` layout primitive so single and multiple header actions use the same responsive alignment behavior.
 - 2026-09-04: Aligned Inventory with the shared Admin UI system. Inventory summary cards now use the shared stat-grid/stat treatment, stock/reorder/ledger sections use shared panel/table structure, ledger filters use shared toolbar-select controls, and pagination/actions use shared button-group/page-action primitives instead of page-specific filter/pagination styling.
