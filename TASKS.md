@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned Leads table actions with the shared icon+label treatment and shared table-actions layout; View, Edit and Convert now follow the same spacing and sizing convention.
 - 2026-09-04: Added shared Admin button and toolbar conventions. Secondary controls now align icon/text content consistently, support hover/disabled states, toolbar selects share sizing/focus treatment, page action groups wrap responsively, and approval/destructive/table-action groups have shared layout primitives.
 - 2026-09-04: Standardized the Invoices table actions: PDF and Record payment now use the shared icon+label table-action treatment and the column is explicitly named Actions.
 - 2026-09-04: Standardized the Employees table action to the shared icon+label convention and replaced inline page-header layout styling with the shared page-head-actions utility.
