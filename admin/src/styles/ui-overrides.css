@@ -59,6 +59,11 @@
 .admin-shell aside:hover .nav-groups::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border:2px solid transparent;background-clip:padding-box}
 .admin-shell aside:hover .nav-groups::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.42)}
 
+/* Dashboard/reporting: keep the reporting header and window control inside the panel on narrow screens. */
+.reporting-panel-head{min-width:0}
+.reporting-panel-head .toolbar-select{flex:0 1 auto;min-width:150px}
+.reporting-panel-head .toolbar-select select{min-width:0;max-width:100%;width:auto}
+
 @media(max-width:760px){
   .desktop-sidebar-toggle{display:none}
   .sidebar-toggle.mobile-menu{display:grid}
@@ -80,6 +85,10 @@
   .panel>.page-actions{padding:14px 16px}
   .table-toolbar>label{width:100%;min-width:0;justify-content:space-between}
   .table-toolbar>label input,.table-toolbar>label select{flex:1;min-width:0}
+  .reporting-panel-head{align-items:flex-start;flex-wrap:wrap}
+  .reporting-panel-head>div{min-width:0;flex:1 1 100%}
+  .reporting-panel-head .toolbar-select{width:100%;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px}
+  .reporting-panel-head .toolbar-select select{width:100%;min-width:0;max-width:100%}
 }
 
 @media(max-width:480px){
@@ -92,6 +101,7 @@
   .modal-actions .primary,.modal-actions .secondary,.form-actions .primary,.form-actions .secondary{flex:1 1 140px}
   .toolbar-select{width:100%;min-width:0;display:grid;grid-template-columns:minmax(76px,auto) 1fr;align-items:center}
   .toolbar-select select{width:100%}
+  .reporting-panel-head .toolbar-select{grid-template-columns:76px minmax(0,1fr)}
   .mobile-top-brand strong{font-size:14px}
   .mobile-top-brand small{font-size:7px}
   .mobile-top-mark{width:28px;height:28px;font-size:9px}
