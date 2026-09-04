@@ -108,7 +108,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 ### Design-system consistency
 - [ ] Establish one shared visual language for page headers, panels, buttons, form controls, tables, badges, focus states and responsive spacing.
 - [x] Replace native/default browser scrollbars in Admin with a consistent modern scrollbar treatment across page, sidebar, tables, lists and modal overflow areas.
-- [ ] Standardize text fields, selects, textareas, search fields and other controls for height, radius, typography, borders and focus states.
+- [x] Standardize text fields, selects, textareas, search fields and other controls for height, radius, typography, borders and focus states.
 - [ ] Standardize primary, secondary, icon and destructive button behavior, sizing and states.
 - [ ] Standardize table Action controls so every action shows its matching icon **and** text label; icon-only controls remain reserved for compact/global controls where appropriate.
 - [ ] Standardize page/toolbars, responsive wrapping, alignment and spacing across all Admin views.
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Added shared Admin form-control normalization. Entity-form inputs/selects/textareas now share predictable sizing, placeholder/disabled/error states, focus treatment and action-button sizing while preserving the existing component API.
 - 2026-09-04: Added the first Admin UI/UX foundation fix. Admin now applies a consistent modern thin scrollbar treatment to page and nested scroll surfaces, including sidebar, tables, notification lists and modal overflow, with dark-sidebar variants and contained overscroll behavior. Shared table-action and toolbar utility classes were also introduced for the upcoming consistency pass.
 - 2026-09-04: Started the Admin UI/UX Enhancement workstream. The initial audit found inconsistent table actions (text-only versus icon-only), native scrollbars on multiple overflow containers, uneven form-control/button styling, and page-specific spacing/layout patterns. The first implementation batch will establish shared scrollbar, control and layout conventions before the view-by-view cleanup.
 - 2026-09-03: Completed external notification delivery integration. Notification generation now resolves the authenticated user's email and employee phone, sends newly-created notifications through enabled Resend email and WhatsApp Cloud API adapters, preserves in-app creation when external delivery fails, and keeps providers disabled by default until credentials are configured. Added provider failure coverage and removed temporary test helpers.
