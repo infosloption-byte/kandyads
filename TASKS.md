@@ -102,7 +102,51 @@
 ## Testing rule for all future modules
 Every new module must be delivered with its implementation **and** automated tests in the same development task. Tests should cover at minimum: happy path, validation failure, missing related record, authorization boundary where applicable, state transition/business rule, and database transaction/side effect where applicable.
 
+## UI / UX Enhancement
+This workstream tracks the cross-application Admin UI/UX consistency pass. Every implementation step must update this section and be committed to `main` before moving to the next fix.
+
+### Design-system consistency
+- [ ] Establish one shared visual language for page headers, panels, buttons, form controls, tables, badges, focus states and responsive spacing.
+- [ ] Replace native/default browser scrollbars in Admin with a consistent modern scrollbar treatment across page, sidebar, tables, lists and modal overflow areas.
+- [ ] Standardize text fields, selects, textareas, search fields and other controls for height, radius, typography, borders and focus states.
+- [ ] Standardize primary, secondary, icon and destructive button behavior, sizing and states.
+- [ ] Standardize table Action controls so every action shows its matching icon **and** text label; icon-only controls remain reserved for compact/global controls where appropriate.
+- [ ] Standardize page/toolbars, responsive wrapping, alignment and spacing across all Admin views.
+- [ ] Audit and remove unnecessary page-specific visual overrides where shared styles should apply.
+
+### View-by-view consistency audit
+- [ ] Approvals
+- [ ] Clients
+- [ ] Dashboard / Reports
+- [ ] Employees
+- [ ] Enquiries
+- [ ] Expenses
+- [ ] Installations
+- [ ] Inventory
+- [ ] Invoices
+- [ ] Jobs
+- [ ] Leads
+- [ ] Materials
+- [ ] Notifications
+- [ ] Outsourcing
+- [ ] Profitability
+- [ ] Projects
+- [ ] Purchasing
+- [ ] Quotes
+- [ ] Settings
+- [ ] Tasks
+- [ ] Time Tracking
+- [ ] Vendors
+- [ ] Authentication and shared components
+
+### Validation
+- [ ] Run Admin production build after each UI/UX implementation batch.
+- [ ] Recheck responsive behavior at desktop, tablet and mobile widths.
+- [ ] Recheck keyboard focus, disabled/loading states and accessible labels after shared-control changes.
+- [ ] Re-audit all Admin views after the final consistency pass.
+
 ## Recent implementation notes
+- 2026-09-04: Started the Admin UI/UX Enhancement workstream. The initial audit found inconsistent table actions (text-only versus icon-only), native scrollbars on multiple overflow containers, uneven form-control/button styling, and page-specific spacing/layout patterns. The first implementation batch will establish shared scrollbar, control and layout conventions before the view-by-view cleanup.
 - 2026-09-03: Completed external notification delivery integration. Notification generation now resolves the authenticated user's email and employee phone, sends newly-created notifications through enabled Resend email and WhatsApp Cloud API adapters, preserves in-app creation when external delivery fails, and keeps providers disabled by default until credentials are configured. Added provider failure coverage and removed temporary test helpers.
 - 2026-09-03: Completed the remaining four Testing / Release rule-test categories: costing unit tests, stock movement rule tests, finance/invoice rule tests, and purchasing/receiving rule tests. Added reusable costing and financial calculation helpers where appropriate.
 - 2026-09-03: CI validation is currently failing immediately across backend, Admin and frontend jobs on the latest pushes, before useful step logs are exposed by the GitHub Actions connector; the rule-test work is committed, but release-level CI verification remains to be rechecked once the runner issue is available.
