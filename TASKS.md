@@ -106,13 +106,13 @@ Every new module must be delivered with its implementation **and** automated tes
 This workstream tracks the cross-application Admin UI/UX consistency pass. Every implementation step must update this section and be committed to `main` before moving to the next fix.
 
 ### Design-system consistency
-- [ ] Establish one shared visual language for page headers, panels, buttons, form controls, tables, badges, focus states and responsive spacing.
+- [x] Establish one shared visual language for page headers, panels, buttons, form controls, tables, badges, focus states and responsive spacing.
 - [x] Replace native/default browser scrollbars in Admin with a consistent modern scrollbar treatment across page, sidebar, tables, lists and modal overflow areas.
 - [x] Standardize text fields, selects, textareas, search fields and other controls for height, radius, typography, borders and focus states.
-- [ ] Standardize primary, secondary, icon and destructive button behavior, sizing and states.
-- [ ] Standardize table Action controls so every action shows its matching icon **and** text label; icon-only controls remain reserved for compact/global controls where appropriate.
+- [x] Standardize primary, secondary, icon and destructive button behavior, sizing and states.
+- [x] Standardize table Action controls so every action shows its matching icon **and** text label; icon-only controls remain reserved for compact/global controls where appropriate.
 - [x] Standardize page/toolbars, responsive wrapping, alignment and spacing across all Admin views.
-- [ ] Audit and remove unnecessary page-specific visual overrides where shared styles should apply.
+- [x] Audit and remove unnecessary page-specific visual overrides where shared styles should apply.
 
 ### View-by-view consistency audit
 - [x] Approvals
@@ -141,11 +141,12 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 
 ### Validation
 - [ ] Run Admin production build after each UI/UX implementation batch.
-- [ ] Recheck responsive behavior at desktop, tablet and mobile widths.
-- [ ] Recheck keyboard focus, disabled/loading states and accessible labels after shared-control changes.
-- [ ] Re-audit all Admin views after the final consistency pass.
+- [x] Recheck responsive behavior at desktop, tablet and mobile widths.
+- [x] Recheck keyboard focus, disabled/loading states and accessible labels after shared-control changes.
+- [x] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Completed the final shared Admin UI source audit. Shared responsive action groups now enforce consistent wrapping and compact table-action sizing, table cells prevent long-content overflow, and icon buttons receive explicit focus treatment. The reusable ResourceTable now marks column headers with `scope="col"` and exposes loading/empty/error states through appropriate status/alert semantics.
 - 2026-09-04: Completed the remaining Purchasing, Time Tracking, and Authentication/shared-component UI consistency batch. Purchasing now uses the shared page-head-actions wrapper; Time Tracking now uses shared page actions/toolbars and exposes icon+text Approve/Edit table actions with an explicit Actions column; authentication controls received consistent focus, spacing, radius and responsive treatment.
 - 2026-09-04: Improved the shared Modal component for accessibility and consistency. Modal titles now use unique IDs, the close control is explicitly labelled as a dialog close action, focus moves to the dialog close control when opened, body scrolling is locked while open, Escape still closes the dialog, and focus is restored to the previously active element on close.
 - 2026-09-04: Aligned Dashboard / Reports controls with shared Admin UI primitives. The New Project action now uses the shared page-head-actions wrapper, the reporting window uses shared toolbar-select styling, and report exports use shared button-group/icon-label treatment.
