@@ -131,13 +131,13 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Outsourcing
 - [x] Profitability
 - [x] Projects
-- [ ] Purchasing
+- [x] Purchasing
 - [x] Quotes
 - [x] Settings
 - [x] Tasks
-- [ ] Time Tracking
+- [x] Time Tracking
 - [x] Vendors
-- [ ] Authentication and shared components
+- [x] Authentication and shared components
 
 ### Validation
 - [ ] Run Admin production build after each UI/UX implementation batch.
@@ -146,6 +146,8 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Completed the remaining Purchasing, Time Tracking, and Authentication/shared-component UI consistency batch. Purchasing now uses the shared page-head-actions wrapper; Time Tracking now uses shared page actions/toolbars and exposes icon+text Approve/Edit table actions with an explicit Actions column; authentication controls received consistent focus, spacing, radius and responsive treatment.
+- 2026-09-04: Improved the shared Modal component for accessibility and consistency. Modal titles now use unique IDs, the close control is explicitly labelled as a dialog close action, focus moves to the dialog close control when opened, body scrolling is locked while open, Escape still closes the dialog, and focus is restored to the previously active element on close.
 - 2026-09-04: Aligned Dashboard / Reports controls with shared Admin UI primitives. The New Project action now uses the shared page-head-actions wrapper, the reporting window uses shared toolbar-select styling, and report exports use shared button-group/icon-label treatment.
 - 2026-09-04: Aligned Profitability with the shared Admin UI system. Refresh now uses the shared page-head-actions treatment with a matching icon and loading state, and summary metrics use the common stat structure.
 - 2026-09-04: Standardized Settings tabs and table actions. Settings tabs now include consistent icons, user activation controls use icon+visible text secondary actions, and the users table has an explicit Actions column.
