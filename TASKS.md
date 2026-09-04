@@ -115,7 +115,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Audit and remove unnecessary page-specific visual overrides where shared styles should apply.
 
 ### View-by-view consistency audit
-- [ ] Approvals
+- [x] Approvals
 - [x] Clients
 - [ ] Dashboard / Reports
 - [x] Employees
@@ -130,11 +130,11 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Notifications
 - [ ] Outsourcing
 - [ ] Profitability
-- [ ] Projects
+- [x] Projects
 - [ ] Purchasing
 - [x] Quotes
 - [ ] Settings
-- [ ] Tasks
+- [x] Tasks
 - [ ] Time Tracking
 - [ ] Vendors
 - [ ] Authentication and shared components
@@ -146,6 +146,9 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned the Approvals page header with the shared `page-head-actions` layout primitive while preserving its icon+label Refresh control.
+- 2026-09-04: Aligned the Tasks page header and search table toolbar with shared page-action and toolbar primitives; the compact icon-only refresh remains an appropriate utility control.
+- 2026-09-04: Aligned the Projects page header and search/table toolbar with shared page-action and toolbar primitives while preserving the compact refresh utility.
 - 2026-09-04: Aligned Quotes with the shared Admin UI system. The page header now uses the shared `page-head-actions` wrapper, and the quote search/refresh/count row now uses the shared `toolbar` layout while retaining the compact icon-only refresh control as an appropriate global utility action.
 - 2026-09-04: Restored the Inventory Reorder alerts summary card that was accidentally omitted during the shared layout migration; the existing five-metric inventory summary is preserved.
 - 2026-09-04: Aligned the Materials page header action with the shared `page-head-actions` layout primitive so single and multiple header actions use the same responsive alignment behavior.
@@ -160,20 +163,3 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - 2026-09-04: Added shared Admin form-control normalization. Entity-form inputs/selects/textareas now share predictable sizing, placeholder/disabled/error states, focus treatment and action-button sizing while preserving the existing component API.
 - 2026-09-04: Added the first Admin UI/UX foundation fix. Admin now applies a consistent modern thin scrollbar treatment to page and nested scroll surfaces, including sidebar, tables, notification lists and modal overflow, with dark-sidebar variants and contained overscroll behavior. Shared table-action and toolbar utility classes were also introduced for the upcoming consistency pass.
 - 2026-09-04: Started the Admin UI/UX Enhancement workstream. The initial audit found inconsistent table actions (text-only versus icon-only), native scrollbars on multiple overflow containers, uneven form-control/button styling, and page-specific spacing/layout patterns. The first implementation batch will establish shared scrollbar, control and layout conventions before the view-by-view cleanup.
-- 2026-09-03: Completed external notification delivery integration. Notification generation now resolves the authenticated user's email and employee phone, sends newly-created notifications through enabled Resend email and WhatsApp Cloud API adapters, preserves in-app creation when external delivery fails, and keeps providers disabled by default until credentials are configured. Added provider failure coverage and removed temporary test helpers.
-- 2026-09-03: Completed the remaining four Testing / Release rule-test categories: costing unit tests, stock movement rule tests, finance/invoice rule tests, and purchasing/receiving rule tests. Added reusable costing and financial calculation helpers where appropriate.
-- 2026-09-03: CI validation is currently failing immediately across backend, Admin and frontend jobs on the latest pushes, before useful step logs are exposed by the GitHub Actions connector; the rule-test work is committed, but release-level CI verification remains to be rechecked once the runner issue is available.
-- 2026-09-03: Marked Database Integrity complete after auditing archive/soft-delete semantics and transaction boundaries for inventory, purchasing/receiving, invoicing and payment mutations.
-- 2026-09-03: Added OpenAPI reference documentation covering authentication, dashboard, notifications, CRM, operations, inventory, purchasing, finance and public endpoints.
-- 2026-09-03: Added production migration deployment support via `npm run prisma:migrate:deploy`, documented migration safety/rollback, and added a production release checklist.
-- 2026-09-03: CI now builds backend, Admin and public frontend on every main push/PR.
-- 2026-09-03: Completed Admin UX/Quality pass. Added reusable toast feedback for notification actions, Escape-key handling for the notification dialog, visible keyboard focus states, reduced-motion support and improved accessible labels/live regions.
-- 2026-09-03: Completed notification center. Admin now shows unread notification count, recent notifications, mark-read/mark-all-read actions, and refresh/generation controls; bodyless notification requests no longer send a misleading JSON content type.
-- 2026-09-03: Completed operational notification generation for purchase deliveries, installation reminders, quote follow-ups, invoice overdue alerts and pending approval summaries, with authenticated/idempotent integration coverage.
-- 2026-09-03: Completed public website contact integration. Contact submissions create leads, retain UTM/source attribution in lead/audit data, reject honeypot submissions, apply an in-memory burst rate limit, and notify active users with dashboard permission; the public form is connected and reports success/errors.
-- 2026-09-03: Added notification foundation for job assignments, task due/overdue alerts and low-stock alerts. Notifications are user-scoped, deduplicated, authenticated, readable/markable as read, and covered by isolated integration tests.
-- 2026-09-03: Completed full operational dashboard reporting and CSV exports. Admin now exposes a selectable 7–90 day operational window and one-click CSV exports for jobs, inventory, purchasing, installations, employee workload and finance; exports are authenticated, validated and covered by isolated integration tests.
-- 2026-09-02: Completed invoice PDF generation. Authenticated Admin users can download a dependency-free PDF containing invoice/customer/project details, line items, totals, paid/outstanding balance and status; Admin Invoices now exposes a PDF action and isolated integration coverage validates content type, filename, PDF signature, missing-record and authentication behavior.
-- 2026-09-02: Completed estimate-versus-actual and forecast/variance reporting. Profitability now exposes job-level estimate/actual variances plus projected final cost, remaining estimate, forecast variance, projected profit and margin; completed/cancelled jobs use actual final cost, while active jobs use actual-to-date plus remaining estimate. Admin exposes the forecast alongside estimate-vs-actual reporting, with isolated authentication, validation and arithmetic tests.
-- 2026-09-02: Completed installation before/after photo and completion-proof workflow. Installation completion now requires both proof photo URLs, detail responses expose installation attachments, Admin supports before/after proof capture and completion, and isolated integration tests cover validation, successful completion, detail exposure and authentication.
-- 2026-09-02: Completed supplier invoice linkage for Purchasing. Vendor invoices can now link to purchase orders and goods receipts, validate vendor ownership and PO/GR consistency, infer the PO from a selected goods receipt, expose purchasing-linked supplier invoices through a list endpoint and Admin Purchasing tab/form, persist the links transactionally with audit metadata, and run isolated integration coverage. CI explicitly provisions the new raw-SQL-backed columns.
