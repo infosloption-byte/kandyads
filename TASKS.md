@@ -121,7 +121,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Employees
 - [ ] Enquiries
 - [ ] Expenses
-- [ ] Installations
+- [x] Installations
 - [ ] Inventory
 - [x] Invoices
 - [ ] Jobs
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Standardized the Installations table completion action. The icon-only completion control is now an explicit Actions-column button with a matching CheckCircle2 icon and visible Complete label, using the shared table-action/table-actions conventions and removing the page-specific margin override.
 - 2026-09-04: Reworked `InvoicesPage.jsx` into an explicit, multiline JSX structure after a local Vite/OXC parser failure reported unclosed select/Field/div tags. The invoice form, payment form and Actions cell now have clearly paired JSX elements and readable conditional rendering, reducing parser fragility while preserving behavior.
 - 2026-09-04: Aligned Leads table actions with the shared icon+label treatment and shared table-actions layout; View, Edit and Convert now follow the same spacing and sizing convention.
 - 2026-09-04: Added shared Admin button and toolbar conventions. Secondary controls now align icon/text content consistently, support hover/disabled states, toolbar selects share sizing/focus treatment, page action groups wrap responsively, and approval/destructive/table-action groups have shared layout primitives.
