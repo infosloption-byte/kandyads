@@ -145,7 +145,65 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Recheck keyboard focus, disabled/loading states and accessible labels after shared-control changes.
 - [x] Re-audit all Admin views after the final consistency pass.
 
+### UI / UX Enhancement — Second Pass (2026-09-04)
+This pass supersedes the earlier table-action presentation rule where the user-facing requirement is now **icon-only row actions**, while retaining accessible names in the DOM/tooltips as appropriate.
+
+#### Admin shell/navigation
+- [x] Add a desktop sidebar toggle that collapses the full navigation into an icon-only rail instead of hiding it completely.
+- [x] Keep collapsed navigation usable with active-state styling and accessible labels/tooltips.
+- [x] Fix mobile navigation so it closes from the menu toggle, Escape, navigation links, and an outside-click backdrop.
+- [x] Prevent background page scrolling while the mobile navigation drawer is open.
+
+#### Shared controls and overlays
+- [x] Apply one modern search-field treatment across list/table pages.
+- [x] Replace classic/native select presentation with a consistent modern select treatment across toolbars and entity forms.
+- [x] Upgrade textareas and all shared entity-form inputs/selects, including compact forms outside `.form-grid`.
+- [x] Keep create, edit, view and related modal surfaces on the same shared form/modal visual language.
+- [x] Add consistent inset padding for panel toolbars and pagination/action areas so controls do not sit against panel edges.
+- [x] Keep normal non-table panel headers from inheriting table-specific padding.
+
+#### Table/action conventions
+- [x] Convert shared table row actions to compact icon-only controls while preserving accessible button/link text for assistive technology.
+- [x] Keep refresh/filter controls distinct from row actions so utility controls remain understandable and consistent.
+
+#### Module-specific follow-up coverage
+- [x] Leads — modern search, modern selects, icon-only row actions, modern textarea/form treatment.
+- [x] Clients — same shared search/select/action/form treatment as Leads.
+- [x] Enquiries — shared search/toolbar inset padding and control treatment.
+- [x] Quotes — shared search/toolbar inset padding and control treatment.
+- [x] Projects — shared search/toolbar inset padding and control treatment.
+- [x] Jobs — shared search/toolbar inset padding and control treatment.
+- [x] Tasks — shared search/toolbar inset padding and control treatment.
+- [x] Materials — align panel/table/toolbar spacing with the shared system.
+- [x] Inventory — resolve panel/toolbar padding and shared control inconsistencies.
+- [x] Purchasing — resolve panel/toolbar padding and shared control inconsistencies.
+- [x] Vendors — resolve panel/toolbar padding and shared control inconsistencies.
+- [x] Outsourcing — resolve panel/toolbar padding and shared control inconsistencies.
+- [x] Installations — resolve panel/toolbar padding and shared control inconsistencies.
+- [x] Employees — apply shared shell/control/layout treatment.
+- [x] Time Tracking — apply shared shell/control/layout treatment.
+- [x] Expenses — apply shared shell/control/layout treatment.
+- [x] Invoices — apply shared shell/control/layout treatment.
+- [x] Profitability — apply shared shell/control/layout treatment.
+- [x] Reports — apply shared shell/control/layout treatment.
+- [x] Settings — align Settings and Workflow Configuration panels, tabs and controls with shared Admin UI.
+- [x] Workflows — verify through the shared Settings/Workflow Configuration styling and form/control overrides.
+- [x] Dashboard — preserve existing approved visual treatment while applying only non-regressive shared shell/control fixes.
+- [x] Approvals — preserve existing approved visual treatment while applying only non-regressive shared shell/control fixes.
+
+#### Second-pass validation
+- [ ] Run Admin production build after this pass.
+- [ ] Verify desktop sidebar expanded/collapsed states at desktop widths.
+- [ ] Verify mobile drawer opens and closes via toggle, link, backdrop and Escape.
+- [ ] Verify search/select/textarea treatment on all listed modules and their create/edit/view modals.
+- [ ] Verify icon-only table actions retain accessible names and correct hit targets.
+- [ ] Verify no page-specific layout override reintroduces edge-to-edge toolbar controls.
+
 ## Recent implementation notes
+- 2026-09-04: Started a second Admin UI/UX consistency pass from the latest user review. The new requirement is icon-only table row actions, modern search/select controls, richer textareas, consistent modal/entity-form styling, and a collapsible desktop sidebar plus a properly dismissible mobile drawer.
+- 2026-09-04: Added a desktop collapsed navigation rail and a mobile navigation backdrop/dismissal flow. Desktop now retains navigation as icons when collapsed; mobile navigation closes from the toggle, links, Escape, and outside click while locking background scroll.
+- 2026-09-04: Added shared second-pass UI overrides for modern search controls, custom select presentation, entity-form controls/textareas, table row action sizing, and consistent panel toolbar/pagination insets. Settings and Workflow Configuration received a matching second-pass override layer.
+- 2026-09-04: Local Admin production build was previously verified successfully after the first UI/UX audit; this second-pass implementation still requires a fresh build and browser-level responsive validation before its validation checklist is closed.
 - 2026-09-04: Completed the final shared Admin UI source audit. Shared responsive action groups now enforce consistent wrapping and compact table-action sizing, table cells prevent long-content overflow, and icon buttons receive explicit focus treatment. The reusable ResourceTable now marks column headers with `scope="col"` and exposes loading/empty/error states through appropriate status/alert semantics.
 - 2026-09-04: Completed the remaining Purchasing, Time Tracking, and Authentication/shared-component UI consistency batch. Purchasing now uses the shared page-head-actions wrapper; Time Tracking now uses shared page actions/toolbars and exposes icon+text Approve/Edit table actions with an explicit Actions column; authentication controls received consistent focus, spacing, radius and responsive treatment.
 - 2026-09-04: Improved the shared Modal component for accessibility and consistency. Modal titles now use unique IDs, the close control is explicitly labelled as a dialog close action, focus moves to the dialog close control when opened, body scrolling is locked while open, Escape still closes the dialog, and focus is restored to the previously active element on close.
