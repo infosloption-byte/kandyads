@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, RefreshCw, Search } from 'lucide-react';
+import { Edit3, Plus, RefreshCw, Search } from 'lucide-react';
 import { api } from '../../../api';
 import ResourceTable from '../../shared/components/ResourceTable';
 import Modal from '../../../components/common/Modal';
@@ -24,7 +24,7 @@ export default function ClientsPage(){
     {key:'phone',label:'Phone'},
     {key:'email',label:'Email'},
     {key:'active',label:'Status',render:r=><span className="table-status">{r.active?'Active':'Inactive'}</span>},
-    {key:'actions',label:'Actions',render:r=><button className="secondary table-action" onClick={()=>setEditing(r)}>Edit</button>}
+    {key:'actions',label:'Actions',render:r=><button className="secondary table-action" onClick={()=>setEditing(r)}><Edit3 size={14}/> Edit</button>}
   ];
   return <div>
     <div className="page-head"><div><p className="eyebrow">CRM</p><h1>Clients</h1><p>Companies and customer relationships used across enquiries, projects, jobs and finance.</p></div><button className="primary" onClick={()=>setOpen(true)}><Plus size={16}/> New Client</button></div>
