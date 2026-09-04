@@ -119,16 +119,16 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [x] Clients
 - [ ] Dashboard / Reports
 - [x] Employees
-- [ ] Enquiries
-- [ ] Expenses
+- [x] Enquiries
+- [x] Expenses
 - [x] Installations
 - [x] Inventory
 - [x] Invoices
-- [ ] Jobs
+- [x] Jobs
 - [x] Leads
 - [x] Materials
-- [ ] Notifications
-- [ ] Outsourcing
+- [x] Notifications
+- [x] Outsourcing
 - [ ] Profitability
 - [x] Projects
 - [ ] Purchasing
@@ -136,7 +136,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Settings
 - [x] Tasks
 - [ ] Time Tracking
-- [ ] Vendors
+- [x] Vendors
 - [ ] Authentication and shared components
 
 ### Validation
@@ -146,6 +146,12 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Aligned Enquiries with shared page-head-actions and toolbar/table-panel primitives while preserving its icon+label row actions and compact refresh utility.
+- 2026-09-04: Aligned Expenses with shared page-head-actions and toolbar/table-panel primitives.
+- 2026-09-04: Aligned Jobs with shared page-head-actions and toolbar/table-panel primitives while preserving the compact refresh utility.
+- 2026-09-04: Aligned Vendors with shared page-head-actions and toolbar/table-panel primitives.
+- 2026-09-04: Aligned Outsourcing with shared page-head-actions and toolbar/table-panel primitives.
+- 2026-09-04: Aligned Notifications with shared page-head-actions and table-panel primitives and made its row action explicitly belong to an Actions column while retaining the visible Mark read label.
 - 2026-09-04: Aligned the Approvals page header with the shared `page-head-actions` layout primitive while preserving its icon+label Refresh control.
 - 2026-09-04: Aligned the Tasks page header and search table toolbar with shared page-action and toolbar primitives; the compact icon-only refresh remains an appropriate utility control.
 - 2026-09-04: Aligned the Projects page header and search/table toolbar with shared page-action and toolbar primitives while preserving the compact refresh utility.
