@@ -118,7 +118,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Approvals
 - [x] Clients
 - [ ] Dashboard / Reports
-- [ ] Employees
+- [x] Employees
 - [ ] Enquiries
 - [ ] Expenses
 - [ ] Installations
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Standardized the Employees table action to the shared icon+label convention and replaced inline page-header layout styling with the shared page-head-actions utility.
 - 2026-09-04: Standardized the Clients table action to the shared icon+label convention: Edit now includes the Edit3 icon and visible text label, with an explicit Actions column.
 - 2026-09-04: Added shared Admin form-control normalization. Entity-form inputs/selects/textareas now share predictable sizing, placeholder/disabled/error states, focus treatment and action-button sizing while preserving the existing component API.
 - 2026-09-04: Added the first Admin UI/UX foundation fix. Admin now applies a consistent modern thin scrollbar treatment to page and nested scroll surfaces, including sidebar, tables, notification lists and modal overflow, with dark-sidebar variants and contained overscroll behavior. Shared table-action and toolbar utility classes were also introduced for the upcoming consistency pass.
