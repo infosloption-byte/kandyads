@@ -123,7 +123,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Expenses
 - [ ] Installations
 - [ ] Inventory
-- [ ] Invoices
+- [x] Invoices
 - [ ] Jobs
 - [ ] Leads
 - [ ] Materials
@@ -146,6 +146,7 @@ This workstream tracks the cross-application Admin UI/UX consistency pass. Every
 - [ ] Re-audit all Admin views after the final consistency pass.
 
 ## Recent implementation notes
+- 2026-09-04: Standardized the Invoices table actions: PDF and Record payment now use the shared icon+label table-action treatment and the column is explicitly named Actions.
 - 2026-09-04: Standardized the Employees table action to the shared icon+label convention and replaced inline page-header layout styling with the shared page-head-actions utility.
 - 2026-09-04: Standardized the Clients table action to the shared icon+label convention: Edit now includes the Edit3 icon and visible text label, with an explicit Actions column.
 - 2026-09-04: Added shared Admin form-control normalization. Entity-form inputs/selects/textareas now share predictable sizing, placeholder/disabled/error states, focus treatment and action-button sizing while preserving the existing component API.
