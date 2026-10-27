@@ -17,6 +17,7 @@ export function resolveProjectImage(filename) {
 export default function ProjectImage({ filename, alt, loading = 'lazy', ...props }) {
   return (
     <img
+      key={filename || 'portfolio-fallback'}
       {...props}
       src={resolveProjectImage(filename)}
       alt={alt || 'Kandy Ads portfolio project'}
