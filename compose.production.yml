@@ -1,0 +1,68 @@
+name: kandyads
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: kandyads
+      MYSQL_USER: kandyads
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--innodb-buffer-pool-size=128M", "--max-connections=30"]
+    volumes:
+      - kandyads_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+      DATABASE_URL: mysql://kandyads:${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}@mysql:3306/kandyads
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
+      CORS_ORIGIN: https://${DOMAIN:?Set DOMAIN},https://www.${DOMAIN},https://admin.${DOMAIN}
+      NOTIFICATION_EMAIL_ENABLED: "false"
+      NOTIFICATION_WHATSAPP_ENABLED: "false"
+    ports:
+      - "127.0.0.1:9032:4000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+      args:
+        APP_PATH: frontend
+        VITE_API_URL: https://api.${DOMAIN:?Set DOMAIN}/api/v1
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9030:80"
+
+  admin:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.web
+      args:
+        APP_PATH: admin
+        VITE_API_URL: https://api.${DOMAIN:?Set DOMAIN}/api/v1
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9031:80"
+
+volumes:
+  kandyads_mysql_data:
