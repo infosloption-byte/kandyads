@@ -34,7 +34,7 @@ chmod 600 .env.production
 ```
 Edit `.env.production` and replace all CHANGE_TO... values using **different** random values from `openssl rand -hex 24`. Passwords must be URL-safe hex because Compose constructs the MySQL `DATABASE_URL`. Do not paste secrets into chat or commit the file.
 
-If the repo already exists in the target location, fetch and check out the branch instead of cloning or deleting the directory.
+If the repo already exists in the target location, fetch and check out the branch instead of cloning or deleting the directory. The Nginx proxy replaces client-supplied X-Forwarded-For and Fastify trusts its proxy header in production for per-client rate limiting.
 
 ## 2. Build Docker images, start only the database
 ```bash
