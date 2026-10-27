@@ -15,13 +15,13 @@ whoami
 uname -a
 free -h
 df -h /
-docker version
-docker compose version
+sudo docker version
+sudo docker compose version
 sudo nginx -t
 sudo ss -ltnp | grep -E ':(80|443|9030|9031|9032)\\b' || true
 sudo docker ps --format 'table {{.Names}}\\t{{.Ports}}\\t{{.Status}}'
 ```
-If 9030, 9031 or 9032 is occupied, edit only the KandyAds host bindings in `compose.production.yml` and their corresponding reverse proxy targets before proceeding.
+If 9030, 9031 or 9032 is occupied, edit only the KandyAds host bindings in `compose.production.yml` and their corresponding reverse proxy targets before proceeding. On an existing 4-GB Lightsail with many containers, check available memory and consider adding 2 GiB of swap before large Node/Vite builds; swap is emergency memory, not a substitute for RAM. Do not proceed if existing services are under memory pressure.
 
 ## 1. Get the deployment branch
 ```bash
@@ -38,12 +38,15 @@ If the repo already exists in the target location, fetch and check out the branc
 
 ## 2. Build Docker images, start only the database
 ```bash
-docker compose --env-file .env.production -f compose.production.yml config --quiet
-docker compose --env-file .env.production -f compose.production.yml build
-docker compose --env-file .env.production -f compose.production.yml up -d mysql
-docker compose --env-file .env.production -f compose.production.yml ps
+sudo docker compose --env-file .env.production -f compose.production.yml config --quiet
+# Build one at a time to reduce peak memory usage on shared 4-GB server.
+sudo docker compose --env-file .env.production -f compose.production.yml build api
+sudo docker compose --env-file .env.production -f compose.production.yml build frontend
+sudo docker compose --env-file .env.production -f compose.production.yml build admin
+sudo docker compose --env-file .env.production -f compose.production.yml up -d mysql
+sudo docker compose --env-file .env.production -f compose.production.yml ps
 ```
-Do not start the API yet: its startup loads workflow configuration from SQL tables that must be initialized first.
+Do not start the API yet: its startup loads workflow configuration from SQL tables that must be initialized first. After each build, check `free -h`, `df -h /`, and `sudo docker ps` for impact to the existing workloads. If any other container becomes unhealthy or the host starts swapping heavily, stop KandyAds deployment and investigate.
 
 ## 3. FIRST-TIME EMPTY DATABASE ONLY
 The repository's historical Prisma migrations do not contain a complete initial baseline. Its CI creates base models with `prisma db push` and then executes a set of supplementary SQL migrations. Thus **do not run `prisma migrate deploy` against an empty DB** and **never use `--accept-data-loss` on production**.
@@ -51,7 +54,7 @@ The repository's historical Prisma migrations do not contain a complete initial 
 The following procedure is for a **brand-new empty KandyAds DB only**. Do not rerun it on an existing populated database. A production migration baseline should be formalized before later schema changes.
 
 ```bash
-dc() { docker compose --env-file .env.production -f compose.production.yml "$@"; }
+dc() { sudo docker compose --env-file .env.production -f compose.production.yml "$@"; }
 dc run --rm api npx prisma db push --skip-generate
 
 for migration in \
