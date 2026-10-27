@@ -8,7 +8,7 @@ services:
       MYSQL_DATABASE: kandyads
       MYSQL_USER: kandyads
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
-    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--innodb-buffer-pool-size=128M", "--max-connections=30"]
     volumes:
       - kandyads_mysql_data:/var/lib/mysql
     healthcheck:
