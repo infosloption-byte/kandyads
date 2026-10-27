@@ -67,7 +67,7 @@ for migration in \
   20260902200000_supplier_invoice_purchasing_link \
   20260903200000_notifications
 do
-  dc run --rm api npx prisma db execute --file "prisma/migrations/$migration/migration.sql" || break
+  dc run --rm api npx prisma db execute --schema prisma/schema.prisma --file "prisma/migrations/$migration/migration.sql" || break
 done
 ```
 If any step errors, stop and investigate before attempting anything again. These SQL scripts are **not** generally rerunnable.
