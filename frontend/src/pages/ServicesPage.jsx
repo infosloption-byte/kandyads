@@ -1,25 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Zap, Truck, MapPin, PenTool, Factory, Sparkles } from 'lucide-react';
-import { portfolio, services } from '../site-data';
-import ProjectImage from '../components/ProjectImage';
-import { serviceWorkPreviews, serviceWorkImageStyle } from '../data/service-work-previews';
+import { services } from '../site-data';
+import signageImage from '../assets/services/signage.webp';
+import vehicleImage from '../assets/services/vehicle-branding.webp';
+import outdoorImage from '../assets/services/outdoor-advertising.webp';
+import printingImage from '../assets/services/printing.webp';
+import retailImage from '../assets/services/retail-branding.webp';
+import eventsImage from '../assets/services/events.webp';
 import { Site, SectionHero, Reveal, SectionTag, PrimaryCTA } from '../site-shell';
 import '../styles/service-work-previews.css';
 
 const icons = [Zap, Truck, MapPin, PenTool, Factory, Sparkles];
 
-function ServiceWorkPreview({ service }) {
-  const preview = serviceWorkPreviews[service.slug];
-  const project = preview && portfolio.find(([title]) => title === preview.projectTitle);
-  if (!project) return null;
+const serviceImages = {
+  signage: signageImage,
+  'vehicle-branding': vehicleImage,
+  'outdoor-advertising': outdoorImage,
+  printing: printingImage,
+  'retail-branding': retailImage,
+  events: eventsImage,
+};
 
+function ServiceWorkPreview({ service }) {
   return (
     <span className="service-row-visual">
-      <ProjectImage
-        filename={project[2]}
-        alt={`${preview.projectTitle} — Kandy Ads ${service.title.toLowerCase()} work`}
-        style={serviceWorkImageStyle(preview)}
+      <img
+        src={serviceImages[service.slug]}
+        alt={`AI-generated illustration of ${service.title.toLowerCase()} services`}
+        loading="lazy"
+        decoding="async"
       />
     </span>
   );
