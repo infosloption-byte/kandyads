@@ -39,7 +39,7 @@
 .partners-head>p{font-size:17px;line-height:1.8}
 .partner-strip{grid-template-columns:repeat(4,1fr);margin-top:65px}
 .partner-item{min-height:155px!important}
-.partner-item img{display:block;width:auto;height:42px;max-width:125px;filter:grayscale(1) contrast(1.05);opacity:.9}
+.partner-item img{display:block;width:auto;height:42px;max-width:125px;filter:none;opacity:1}
 .partner-item img:hover{filter:none;opacity:1}
 .partner-item b{font-size:28px}
 .partners-note{margin-top:22px;font-size:11px;line-height:1.6;color:#8a8c92;max-width:700px}

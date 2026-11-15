@@ -41,14 +41,14 @@ export const reasons=[
 // with a visible label, until the precise customer artwork is confirmed.
 // Keep each URL paired with a meaningful text fallback in the UI.
 export const brandExamples=[
- {name:'DSI',logo:'https://static-01.daraz.lk/other/shop/df311e89ca0402775322d3387445bba0.jpeg'},
+ {name:'DSI',logo:'https://static-01.daraz.lk/other/shop/df311e89ca0402775322d3387445bba0.jpeg',logoScale:1.45},
  {name:'NinetyNine',logo:'https://www.google.com/s2/favicons?domain=ninetynine.lk&sz=128',showName:true},
  {name:'KFC',logo:'https://upload.wikimedia.org/wikipedia/commons/5/5d/KFC_2026_%28wordmark%29.svg'},
  {name:'Pepsi',logo:'https://upload.wikimedia.org/wikipedia/commons/6/68/Pepsi_2023.svg'},
  {name:'Puma',logo:'https://upload.wikimedia.org/wikipedia/commons/a/ae/Puma-logo-%28text%29.svg'},
- {name:'Fancy Point',logo:'https://www.mybizsl.lk/assets/imgs/clients/fancypoint.jpg'},
- {name:'Arpico',logo:'https://ten.lk/media/809/arpico.webp?v=2'},
- {name:'Ceylon Brands',logo:'https://www.google.com/s2/favicons?domain=ceylonbrands.lk&sz=128',showName:true}
+ {name:'Fancy Point',logo:'https://www.mybizsl.lk/assets/imgs/clients/fancypoint.jpg',logoScale:1.9},
+ {name:'Arpico',logo:'https://ten.lk/media/809/arpico.webp?v=2',logoScale:1.4},
+ {name:'Ceylon Brands',logo:'https://www.google.com/s2/favicons?domain=ceylonbrands.lk&sz=128',showName:true,logoScale:1.2}
 ];
 
 export const processSteps=[
