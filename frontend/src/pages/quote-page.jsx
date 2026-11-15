@@ -4,8 +4,9 @@ import { ArrowLeft, ArrowUpRight, Check, Info, Menu, Minus, Plus, RotateCcw, X }
 import { CONTACT_DETAILS } from '../data/contact-details';
 import '../styles/quote-page.css';
 import '../styles/quote-site-shell.css';
+import '../styles/original-brand.css';
 
-const LOGO = '/brand/kandy-ads-logo.svg';
+const LOGO = '/brand/kandy-ads-logo.svg?v=20261115b';
 
 const SERVICES = {
   signage: { label: 'Signage & Signboards', unit: 'sqft', rate: 3200, min: 12000 },
@@ -98,9 +99,8 @@ function QuotePage() {
     <div className="quote-page">
       <header className="quote-nav">
         <div className="quote-nav-inner">
-          <a className="quote-brand" href="/" aria-label="Kandy Ads home" onClick={closeMenu}>
-            <img src={LOGO} alt="Kandy Ads" />
-            <strong>KANDY<span>ADS</span></strong>
+          <a className="quote-brand original-brand" href="/" aria-label="Kandy Ads home" onClick={closeMenu}>
+            <img src={LOGO} alt="kandy Ads" />
           </a>
           <nav className={menuOpen ? 'quote-main-nav open' : 'quote-main-nav'} aria-label="Primary navigation">
             <a href="/about" onClick={closeMenu}>About</a>
@@ -212,7 +212,7 @@ function QuotePage() {
       <footer className="quote-footer">
         <div className="quote-footer-main quote-container">
           <div className="quote-footer-brand">
-            <a className="quote-brand" href="/" aria-label="Kandy Ads home"><img src={LOGO} alt="Kandy Ads" /><strong>KANDY<span>ADS</span></strong></a>
+            <a className="quote-brand original-brand" href="/" aria-label="Kandy Ads home"><img src={LOGO} alt="kandy Ads" /></a>
             <p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p>
           </div>
           <div className="quote-footer-col"><b>EXPLORE</b><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="/industries">Industries</a><a href="/process">Process</a><a href="/contact">Contact</a></div>
