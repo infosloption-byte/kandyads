@@ -18,7 +18,7 @@ test('about page covers who we are, story, capabilities, strengths and results',
  assert.match(page,/services\.map/);
  assert.equal(services.length,6);
  assert.match(page,/concept visualisation|Concept visualisation/i);
- assert.match(page,/\/about\/about-result\.webp/);
+ assert.match(page,/\/about\/about-result\.svg/);
 });
 
 test('redesign layout includes tablet/mobile and reduced motion',()=>{
