@@ -1,0 +1,62 @@
+/* Scoped About / Process redesign. The global site theme and other pages are unchanged. */
+.process-redesign-intro,.about-introduction{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,5vw,88px);align-items:end;padding:10px 0 55px}
+.process-redesign-intro h2,.about-introduction h2,.about-story h2,.about-section-heading h2,.about-result-content h2,.about-principles h2{font-family:'Space Grotesk',sans-serif;letter-spacing:-.052em;line-height:1.03;font-size:clamp(38px,4.7vw,65px);margin:17px 0 0}
+.process-redesign-intro h2 span,.about-introduction h2 span,.about-principles h2 span{color:var(--red)}
+.process-redesign-intro p,.about-introduction-copy p,.about-story p,.about-section-heading>p,.about-result-content p,.about-principles p{color:var(--muted);font-size:clamp(15px,1.3vw,17px);line-height:1.75;margin:0}
+.about-introduction-copy{display:grid;gap:18px}
+.process-redesign-flow{padding-bottom:112px}
+.process-method-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:steps}
+.process-method-item{min-width:0;list-style:none}
+.process-method-reveal{height:100%}
+.process-method-card{position:relative;background:#fff;border:1px solid #e2e1de;padding:30px;min-height:343px;height:100%;display:flex;flex-direction:column;gap:26px;overflow:hidden;transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease}
+.process-method-card:before{content:'';position:absolute;top:0;left:0;width:74px;height:3px;background:var(--red)}
+.process-method-card:hover{border-color:#d4a3a5;transform:translateY(-3px);box-shadow:0 16px 38px rgba(14,15,18,.07)}
+.process-method-top{display:flex;align-items:center;justify-content:space-between}
+.process-method-number{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--red);font-size:27px;letter-spacing:-.05em}
+.process-method-icon{width:54px;height:54px;border:1px solid #e7e2e1;background:#faf9f7;display:grid;place-items:center;color:#141416}
+.process-method-copy h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(25px,2.6vw,34px);line-height:1.1;letter-spacing:-.045em;margin:0 0 16px}
+.process-method-copy strong{font-size:14px;color:#17181b;line-height:1.45;display:block;margin-bottom:9px}
+.process-method-copy p{font-size:14px;line-height:1.65;color:var(--muted);margin:0}
+.process-method-output{border-top:1px solid #e9e7e4;padding-top:16px;margin-top:auto;display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.4;color:#424449;font-weight:600}
+.process-method-output svg{flex:0 0 auto;color:var(--red)}
+.process-flow-note{font-size:13px;color:var(--muted);margin:20px 0 0;line-height:1.6}
+.about-introduction{padding-top:12px;padding-bottom:100px}
+.about-story{background:#111216;color:#fff;padding:95px 0}
+.about-story-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,100px)}
+.about-story h2{font-size:clamp(37px,4.2vw,58px)}
+.about-story p{color:#cbcbd0;margin:0 0 17px}
+.about-story .about-story-note{font-size:12px;color:#a5a5ad;padding-top:14px;border-top:1px solid #34343a}
+.about-capabilities,.about-strengths{padding-top:105px;padding-bottom:112px}
+.about-section-heading{display:grid;grid-template-columns:1.2fr .8fr;align-items:end;gap:55px;margin-bottom:42px}
+.about-section-heading>p{max-width:490px}
+.about-capability-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#deddda}
+.about-capability-card{display:flex;flex-direction:column;height:100%;min-height:275px;background:var(--paper);padding:28px;transition:background .25s ease}
+.about-capability-card:hover{background:#fff}
+.about-capability-card-top{display:flex;align-items:center;justify-content:space-between;color:var(--red);font-size:11px;font-weight:700}
+.about-capability-card h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.035em;font-size:24px;line-height:1.12;margin:42px 0 10px}
+.about-capability-card p{font-size:13px;line-height:1.6;color:var(--muted);margin:0}
+.about-capability-more{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;margin-top:auto;padding-top:22px}
+.about-result-feature{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(25px,5vw,80px);align-items:center;padding-top:110px;padding-bottom:95px}
+.about-result-visual{margin:0;position:relative}
+.about-result-visual img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#ddd}
+.about-result-visual figcaption{font-size:11px;line-height:1.6;color:#757780;margin-top:10px}
+.about-result-content p{margin:18px 0}
+.about-result-content .text-link{margin-top:14px}
+.about-strengths{padding-top:20px}
+.about-strength-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#dfddd9}
+.about-strength-grid article{min-height:265px;padding:30px;background:var(--paper)}
+.about-strength-grid article>svg{color:var(--red)}
+.about-strength-grid article>span{display:block;margin-top:40px;font-size:10px;color:#8d8f94}
+.about-strength-grid h3{font-family:'Space Grotesk',sans-serif;font-size:25px;letter-spacing:-.04em;margin:10px 0}
+.about-strength-grid p{font-size:14px;color:var(--muted);line-height:1.65}
+.about-principles{padding:65px 0 125px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:70px}
+.about-principles p{margin-bottom:22px}
+.about-principles ul{list-style:none;padding:0;margin:0}
+.about-principles li{display:flex;align-items:flex-start;gap:13px;padding:14px 0;border-top:1px solid var(--line)}
+.about-principles li svg{color:var(--red);flex:0 0 auto;margin-top:4px}
+.about-principles li strong,.about-principles li span{display:block}
+.about-principles li strong{font-size:13px;margin-bottom:5px}
+.about-principles li span{font-size:13px;line-height:1.55;color:var(--muted)}
+@media(max-width:980px){.process-method-grid,.about-capability-grid,.about-strength-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.about-story-grid,.about-result-feature{gap:35px}.process-method-card{min-height:320px}}
+@media(max-width:700px){.process-redesign-intro,.about-introduction,.about-story-grid,.about-section-heading,.about-result-feature,.about-principles{grid-template-columns:1fr;gap:24px}.process-method-grid,.about-capability-grid,.about-strength-grid{grid-template-columns:1fr}.process-method-card{min-height:0;padding:25px;gap:20px}.process-redesign-flow{padding-bottom:75px}.about-introduction{padding-bottom:80px}.about-story{padding:75px 0}.about-capabilities,.about-strengths{padding-top:75px;padding-bottom:80px}.about-result-feature{padding-top:75px;padding-bottom:70px}.about-capability-card{min-height:220px}.about-capability-card h3{margin-top:25px}.about-principles{padding:65px 0 80px}}
+@media(prefers-reduced-motion:reduce){.process-method-card,.about-capability-card{transition:none}.process-method-card:hover{transform:none}}
