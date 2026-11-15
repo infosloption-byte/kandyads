@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { createRoot } from 'react-dom/client';
 import { ArrowLeft, ArrowUpRight, Check, Info, Menu, Minus, Plus, RotateCcw, X } from 'lucide-react';
 import { CONTACT_DETAILS } from '../data/contact-details';
 import '../styles/quote-page.css';
@@ -225,4 +224,4 @@ function QuotePage() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<QuotePage />);
+export default QuotePage;
