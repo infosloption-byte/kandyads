@@ -6,7 +6,7 @@ import '../styles/quote-page.css';
 import '../styles/quote-site-shell.css';
 import '../styles/original-brand.css';
 
-const LOGO = '/brand/kandy-ads-logo.svg?v=20261115b';
+const LOGO = '/brand/kandy-ads-logo-horizontal.png?v=20261115c';
 
 const SERVICES = {
   signage: { label: 'Signage & Signboards', unit: 'sqft', rate: 3200, min: 12000 },
