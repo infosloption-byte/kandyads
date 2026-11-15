@@ -38,3 +38,24 @@ test('project asset helper uses Vite resolution and includes a checked-in fallba
   assert.ok(helper.includes('onError='));
   assert.ok(existsSync(resolve(projectPath, 'projects/project-fallback.svg')));
 });
+
+test('portfolio screenshots are portrait image files, so the full poster must remain visible', () => {
+  for (const [title, , imageName] of portfolio) {
+    const png = readFileSync(resolve(projectPath, imageName));
+    assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `Not a PNG: ${title}`);
+    const width = png.readUInt32BE(16);
+    const height = png.readUInt32BE(20);
+    assert.ok(height > width, `Expected a portrait collage for ${title}, got ${width}x${height}`);
+  }
+});
+
+test('Projects page preserves whole portfolio images and allows full-size viewing', () => {
+  const page = readFileSync(resolve(root, 'pages/ProjectsPage.jsx'), 'utf8');
+  const css = readFileSync(resolve(root, 'styles/project-gallery.css'), 'utf8');
+  assert.ok(page.includes('project-grid project-poster-grid'));
+  assert.ok(page.includes('href={resolveProjectImage(project[2])}'));
+  assert.match(css, /\.project-grid\.project-poster-grid \.project-card img\s*\{[^}]*object-fit:\s*contain/s);
+  assert.match(css, /\.project-grid\.project-poster-grid \.project-card img\s*\{[^}]*aspect-ratio:\s*auto/s);
+  assert.match(css, /@media \(max-width: 900px\)/);
+  assert.match(css, /@media \(max-width: 600px\)/);
+});
