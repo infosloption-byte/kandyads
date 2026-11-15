@@ -9,7 +9,7 @@ test('original Kandy Ads artwork uses all-red wordmark and intact symbol', () =>
   assert.match(logo, /<title id="title">kandy Ads<\/title>/);
   assert.match(logo, /fill="#F3201B"/);
   assert.match(logo, /fill="#050505"/);
-  assert.match(logo, /fill="#fff"/);
+  assert.match(logo, /fill="#FFFFFF"/);
   assert.doesNotMatch(logo, /KANDY<span/);
 });
 
