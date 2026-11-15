@@ -38,6 +38,12 @@
   max-height:79px;
   object-fit:contain;
   object-position:center;
+  /* Preserve source brand colors at rest and on hover. */
+  filter:none;
+  opacity:1;
+  /* Scale only marks with excessive whitespace or smaller visual weight. */
+  transform:scale(var(--partner-logo-scale, 1));
+  transform-origin:center;
 }
 .partner-item .partner-logo-fallback{
   font-family:'Space Grotesk',sans-serif;

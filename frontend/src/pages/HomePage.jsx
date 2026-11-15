@@ -8,7 +8,7 @@ const icons=[Zap,Truck,MapPin,PenTool,Factory,Sparkles];
 
 function BrandLogo({brand}){
   const [failed,setFailed]=React.useState(false);
-  return <div className="partner-logo-wrap">
+  return <div className="partner-logo-wrap" style={{'--partner-logo-scale':brand.logoScale || 1}}>
     {!failed && brand.logo ? <img src={brand.logo} alt={`${brand.name} logo`} loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={()=>setFailed(true)} /> : <b className="partner-logo-fallback">{brand.name}</b>}
     {brand.showName && !failed ? <small className="partner-logo-label">{brand.name}</small> : null}
   </div>;
