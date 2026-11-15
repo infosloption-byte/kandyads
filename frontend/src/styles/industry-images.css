@@ -1,0 +1,24 @@
+/* Generated scenes for KandyAds industry sectors. One locally bundled 3x2 image atlas. */
+.industry-grid .industry-card {
+  overflow: hidden;
+}
+.industry-grid .industry-card-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: 300% 200%;
+  background-repeat: no-repeat;
+  background-color: #ece9e4;
+  border: 1px solid rgba(0,0,0,.06);
+  margin: 17px 0 22px;
+}
+.industry-grid .industry-card h2 {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .industry-grid .industry-card-image { max-height: 330px; }
+}
+@media (max-width: 600px) {
+  .industry-grid .industry-card-image { margin: 14px 0 18px; }
+  .industry-grid .industry-card h2 { font-size: clamp(24px,6vw,32px); }
+}
