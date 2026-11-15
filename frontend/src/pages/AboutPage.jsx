@@ -21,7 +21,7 @@ export default function AboutPage() {
     </section>
     <section className="about-story" aria-labelledby="about-story-title"><div className="container about-story-grid">
       <div><SectionTag light>OUR STORY</SectionTag><h2 id="about-story-title">Built around the craft of making brands visible.</h2></div>
-      <div><p>Our story is reflected in the breadth of work we take on: signage and signboards, commercial branding, vehicle graphics, outdoor advertising, printing and event displays.</p><p>As business requirements expand from a single location to larger campaigns, the need remains the same: thoughtful design backed by practical production and dependable coordination.</p><p className="about-story-note">For a dated company-history timeline, confirmed founding milestones and archive photographs can be added without guessing at dates or achievements.</p></div>
+      <div><p>Our story is reflected in the breadth of work we take on: signage and signboards, commercial branding, vehicle graphics, outdoor advertising, printing and event displays.</p><p>As business requirements expand from a single location to larger campaigns, the need remains the same: thoughtful design backed by practical production and dependable coordination.</p></div>
     </div></section>
     <section className="container about-capabilities" aria-labelledby="about-capabilities-title">
       <div className="about-section-heading"><div><SectionTag>WHAT WE CAN DO</SectionTag><h2 id="about-capabilities-title">One partner. Six connected capabilities.</h2></div><p>We work across the environments where your brand needs to be seen—from the street to the storefront, the vehicle to the exhibition floor.</p></div>
@@ -32,7 +32,7 @@ export default function AboutPage() {
     </section>
     <section className="about-statement"><div className="container"><div className="statement-number">OUR APPROACH / 01</div><h2>Advertising should not only look good in a presentation. <span>It should work in the physical world.</span></h2></div></section>
     <section className="container about-result-feature" aria-labelledby="about-result-title">
-      <Reveal><figure className="about-result-visual"><img src="/about/about-result.webp" alt="Illustrative concept of a professionally branded retail space with coordinated storefront signage" loading="lazy" decoding="async"/><figcaption>Concept visualisation — an example of a coordinated brand environment, not a photographed client project.</figcaption></figure></Reveal>
+      <Reveal><figure className="about-result-visual"><img src="/about/about-result.svg" alt="Illustrative concept of a professionally branded retail space with coordinated storefront signage" loading="lazy" decoding="async"/><figcaption>Concept visualisation — an example of a coordinated brand environment, not a photographed client project.</figcaption></figure></Reveal>
       <div className="about-result-content"><SectionTag>THE RESULT</SectionTag><h2 id="about-result-title">A stronger presence, wherever people see your business.</h2><p>The final impression is the sum of many choices: clear signage, effective scale, considered materials, consistent graphics and confident installation.</p><p>Our work is about turning those details into physical touchpoints that feel purposeful, consistent and ready for everyday use.</p><Link to="/projects" className="text-link">Explore actual Kandy Ads projects <ArrowUpRight size={17}/></Link></div>
     </section>
     <section className="container about-strengths" aria-labelledby="about-strengths-title">

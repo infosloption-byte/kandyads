@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t d">
+<title id="t">Branded retail frontage concept</title><desc id="d">Architectural illustration of a modern shopfront with illuminated signage, glass doors and coordinated window graphics.</desc>
+<defs>
+ <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#dedcd8"/><stop offset="1" stop-color="#b7b6b2"/></linearGradient>
+ <linearGradient id="glass" x2="0" y2="1"><stop stop-color="#334650"/><stop offset=".55" stop-color="#1a262b"/><stop offset="1" stop-color="#445057"/></linearGradient>
+ <linearGradient id="ground" x2="0" y2="1"><stop stop-color="#ddd9d2"/><stop offset="1" stop-color="#a8a5a0"/></linearGradient>
+ <linearGradient id="sign" x2="0" y2="1"><stop stop-color="#26282c"/><stop offset="1" stop-color="#121316"/></linearGradient>
+ <pattern id="slats" width="24" height="20" patternUnits="userSpaceOnUse"><rect width="24" height="20" fill="#9f7f65"/><rect width="9" height="20" fill="#dfbe94"/></pattern>
+ <filter id="soft"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<rect width="1200" height="675" fill="#f3f0eb"/>
+<rect x="0" width="1200" height="520" fill="url(#wall)"/>
+<path d="M0 565H1200V675H0Z" fill="url(#ground)"/>
+<path d="M0 600H1200" stroke="#eeece8" stroke-width="6"/>
+<path d="M0 647H1200" stroke="#c4c1bb" stroke-width="3"/>
+<path d="M95 0V520M1160 0V520" stroke="#9a9997" stroke-width="12"/>
+<rect x="95" y="32" width="1030" height="174" rx="3" fill="url(#sign)"/>
+<rect x="95" y="196" width="1030" height="7" fill="#ef232d"/>
+<path d="M95 32H1125" stroke="#393b40" stroke-width="7"/>
+<g fill="#f0ebe7" font-family="Arial,Helvetica,sans-serif" text-anchor="middle">
+ <text x="610" y="123" font-size="60" font-weight="700" letter-spacing="9">BRAND EXPERIENCE</text>
+ <text x="610" y="163" font-size="17" letter-spacing="12">SIGNAGE • RETAIL • VISIBILITY</text>
+</g>
+<rect x="110" y="208" width="995" height="320" fill="#12191c"/>
+<rect x="127" y="225" width="961" height="296" fill="url(#glass)"/>
+<rect x="170" y="248" width="876" height="265" fill="#d3ab72" opacity=".27"/>
+<path d="M160 262H1070" stroke="#f6debb" stroke-width="8" opacity=".8"/>
+<path d="M210 268V505M301 268V505M390 268V505M812 268V505M900 268V505M987 268V505" stroke="#e7bd83" stroke-width="5" opacity=".5"/>
+<rect x="176" y="315" width="174" height="152" fill="url(#slats)" opacity=".47"/>
+<rect x="853" y="320" width="179" height="147" fill="url(#slats)" opacity=".55"/>
+<path d="M420 512V245H802V512" stroke="#0f1113" stroke-width="20" fill="none"/>
+<path d="M616 245V513" stroke="#131618" stroke-width="11"/>
+<path d="M530 356V420M697 356V420" stroke="#e9d6bf" stroke-width="9"/>
+<rect x="465" y="282" width="294" height="16" rx="8" fill="#e4c396"/>
+<rect x="467" y="290" width="294" height="37" fill="#fff0bd" opacity=".15" filter="url(#soft)"/>
+<path d="M455 512V468H766V512" fill="#5a4a3f"/>
+<rect x="470" y="445" width="278" height="24" fill="#b18a68"/>
+<g stroke="#fce2bf" opacity=".25" stroke-width="5"><path d="M130 480L400 242"/><path d="M835 520L1067 299"/></g>
+<path d="M120 525H1110" stroke="#0f1113" stroke-width="18"/>
+<rect x="0" y="528" width="1200" height="11" fill="#7e7771"/>
+<g transform="translate(122 385)"><rect x="23" y="128" width="90" height="70" fill="#b9b5ad"/><ellipse cx="64" cy="160" rx="52" ry="9" fill="#999892"/><path d="M65 150V10M64 85C8 65 14 29 24 20C64 25 78 60 64 85ZM65 109C120 91 126 51 106 43C63 59 49 85 65 109ZM64 64C40 23 64 -8 83 0C94 29 87 55 64 64" fill="#4f7657"/><path d="M63 149C34 121 25 102 13 105M66 140C94 115 109 103 117 90" stroke="#4f7657" stroke-width="6"/></g>
+<g transform="translate(979 403)"><rect x="21" y="110" width="74" height="67" fill="#b9b5ad"/><path d="M58 110V0M58 50C12 28 17 2 39 2C65 20 71 41 58 50ZM58 85C111 58 105 21 89 16C55 41 46 68 58 85Z" fill="#4c7458"/></g>
+<path d="M0 554L1200 554" stroke="#88827b" stroke-width="2"/>
+<path d="M250 675L340 540M860 675L760 540" stroke="#f7f4ee" stroke-width="4" opacity=".6"/>
+<path d="M1160 110L1197 70V537H1160Z" fill="#8d948e" opacity=".3"/>
+</svg>
