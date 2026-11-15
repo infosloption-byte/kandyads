@@ -14,7 +14,7 @@ export function Navbar(){
   const [open,setOpen]=React.useState(false); const location=useLocation();
   const nav=[['About','/about'],['Services','/services'],['Projects','/projects'],['Industries','/industries'],['Process','/process'],['Contact','/contact']];
   return <header className="nav"><div className="nav-inner">
-    <Link to="/" className="brand" onClick={()=>setOpen(false)}><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span>ADS</span></span></Link>
+    <Link to="/" className="brand original-brand" aria-label="Kandy Ads home" onClick={()=>setOpen(false)}><img src={LOGO} alt="kandy Ads"/></Link>
     <nav className={open?'open':''} aria-label="Primary navigation">
       {nav.map(([label,url])=><Link className={location.pathname===url?'active':''} key={url} to={url} onClick={()=>setOpen(false)}>{label}</Link>)}
       <Link to="/quote" className="nav-cta" onClick={()=>setOpen(false)}>Get a Quote <ArrowUpRight size={16}/></Link>
@@ -31,7 +31,7 @@ export function PrimaryCTA({to='/quote',children='Request a quote'}){return <Lin
 
 export function Footer(){
   return <footer><div className="container footer-grid">
-    <div className="footer-intro"><Link to="/" className="brand footer-brand"><img src={LOGO} alt="Kandy Ads"/><span>KANDY<span style={{fontSize:'inherit',lineHeight:'inherit',letterSpacing:'inherit',fontWeight:'inherit'}}>ADS</span></span></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p></div>
+    <div className="footer-intro"><Link to="/" className="brand footer-brand original-brand" aria-label="Kandy Ads home"><img src={LOGO} alt="kandy Ads"/></Link><p>Creative advertising, signage and brand visibility solutions from Kandy, Sri Lanka.</p></div>
     <div><b>Explore</b><Link to="/about">About</Link><Link to="/services">Services</Link><Link to="/projects">Projects</Link><Link to="/industries">Industries</Link><Link to="/process">Process</Link><Link to="/contact">Contact</Link></div>
     <div><b>Capabilities</b>{services.map(s=><Link key={s.slug} to={'/services/'+s.slug}>{s.title}</Link>)}</div>
     <div><b>Start a project</b><p className="footer-note">Tell us what you need and we’ll shape the right production path.</p><Link to="/quote" className="footer-cta">Get a Quote <ArrowUpRight size={16}/></Link><a href={`https://wa.me/${contactInfo.whatsapp}`} className="footer-cta">WhatsApp <ArrowUpRight size={16}/></a></div>

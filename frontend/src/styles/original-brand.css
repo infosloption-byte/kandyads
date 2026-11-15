@@ -1,0 +1,12 @@
+/* Reconstructed original Kandy Ads brand: stacked mark and all-red serif wordmark. */
+.nav .brand.original-brand img{display:block;width:126px;height:auto;max-height:74px;max-width:none}
+.footer-intro .footer-brand.original-brand{display:inline-flex;max-width:100%;align-items:center}
+.footer-intro .footer-brand.original-brand img{display:block;width:214px;height:auto;max-height:none;max-width:100%;flex:0 1 auto}
+.quote-nav .quote-brand.original-brand img{display:block!important;width:126px!important;height:auto!important;max-height:74px!important;max-width:none!important}
+.quote-footer-brand .quote-brand.original-brand img{width:214px!important;height:auto!important;max-height:none!important;max-width:100%!important}
+@media(max-width:600px){
+.nav .brand.original-brand img{width:108px;max-height:64px}
+.footer-intro .footer-brand.original-brand img{width:188px}
+.quote-nav .quote-brand.original-brand img{width:108px!important;max-height:64px!important}
+.quote-footer-brand .quote-brand.original-brand img{width:188px!important}
+}
