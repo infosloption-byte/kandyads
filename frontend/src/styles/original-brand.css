@@ -1,13 +1,56 @@
-/* Reconstructed original Kandy Ads brand: stacked mark and all-red serif wordmark. */
-.nav .brand.original-brand img{display:block;width:126px;height:auto;max-height:74px;max-width:none}
-.footer-intro .footer-brand.original-brand{display:inline-flex;max-width:100%;align-items:center;background:#fbfaf8;padding:10px 12px;border-radius:2px}
-.footer-intro .footer-brand.original-brand img{display:block;width:214px;height:auto;max-height:none;max-width:100%;flex:0 1 auto}
-.quote-nav .quote-brand.original-brand img{display:block!important;width:126px!important;height:auto!important;max-height:74px!important;max-width:none!important}
-.quote-footer-brand .quote-brand.original-brand{display:inline-flex!important;background:#fbfaf8!important;padding:10px 12px!important;border-radius:2px!important}
-.quote-footer-brand .quote-brand.original-brand img{width:214px!important;height:auto!important;max-height:none!important;max-width:100%!important}
-@media(max-width:600px){
-.nav .brand.original-brand img{width:108px;max-height:64px}
-.footer-intro .footer-brand.original-brand img{width:188px}
-.quote-nav .quote-brand.original-brand img{width:108px!important;max-height:64px!important}
-.quote-footer-brand .quote-brand.original-brand img{width:188px!important}
+/* Approved horizontal Kandy Ads logo: transparent image, symbol left, all-red wordmark right. */
+/* Keep the site and quote navigation at their current heights; only resize the logo image. */
+.nav .brand.original-brand img {
+  display: block;
+  width: 210px;
+  height: auto;
+  max-height: 62px;
+  max-width: 100%;
+  object-fit: contain;
+}
+.footer-intro .footer-brand.original-brand {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  background: transparent;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.footer-intro .footer-brand.original-brand img {
+  display: block;
+  width: 300px;
+  height: auto;
+  max-height: none;
+  max-width: 100%;
+  flex: 0 1 auto;
+}
+.quote-nav .quote-brand.original-brand img {
+  display: block !important;
+  width: 210px !important;
+  height: auto !important;
+  max-height: 62px !important;
+  max-width: 100% !important;
+  object-fit: contain;
+}
+.quote-footer-brand .quote-brand.original-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+.quote-footer-brand .quote-brand.original-brand img {
+  width: 300px !important;
+  height: auto !important;
+  max-height: none !important;
+  max-width: 100% !important;
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .nav .brand.original-brand img { width: 166px; max-height: 48px; }
+  .footer-intro .footer-brand.original-brand img { width: 248px; }
+  .quote-nav .quote-brand.original-brand img { width: 166px !important; max-height: 48px !important; }
+  .quote-footer-brand .quote-brand.original-brand img { width: 248px !important; }
 }

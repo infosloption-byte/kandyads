@@ -1,5 +1,5 @@
 export const ASSET='/src/assets/';
-export const LOGO='/brand/kandy-ads-logo.svg?v=20261115b';
+export const LOGO='/brand/kandy-ads-logo-horizontal.png?v=20261115c';
 export const SYMBOL='/brand/kandy-ads-symbol.svg?v=20261115b';
 
 export const contactInfo={
