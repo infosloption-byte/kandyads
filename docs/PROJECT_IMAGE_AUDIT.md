@@ -67,3 +67,13 @@ From `frontend/` run `npm test`, then `npm run build`.
 The tests check each listed image file's existence, unique filenames, absence of `/src/assets/` paths in the three affected pages, and presence of the fallback image and bundling helper. During a Vite production build, the PNGs will be fingerprinted and included automatically.
 
 **Deploy:** After merging this fix into the branch used by your Lightsail server, rebuild *only* the `frontend` container with `docker compose --env-file .env.production -f compose.production.yml build frontend`, then recreate it with `up -d --no-deps frontend`. Avoid modifying API, admin, MySQL, or LankaHost DNS for this fix.
+
+## 2026-11-15 visual-content verification and gallery presentation
+
+All 19 source images have been inspected visually. Their printed headings and example photos correspond to the matching portfolio entries (for example, Casting Signs, Vehicle Branding, LED Road Sign Boards, and Flex Hoardings). The twentieth screenshot, `Screenshot 2026-08-30 142904.png`, is an About Company panel, not a missing Projects entry.
+
+These PNGs are **portrait-format portfolio posters/collages** rather than landscape hero photos. The original Projects CSS imposed `aspect-ratio: 4/3` and `object-fit: cover`, which clipped the headings and photos and made cards appear to show mismatched content.
+
+The Projects page now imports `frontend/src/styles/project-gallery.css` and adds `project-poster-grid`. Full source posters are shown without cropping at their native ratio, with a responsive 4/3/2/1-column layout and a direct link to view each original poster in full size. Existing source images and mapping have not been altered. The existing Vite `ProjectImage` resolver still handles fingerprinted production URLs and fallbacks.
+
+Test with `cd frontend && npm test && npm run build`. To see changes on the public site, deploy/rebuild the **frontend** from the branch containing this fix; changing GitHub source code alone does not update the running Docker container.
