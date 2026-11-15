@@ -1,6 +1,6 @@
 export const ASSET='/src/assets/';
-export const LOGO='/brand/kandy-ads-logo.svg';
-export const SYMBOL='/brand/kandy-ads-symbol.svg';
+export const LOGO='/brand/kandy-ads-logo.svg?v=20261115';
+export const SYMBOL='/brand/kandy-ads-symbol.svg?v=20261115';
 
 export const contactInfo={
   addresses:[
