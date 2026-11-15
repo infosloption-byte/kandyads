@@ -40,7 +40,7 @@ import { approvalsRoutes } from './modules/approvals/approvals.routes.js';
 import { attachmentsRoutes } from './modules/attachments/attachments.routes.js';
 
 export function buildApp(){
-  const app=Fastify({logger:true,requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
+  const app=Fastify({logger:true,trustProxy:env.NODE_ENV==='production',requestIdHeader:'x-request-id',genReqId:()=>randomUUID()});
   app.register(cors,{origin:corsOrigins,credentials:true});app.register(sensible);app.register(jwt,{secret:env.JWT_SECRET});
   app.get('/health',async()=>({status:'ok',service:'kandy-ads-backend',environment:env.NODE_ENV,timestamp:new Date().toISOString()}));
   app.get('/api/v1',async()=>({name:'Kandy Ads Operations API',version:'v1'}));

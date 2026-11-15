@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Kandy Ads portfolio image placeholder</title>
+  <desc id="desc">A stylized signboard illustration in Kandy Ads brand colors, used when a portfolio image is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1b22"/>
+      <stop offset="1" stop-color="#07080a"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff4350"/>
+      <stop offset="1" stop-color="#ed102b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <path d="M750 0 H1200 V800 H525 Z" fill="#ffffff" opacity=".035"/>
+  <path d="M1080 0 H1200 V800 H855 Z" fill="#ffffff" opacity=".025"/>
+  <g transform="translate(145 170)">
+    <rect width="910" height="440" rx="26" fill="#22242b" stroke="#41434a" stroke-width="4"/>
+    <rect x="32" y="32" width="846" height="376" rx="12" fill="#101116"/>
+    <rect x="76" y="84" width="135" height="135" rx="12" fill="url(#panel)"/>
+    <path d="M96 185 V118 h52 l-25 34 25 33 Z" fill="white"/>
+    <text x="242" y="174" fill="#ffffff" font-size="68" font-weight="800" font-family="Arial, sans-serif" letter-spacing="-3">KANDY</text>
+    <text x="500" y="174" fill="#ff3047" font-size="68" font-weight="800" font-family="Arial, sans-serif" letter-spacing="-3">ADS</text>
+    <path d="M79 270 H830" stroke="#484a51" stroke-width="2"/>
+    <text x="80" y="335" fill="#d8dae0" font-size="32" font-weight="600" font-family="Arial, sans-serif">PORTFOLIO IMAGE UNAVAILABLE</text>
+    <text x="80" y="377" fill="#9a9da7" font-size="23" font-family="Arial, sans-serif">Advertising · Branding · Production · Installation</text>
+  </g>
+</svg>
