@@ -1,5 +1,5 @@
-/* Services index only: show crops of the real portfolio photography.
-   The Project page keeps the complete source collages unchanged. */
+/* The Services index uses locally bundled, illustrative generated imagery.
+   The Projects page preserves actual Kandy Ads portfolio photography. */
 .service-row.service-row--with-image {
   display: grid;
   grid-template-columns: 42px 44px minmax(0, 1fr) minmax(190px, 280px) 26px;
@@ -20,11 +20,11 @@
   isolation: isolate;
 }
 .service-row-visual img {
-  position: absolute;
   display: block;
-  max-width: none;
-  max-height: none;
-  object-fit: fill;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   filter: none;
 }
 .service-row:hover .service-row-visual {
