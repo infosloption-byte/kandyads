@@ -36,8 +36,19 @@ export const reasons=[
  ['LOCAL + RESPONSIVE','Kandy-based support with practical communication and on-site coordination.']
 ];
 
+// Images are recognisable logo assets from public brand pages or Wikimedia Commons.
+// For the two locally ambiguous names, use the corresponding website's favicon,
+// with a visible label, until the precise customer artwork is confirmed.
+// Keep each URL paired with a meaningful text fallback in the UI.
 export const brandExamples=[
- {name:'DSI'}, {name:'NinetyNine'}, {name:'KFC'}, {name:'Pepsi'}, {name:'Puma'}, {name:'Fancy Point'}, {name:'Arpico'}, {name:'Ceylon Brands'}
+ {name:'DSI',logo:'https://static-01.daraz.lk/other/shop/df311e89ca0402775322d3387445bba0.jpeg'},
+ {name:'NinetyNine',logo:'https://www.google.com/s2/favicons?domain=ninetynine.lk&sz=128',showName:true},
+ {name:'KFC',logo:'https://upload.wikimedia.org/wikipedia/commons/5/5d/KFC_2026_%28wordmark%29.svg'},
+ {name:'Pepsi',logo:'https://upload.wikimedia.org/wikipedia/commons/6/68/Pepsi_2023.svg'},
+ {name:'Puma',logo:'https://upload.wikimedia.org/wikipedia/commons/a/ae/Puma-logo-%28text%29.svg'},
+ {name:'Fancy Point',logo:'https://www.mybizsl.lk/assets/imgs/clients/fancypoint.jpg'},
+ {name:'Arpico',logo:'https://ten.lk/media/809/arpico.webp?v=2'},
+ {name:'Ceylon Brands',logo:'https://www.google.com/s2/favicons?domain=ceylonbrands.lk&sz=128',showName:true}
 ];
 
 export const processSteps=[
