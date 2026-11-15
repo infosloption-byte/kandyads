@@ -10,7 +10,8 @@ test('direct page loading and in-app navigation share one React router',()=>{
  assert.doesNotMatch(html,/window\.location\.pathname|import\('\/src\/pages\/quote-page\.jsx'\)/);
  const router=read('../src/pages-router.jsx');
  assert.match(router,/React\.lazy\(\(\)=>import\('\.\/pages\/quote-page\.jsx'\)\)/);
- assert.match(router,/<Route path="\/quote" element=\{<React\.Suspense/);
+ assert.match(router,/<Route path="\/quote" element=\{<QuotePage\/>/);
+ assert.match(router,/<React\.Suspense fallback=\{<PageLoader/);
  assert.doesNotMatch(router,/\.\/pages\/QuotePage/);
 });
 
