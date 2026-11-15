@@ -1,0 +1,53 @@
+/* Dedicated Process page styles: deliberately independent of the old .timeline rules. */
+.process-page-hero{padding-top:145px;padding-bottom:94px}
+.process-page-hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(52px,7.4vw,110px);max-width:1130px;line-height:.96;letter-spacing:-.065em;margin:28px 0 26px}
+.process-page-hero h1 span{color:var(--red)}
+.process-page-hero>p{font-size:clamp(16px,1.45vw,20px);line-height:1.7;color:var(--muted);max-width:760px}
+.process-hero-facts{display:flex;flex-wrap:wrap;gap:12px;margin-top:39px}
+.process-hero-facts span{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);padding:11px 15px;font-size:12px;font-weight:700;letter-spacing:.015em}
+.process-hero-facts svg{color:var(--red)}
+.process-method{padding-bottom:120px}
+.process-section-heading{display:flex;justify-content:space-between;align-items:end;gap:50px;margin-bottom:42px}
+.process-section-heading h2,.process-assurance-intro h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(34px,4.5vw,64px);letter-spacing:-.05em;line-height:1.02;margin:16px 0 0}
+.process-section-heading>p{max-width:410px;color:var(--muted);line-height:1.6;font-size:15px;margin:0}
+.process-method-grid{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0;margin:0;counter-reset:step}
+.process-method-cell{min-width:0}
+.process-method-cell>div{height:100%}
+.process-method-card{display:flex;flex-direction:column;position:relative;min-height:355px;height:100%;padding:30px 30px 26px;background:#f2f0ed;border:1px solid #dedbd6;overflow:hidden;transition:border-color .22s,transform .22s,box-shadow .22s}
+.process-method-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--red);transform:scaleX(.12);transform-origin:left;transition:transform .25s}
+.process-method-card:hover{transform:translateY(-3px);border-color:#d2c0be;box-shadow:0 18px 45px rgba(15,15,15,.055)}
+.process-method-card:hover::before{transform:scaleX(1)}
+.process-card-top{display:flex;align-items:center;justify-content:space-between}
+.process-card-number{font-family:'Space Grotesk',sans-serif;font-size:48px;font-weight:700;letter-spacing:-.065em;line-height:1;color:var(--red)}
+.process-card-top svg{color:#27282c}
+.process-card-phase{margin:39px 0 9px;text-transform:uppercase;letter-spacing:.15em;font-size:10px;font-weight:700;color:#7e7775}
+.process-method-card h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(25px,2.55vw,36px);margin:0 0 12px;letter-spacing:-.045em;line-height:1.1}
+.process-card-summary{font-size:15px;line-height:1.58;color:#40434a;margin:0 0 9px}
+.process-card-details{font-size:13px;line-height:1.5;color:#77777c;margin:0 0 26px}
+.process-card-output{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:16px;border-top:1px solid #d4d0cb;font-size:12px;font-weight:700;line-height:1.5}
+.process-card-output svg{flex:0 0 auto;color:var(--red)}
+.process-method-note{font-size:12px;color:var(--muted);margin:17px 0 0}
+.process-assurance-refresh{padding:105px 0 115px}
+.process-assurance-intro h2{color:#fff;max-width:750px}
+.process-assurance-refresh .assurance-grid{margin-top:45px}
+.process-assurance-refresh .assurance-grid h3{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,2.3vw,31px);letter-spacing:-.035em;line-height:1.12;margin:0 0 17px;color:#fff}
+.process-assurance-refresh .assurance-grid p{color:#b3b3bb}
+@media(max-width:970px){
+ .process-page-hero{padding-top:125px;padding-bottom:75px}
+ .process-section-heading{align-items:start;flex-direction:column;gap:16px}
+ .process-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .process-method-card{min-height:340px}
+}
+@media(max-width:600px){
+ .process-page-hero{padding-top:118px;padding-bottom:62px}
+ .process-page-hero h1{font-size:clamp(44px,10.5vw,66px)}
+ .process-hero-facts{gap:8px}
+ .process-hero-facts span{font-size:11px;padding:9px 12px}
+ .process-method{padding-bottom:78px}
+ .process-method-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+ .process-method-card{min-height:305px;padding:24px}
+ .process-card-phase{margin-top:27px}
+ .process-card-number{font-size:43px}
+ .process-assurance-refresh{padding:80px 0}
+}
+@media(prefers-reduced-motion:reduce){.process-method-card,.process-method-card::before{transition:none}.process-method-card:hover{transform:none}}

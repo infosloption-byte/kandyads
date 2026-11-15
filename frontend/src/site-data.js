@@ -52,9 +52,10 @@ export const brandExamples=[
 ];
 
 export const processSteps=[
- ['01','DISCOVER','Understand the business, site, audience and objective.'],
- ['02','DESIGN','Turn the brief into a clear visual and production direction.'],
- ['03','PRODUCE','Print, fabricate, finish and quality-check every component.'],
- ['04','INSTALL','Coordinate the site, install professionally and hand over ready.'],
- ['05','SUPPORT','Stay available for the next rollout, refresh or new location.']
+ ['01','DISCOVER','Listen to the business, audience and goals to define a clear project brief.'],
+ ['02','SITE SURVEY','Review the location, sizes, visibility, materials and installation conditions.'],
+ ['03','DESIGN','Develop artwork, specifications and a production approach for approval.'],
+ ['04','PRODUCTION','Print, fabricate, finish and quality-check the agreed elements.'],
+ ['05','INSTALLATION','Coordinate fitting on site, inspect the result and hand over ready to use.'],
+ ['06','SUPPORT','Stay available for follow-up needs, refreshes and future work.']
 ];
