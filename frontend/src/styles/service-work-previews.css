@@ -1,0 +1,72 @@
+/* Services index only: show crops of the real portfolio photography.
+   The Project page keeps the complete source collages unchanged. */
+.service-row.service-row--with-image {
+  display: grid;
+  grid-template-columns: 42px 44px minmax(0, 1fr) minmax(190px, 280px) 26px;
+  align-items: center;
+  column-gap: clamp(12px, 1.7vw, 24px);
+  min-height: 210px;
+  padding: 28px 0;
+}
+.service-row-copy { min-width: 0; }
+.service-row-visual {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #e7e5e0;
+  border: 1px solid rgba(0, 0, 0, .06);
+  isolation: isolate;
+}
+.service-row-visual img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  max-height: none;
+  object-fit: fill;
+  filter: none;
+}
+.service-row:hover .service-row-visual {
+  border-color: rgba(239, 23, 35, .34);
+}
+@media (max-width: 1040px) {
+  .service-row.service-row--with-image {
+    grid-template-columns: 30px 36px minmax(0, 1fr) minmax(170px, 220px) 20px;
+    column-gap: 14px;
+  }
+  .service-row.service-row--with-image h2 { font-size: clamp(23px, 3vw, 30px); }
+}
+@media (max-width: 740px) {
+  .service-row.service-row--with-image {
+    grid-template-columns: 28px minmax(0, 1fr) minmax(130px, 41%);
+    column-gap: 14px;
+    align-items: center;
+  }
+  .service-row.service-row--with-image > svg:nth-child(2),
+  .service-row.service-row--with-image > svg:last-child {
+    display: none;
+  }
+  .service-row.service-row--with-image .service-row-copy { grid-column: 2; }
+  .service-row.service-row--with-image .service-row-visual { grid-column: 3; }
+}
+@media (max-width: 520px) {
+  .service-row.service-row--with-image {
+    grid-template-columns: 26px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 12px;
+    align-items: start;
+    padding: 24px 0;
+    min-height: 0;
+  }
+  .service-row.service-row--with-image .service-row-copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .service-row.service-row--with-image .service-row-visual {
+    grid-column: 2;
+    grid-row: 2;
+    max-width: 365px;
+  }
+  .service-row.service-row--with-image h2 { font-size: 24px; }
+}
